@@ -1,0 +1,72 @@
+{
+  "name": "@dcl/linker-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@ethersproject/bytes": "^5.4.0",
+    "@ethersproject/contracts": "^5.4.1",
+    "@ethersproject/providers": "^5.4.5",
+    "@ethersproject/strings": "^5.4.0",
+    "comma-separated-values": "^3.6.4",
+    "decentraland-dapps": "^12.25.4",
+    "decentraland-ui": "^3.11.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.5",
+    "redux": "^4.1.1",
+    "redux-logger": "^3.0.6",
+    "redux-saga": "^1.1.3",
+    "reselect": "^4.0.0",
+    "typesafe-actions": "^2.2.0"
+  },
+  "scripts": {
+    "start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "tslint -p tsconfig.json",
+    "lint:fix": "tslint -p tsconfig.json --fix"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "prettier": {
+    "printWidth": 80,
+    "singleQuote": true,
+    "semi": false
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^12.8.3",
+    "@types/jest": "^26.0.24",
+    "@types/node": "^12.20.26",
+    "@types/react": "^17.0.24",
+    "@types/react-dom": "^17.0.9",
+    "@types/redux-logger": "^3.0.9",
+    "react-scripts": "4.0.3",
+    "typescript": "^4.4.3",
+    "@typescript-eslint/eslint-plugin": "^4.13.0",
+    "@typescript-eslint/parser": "^4.13.0",
+    "dcl-tslint-config-standard": "^2.0.0",
+    "prettier": "^1.19.1",
+    "tslint": "^5.20.1",
+    "tslint-plugin-prettier": "^2.0.1",
+    "tslint-react": "^4.1.0"
+  }
+}
