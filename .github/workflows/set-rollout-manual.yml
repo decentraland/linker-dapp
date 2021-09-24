@@ -1,39 +1,39 @@
-name: Set delivery rollout - Manual
+# name: Set delivery rollout - Manual
 
-on:
-  workflow_dispatch:
-    inputs:
-      packageVersion:
-        description: 'Version of the release to modify'
-        required: true
-        default: ''
-      percentage:
-        description: 'Percentage of users getting this version'
-        required: true
-        default: '0'
-      deploymentDomain:
-        description: 'CLI Linker app'
-        required: true
-        default: 'linker.decentraland.zone'
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       packageVersion:
+#         description: 'Version of the release to modify'
+#         required: true
+#         default: ''
+#       percentage:
+#         description: 'Percentage of users getting this version'
+#         required: true
+#         default: '0'
+#       deploymentDomain:
+#         description: 'CLI Linker app'
+#         required: true
+#         default: 'linker.decentraland.zone'
 
-jobs:
-  manual-rollout:
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: hmarr/debug-action@v2
-      - name: set-rollout
-        uses: decentraland/set-rollout-action@main
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # Repo deployment info
-          ref: ${{ github.event.ref }}
-          sha: ${{ github.sha }}
+# jobs:
+#   manual-rollout:
+#     runs-on: ubuntu-18.04
+#     steps:
+#       - uses: hmarr/debug-action@v2
+#       - name: set-rollout
+#         uses: decentraland/set-rollout-action@main
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           # Repo deployment info
+#           ref: ${{ github.event.ref }}
+#           sha: ${{ github.sha }}
 
-          # CDN information
-          packageName: "@decentraland/linker-deploy"
-          packageVersion: ${{ github.event.inputs.packageVersion }}
+#           # CDN information
+#           packageName: "@decentraland/linker-deploy"
+#           packageVersion: ${{ github.event.inputs.packageVersion }}
 
-          # Rollout information
-          deploymentDomain: "linker.decentraland.zone"
-          deploymentName: "_site"
-          percentage: ${{ github.event.inputs.percentage }}
+#           # Rollout information
+#           deploymentDomain: "linker.decentraland.zone"
+#           deploymentName: "_site"
+#           percentage: ${{ github.event.inputs.percentage }}
