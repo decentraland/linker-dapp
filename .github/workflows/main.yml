@@ -48,4 +48,4 @@ jobs:
           gitlab-pipeline-url: "https://dcl.tools/api/v4/projects/104/trigger/pipeline"
           gitlab-token: ${{ secrets.GITLAB_TOKEN }}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
