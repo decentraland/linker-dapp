@@ -1,7 +1,5 @@
 const fs = require('fs')
-const path = require('path')
 const dotenv = require('dotenv')
-const { cdnFolder } = require('./utils')
 
 let ENV_CONTENT = {}
 
