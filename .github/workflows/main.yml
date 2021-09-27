@@ -45,7 +45,7 @@ jobs:
 
           ## inform gitlab after publishing to proceed with CDN propagation and rollouts
           # 104 == https://dcl.tools/pipelines/static-sites-pipeline
-          gitlab-pipeline-url: "https://dcl.tools/api/v4/projects/104/trigger/pipeline"
-          gitlab-token: ${{ secrets.GITLAB_TOKEN }}
+          # gitlab-pipeline-url: "https://dcl.tools/api/v4/projects/104/trigger/pipeline"
+          # gitlab-token: ${{ secrets.GITLAB_TOKEN }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
