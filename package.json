@@ -1,5 +1,5 @@
 {
-  "name": "@dcl/linker-app",
+  "name": "@dcl/linker-dapp",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

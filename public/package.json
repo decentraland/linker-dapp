@@ -1,6 +1,6 @@
 {
   "name": "@dcl/linker-dapp",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "The website for decentraland's linker ",
   "main": "website.js",
   "scripts": {

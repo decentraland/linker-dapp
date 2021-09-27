@@ -65,7 +65,7 @@ export default class LinkScenePage extends React.PureComponent<Props> {
             loading={isConnecting}
             disabled={isConnecting}
           >
-            Reconnect{' '}
+            Reconnect&nbsp;
           </Button>
         </p>
       </React.Fragment>
@@ -109,6 +109,7 @@ export default class LinkScenePage extends React.PureComponent<Props> {
         <Header>Update LAND data</Header>
         {this.renderWalletData()}
         <img
+          style={{ width: '40rem' }}
           className="map"
           src={`https://api.decentraland.${
             isRopsten ? 'zone' : 'org'

@@ -15,7 +15,7 @@ export const isLoading = createSelector(
 export const getError = createSelector(getState, state => state.error)
 
 export const isUpdateAuthorized = createSelector(getData, authorizations => {
-  if (!authorizations) {
+  if (!authorizations?.length) {
     return
   }
 
