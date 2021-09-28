@@ -50,6 +50,10 @@ export function init() {
   setConfig()
 }
 
+export function isRopsten() {
+  return (window?.ethereum as any)?.chainId !== '0x1'
+}
+
 export function isDevelopment(): boolean {
   return !!config?.debug
 }

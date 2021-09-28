@@ -46,7 +46,7 @@ export default class LinkScenePage extends React.PureComponent<Props> {
               <Address tooltip strong value={wallet.address} />
             </Blockie>
           </p>
-          {authorizations && !isUpdateAuthorized ? (
+          {authorizations.length && !isUpdateAuthorized ? (
             <Error>
               {`You don't have permissions to update The following LANDs that are part of the scene: ${this.getFormattedUnauthorized()}`}
             </Error>
@@ -108,14 +108,16 @@ export default class LinkScenePage extends React.PureComponent<Props> {
         <Navbar />
         <Header>Update LAND data</Header>
         {this.renderWalletData()}
-        <img
-          style={{ width: '40rem' }}
-          className="map"
-          src={`https://api.decentraland.${
-            isRopsten ? 'zone' : 'org'
-          }/v1/parcels/${x}/${y}/map.png`}
-          alt={`Base parcel ${x},${y}`}
-        />
+        <div>
+          <img
+            style={{ maxWidth: '100%', maxHeight: '100%', width: '45%' }}
+            className="map"
+            src={`https://api.decentraland.${
+              isRopsten ? 'zone' : 'org'
+            }/v1/parcels/${x}/${y}/map.png`}
+            alt={`Base parcel ${x},${y}`}
+          />
+        </div>
         {this.renderLANDinfo()}
         <p>
           Project CID: <b>{rootCID}</b>

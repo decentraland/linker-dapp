@@ -1,24 +1,16 @@
 import { Contract } from '@ethersproject/contracts'
-import {
-  getConnectedProvider,
-  getConnectedProviderChainId
-} from 'decentraland-dapps/dist/lib/eth'
+import { getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
 import { Web3Provider } from '@ethersproject/providers'
-import { ChainId } from '@dcl/schemas'
 
 import * as EstateRegistry from './abis/EstateRegistry.json'
 import * as LANDRegistry from './abis/LANDRegistry.json'
-import { getConfig } from './config'
+import { getConfig, isRopsten } from './config'
 
 const contractInstances: {
   land?: Contract
   estate?: Contract
 } = {}
 
-export function isRopsten() {
-  const chainId = getConnectedProviderChainId()
-  return chainId === ChainId.ETHEREUM_ROPSTEN
-}
 
 export async function getLandContract() {
   if (!contractInstances.land) {
@@ -30,7 +22,6 @@ export async function getLandContract() {
         (isRopsten()
           ? '0x7a73483784ab79257bb11b96fd62a2c3ae4fb75b'
           : '0xf87e31492faf9a91b02ee0deaad50d51d56d5d4d')
-
       contractInstances.land = new Contract(
         address,
         LANDRegistry.abi,
