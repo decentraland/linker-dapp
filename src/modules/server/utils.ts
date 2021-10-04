@@ -1,9 +1,9 @@
-import { Network } from '@dcl/schemas'
+import { ChainId } from '@dcl/schemas'
 
 export type LinkerResponse = {
   address: string
   signature: string
-  network: Network
+  chainId: ChainId
 }
 
 export async function closeServer(
