@@ -1,34 +1,32 @@
 import React from 'react'
 import { Address, Blockie, Header, Button, Navbar } from 'decentraland-ui'
-// import Navbar from 'decentraland-dapps/dist/containers/Navbar'
 import { ChainId } from '@dcl/schemas'
-
 import { getConfig, isDevelopment } from '../../config'
 import { coordsToString } from '../../modules/land/utils'
 import Error from '../Error'
 import { Props } from './types'
 
-export default class LinkScenePage extends React.PureComponent<Props> {
-  handleSignature = (e: any) => {
+export default function LinkScenePage(props: Props) {
+  const handleSignature = (e: any) => {
     e.preventDefault()
-    const { onSignContent } = this.props
+    const { onSignContent } = props
     onSignContent(getConfig('rootCID'))
   }
 
-  getLANDname() {
-    const { base } = this.props
+  function getLANDname() {
+    const { base } = props
     return base.name ? `"${base.name}"` : `LAND without name`
   }
 
-  getFormattedUnauthorized() {
-    const { authorizations } = this.props
+  function getFormattedUnauthorized() {
+    const { authorizations } = props
     return authorizations
       .filter(a => !a.isUpdateAuthorized)
       .map(a => `"${coordsToString(a)}"`)
       .join(', ')
   }
 
-  renderWalletData() {
+  function renderWalletData() {
     const {
       isConnected,
       wallet,
@@ -36,7 +34,7 @@ export default class LinkScenePage extends React.PureComponent<Props> {
       isUpdateAuthorized,
       isConnecting,
       onConnectWallet
-    } = this.props
+    } = props
     if (isConnected && wallet.address) {
       return (
         <React.Fragment>
@@ -48,7 +46,7 @@ export default class LinkScenePage extends React.PureComponent<Props> {
           </p>
           {authorizations.length && !isUpdateAuthorized ? (
             <Error>
-              {`You don't have permissions to update The following LANDs that are part of the scene: ${this.getFormattedUnauthorized()}`}
+              {`You don't have permissions to update The following LANDs that are part of the scene: ${getFormattedUnauthorized()}`}
             </Error>
           ) : null}
         </React.Fragment>
@@ -72,8 +70,8 @@ export default class LinkScenePage extends React.PureComponent<Props> {
     )
   }
 
-  renderLANDinfo() {
-    const { error, isLandLoading, isConnected } = this.props
+  function renderLANDinfo() {
+    const { error, isLandLoading, isConnected } = props
     const { x, y } = getConfig('baseParcel')
 
     if (error || !isConnected || isLandLoading) {
@@ -82,76 +80,78 @@ export default class LinkScenePage extends React.PureComponent<Props> {
 
     return (
       <p>
-        Updating <b>{this.getLANDname()}</b> at coordinates{' '}
-        <b>
-          {x}, {y}
-        </b>
+        Updating <b>{getLANDname()}</b>{' '}
+        <a href={deployUrl} target="_blank">
+          at coordinates {x}, {y}
+        </a>
       </p>
     )
   }
 
-  render() {
-    const {
-      error,
-      isConnected,
-      isUpdateAuthorized,
-      isAuthorizationLoading,
-      signed,
-      wallet
-    } = this.props
-    const { x, y } = getConfig('baseParcel')
-    const rootCID = getConfig('rootCID')
-    const isRopsten = wallet?.chainId === ChainId.ETHEREUM_ROPSTEN
+  const {
+    error,
+    isConnected,
+    isUpdateAuthorized,
+    isAuthorizationLoading,
+    signed,
+    wallet
+  } = props
+  const { x, y } = getConfig('baseParcel')
+  const rootCID = getConfig('rootCID')
+  const isRopsten = wallet?.chainId === ChainId.ETHEREUM_ROPSTEN
+  const networkName = isRopsten ? 'zone' : 'org'
+  const deployUrl = `https://play.decentraland.${networkName}/?position=${x},${y}`
 
-    return (
-      <div className="LinkScenePage">
-        <Navbar />
-        <Header>Update LAND data</Header>
-        {this.renderWalletData()}
+  return (
+    <div className="LinkScenePage">
+      <Navbar />
+      <Header>Update LAND data</Header>
+      {renderWalletData()}
+      <div>
+        <img
+          style={{ maxWidth: '100%', maxHeight: '100%', width: '45%' }}
+          className="map"
+          src={`https://api.decentraland.${networkName}/v1/parcels/${x}/${y}/map.png`}
+          alt={`Base parcel ${x},${y}`}
+        />
+      </div>
+      {renderLANDinfo()}
+      <p>
+        Project CID: <b>{rootCID}</b>
+      </p>
+      <form>
         <div>
-          <img
-            style={{ maxWidth: '100%', maxHeight: '100%', width: '45%' }}
-            className="map"
-            src={`https://api.decentraland.${
-              isRopsten ? 'zone' : 'org'
-            }/v1/parcels/${x}/${y}/map.png`}
-            alt={`Base parcel ${x},${y}`}
-          />
+          <Button
+            primary
+            onClick={handleSignature}
+            disabled={
+              !isConnected ||
+              !!error ||
+              isAuthorizationLoading ||
+              !isUpdateAuthorized
+            }
+          >
+            Sign and Deploy
+          </Button>
         </div>
-        {this.renderLANDinfo()}
+      </form>
+      {isConnected && signed && (
         <p>
-          Project CID: <b>{rootCID}</b>
+          Content was succesfully signed and it's being uploaded{' '}
+          <a href={deployUrl} target="_blank">
+            here
+          </a>
+          . You can close this page and check the CLI for more info.
         </p>
-        <form>
-          <div>
-            <Button
-              primary
-              onClick={this.handleSignature}
-              disabled={
-                !isConnected ||
-                !!error ||
-                isAuthorizationLoading ||
-                !isUpdateAuthorized
-              }
-            >
-              Sign and Deploy
-            </Button>
-          </div>
-        </form>
-        {isConnected && signed && (
-          <p>
-            Content was succesfully signed and it's being uploaded. You can
-            close this page and check the CLI for more info.
-          </p>
-        )}
-        {error ? (
-          isDevelopment() ? (
-            <Error>{error}</Error>
-          ) : (
-            <Error>There was an unexpected error.</Error>
-          )
-        ) : null}
-        <style>{`
+      )}
+      {error ? (
+        isDevelopment() ? (
+          <Error>{error}</Error>
+        ) : (
+          <Error>There was an unexpected error.</Error>
+        )
+      ) : null}
+      <style>{`
           .LinkScenePage {
             text-align: center;
           }
@@ -162,8 +162,8 @@ export default class LinkScenePage extends React.PureComponent<Props> {
             color: white;
           }
         `}</style>
-        {isRopsten ? (
-          <style>{`
+      {isRopsten ? (
+        <style>{`
             body:before {
               content: 'Using Ropsten test network';
               background: var(--primary);
@@ -179,8 +179,7 @@ export default class LinkScenePage extends React.PureComponent<Props> {
               padding-top: 24px;
             }
           `}</style>
-        ) : null}
-      </div>
-    )
-  }
+      ) : null}
+    </div>
+  )
 }
