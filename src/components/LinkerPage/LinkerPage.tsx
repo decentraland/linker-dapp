@@ -81,7 +81,7 @@ export default function LinkScenePage(props: Props) {
     return (
       <p>
         Updating <b>{getLANDname()}</b>{' '}
-        <a href={deployUrl} target="_blank">
+        <a href={deployUrl} target="_blank" rel="noreferrer">
           at coordinates {x}, {y}
         </a>
       </p>
@@ -138,7 +138,7 @@ export default function LinkScenePage(props: Props) {
       {isConnected && signed && (
         <p>
           Content was succesfully signed and it's being uploaded{' '}
-          <a href={deployUrl} target="_blank">
+          <a href={deployUrl} target="_blank" rel="noreferrer">
             here
           </a>
           . You can close this page and check the CLI for more info.
