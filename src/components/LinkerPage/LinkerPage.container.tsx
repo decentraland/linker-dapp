@@ -13,7 +13,10 @@ import {
   getData as getLand,
   getError as getLandError
 } from '../../modules/land/selectors'
-import { getData as getSignature } from '../../modules/signature/selectors'
+import {
+  getData as getSignature,
+  isLoading as isSigningTx
+} from '../../modules/signature/selectors'
 import {
   getData as getAuthorizations,
   isUpdateAuthorized,
@@ -36,7 +39,8 @@ const mapState = (state: RootState): MapStateProps => {
     signed: !!getSignature(state),
     isUpdateAuthorized: isUpdateAuthorized(state),
     authorizations: getAuthorizations(state),
-    isAuthorizationLoading: isAuthorizationLoading(state)
+    isAuthorizationLoading: isAuthorizationLoading(state),
+    isSigning: isSigningTx(state)
   }
 }
 
