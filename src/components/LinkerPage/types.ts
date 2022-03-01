@@ -14,6 +14,7 @@ export type Props = {
   isLandLoading: boolean
   isConnected: boolean
   isConnecting: boolean
+  isSigning: boolean
   error: string
   signed: boolean
   isUpdateAuthorized: boolean
@@ -35,5 +36,6 @@ export type MapStateProps = Pick<
   | 'isUpdateAuthorized'
   | 'authorizations'
   | 'isAuthorizationLoading'
+  | 'isSigning'
 >
 export type MapDispatchProps = Pick<Props, 'onConnectWallet' | 'onSignContent'>
