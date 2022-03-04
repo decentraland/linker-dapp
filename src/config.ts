@@ -10,6 +10,7 @@ type Config = {
   estateRegistry?: string
   landRegistry?: string
   chainId: ChainId
+  wearableId?: string
 }
 
 let config: Config | undefined
@@ -33,6 +34,7 @@ function setConfig() {
   config = {
     baseParcel: parseCoords(searchParams.get('baseParcel'))[0],
     parcels: parseCoords(searchParams.getAll('parcels')),
+    wearableId: searchParams.get('wearableId') || undefined, 
     rootCID:
       searchParams.get('rootCID') ||
       'QmPjpPyibbryTCi75zzcdeuPUBcujtEqj43shwKBAdMojy',
