@@ -1,10 +1,25 @@
 import { ChainId } from '@dcl/schemas'
+import { AuthIdentity } from 'dcl-crypto'
 
-export type LinkerResponse = {
-  address: string
-  signature: string
-  chainId: ChainId
+export type LinkerResponseScenenDeploy = {
+  responseType: 'scene-deploy'
+  payload: {
+    address: string
+    signature: string
+    chainId: ChainId
+  }
 }
+
+export type LinkerResponseIdentity = {
+  responseType: 'identity'
+  payload: {
+    address: string
+    chainId: ChainId
+    identity: AuthIdentity
+  }
+}
+
+export type LinkerResponse = LinkerResponseScenenDeploy | LinkerResponseIdentity
 
 export async function closeServer(
   ok: boolean,
