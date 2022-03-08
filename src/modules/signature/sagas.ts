@@ -63,8 +63,8 @@ function* handleSignContentSuccess(action: SignContentSuccessAction) {
     yield call(() => {
       // tslint:disable-next-line: no-floating-promises
       closeServer(true, {
-        type: 'scene-deploy',
-        data: { signature, address, chainId }
+        responseType: 'scene-deploy',
+        payload: { signature, address, chainId }
       })
     })
   } catch (error) {
@@ -114,11 +114,13 @@ function* handleCreateIdentityRequest(_action: SignContentRequestAction) {
 
 function* handleCreateIdentitySuccess(action: CreateIdentitySuccessAction) {
   const { identity } = action.payload
+  const address: string = yield select(getAddress)
+  const chainId: ChainId = yield select(getChainId)
 
   try {
     yield call(() => {
       // tslint:disable-next-line: no-floating-promises
-      closeServer(true, { type: 'identity', data: { identity } })
+      closeServer(true, { responseType: 'identity', payload: { identity, address , chainId} })
     })
   } catch (error) {
     yield put(signContentFailure((error as Error).message))
