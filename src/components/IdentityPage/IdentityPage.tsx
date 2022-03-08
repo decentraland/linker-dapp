@@ -1,9 +1,9 @@
 import { SyntheticEvent } from 'react'
 import './style.css'
 import { Header, Button, Navbar } from 'decentraland-ui'
-import { ChainId } from '@dcl/schemas'
 import { Props } from './types'
 import RenderWalletData from '../RenderWalletData/RenderWalletData'
+import { isRopsten } from '../../config'
 
 export default function IdentityPage(props: Props) {
   const {
@@ -19,11 +19,10 @@ export default function IdentityPage(props: Props) {
     e.preventDefault()
     onRequestIdentity()
   }
-  const isRopsten = wallet?.chainId === ChainId.ETHEREUM_ROPSTEN
 
   return (
     <div className="LinkScenePage">
-      {isRopsten && <div className="warning">Using Ropsten test network</div>}
+      {isRopsten() && <div className="warning">Using Ropsten test network</div>}
       <Navbar />
       <Header>Create an identity to sign deployments </Header>
       <RenderWalletData
