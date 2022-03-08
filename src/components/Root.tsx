@@ -1,13 +1,15 @@
-
+import IdentityPage from './IdentityPage'
 import LinkerPage from './LinkerPage'
 
 // TODO: implement a router
 const Root = (props: any) => {
-  if (window.location.pathname === "/identity") {
-    return <LinkerPage {...props}></LinkerPage>
-  } else {
-    return <LinkerPage {...props}></LinkerPage>
+  const qs = new URLSearchParams(document.location.search)
+
+  if (qs.has('wearableId')) {
+    return <IdentityPage {...props} />
   }
+
+  return <LinkerPage {...props} />
 }
 
 export default Root

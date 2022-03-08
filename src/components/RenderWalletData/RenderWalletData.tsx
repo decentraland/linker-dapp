@@ -12,7 +12,7 @@ export default function RenderWalletData({
   onConnectWallet
 }: Props) {
   function getFormattedUnauthorized() {
-    return authorizations
+    return (authorizations || [])
       .filter(a => !a.isUpdateAuthorized)
       .map(a => `"${coordsToString(a)}"`)
       .join(', ')
@@ -27,7 +27,7 @@ export default function RenderWalletData({
             <Address tooltip strong value={wallet.address} />
           </Blockie>
         </p>
-        {authorizations.length && !isUpdateAuthorized ? (
+        {authorizations?.length && !isUpdateAuthorized ? (
           <Error>
             {`You don't have permissions to update The following LANDs that are part of the scene: ${getFormattedUnauthorized()}`}
           </Error>

@@ -11,7 +11,6 @@ const contractInstances: {
   estate?: Contract
 } = {}
 
-
 export async function getLandContract() {
   if (!contractInstances.land) {
     const provider = await getConnectedProvider()
