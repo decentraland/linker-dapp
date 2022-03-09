@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect } from 'react'
+import { SyntheticEvent } from 'react'
 import './style.css'
 import { Header, Button, Navbar } from 'decentraland-ui'
 import { ChainId } from '@dcl/schemas'
@@ -29,26 +29,17 @@ export default function LinkScenePage(props: Props) {
     onSignContent(getConfig('rootCID'))
   }
 
-  const wearableId = getConfig('wearableId')
   const { x, y } = getConfig('baseParcel')
   const rootCID = getConfig('rootCID')
   const isRopsten = wallet?.chainId === ChainId.ETHEREUM_ROPSTEN
   const networkName = isRopsten ? 'zone' : 'org'
   const deployUrl = `https://play.decentraland.${networkName}/?position=${x},${y}`
 
-  useEffect(() => {
-    if (wallet?.address) {
-      fetch(`/api/address_info?address=${wallet.address}`)
-        .then(() => console.log('address informed'))
-        .catch(err => console.error(err))
-    }
-  }, [wallet?.address])
-
   return (
     <div className="LinkScenePage">
       {isRopsten && <div className="warning">Using Ropsten test network</div>}
       <Navbar />
-      <Header>Update {wearableId ? 'Wearable' : 'LAND data'} </Header>
+      <Header>Update LAND data</Header>
       <RenderWalletData
         authorizations={authorizations}
         isUpdateAuthorized={isUpdateAuthorized}
@@ -57,22 +48,18 @@ export default function LinkScenePage(props: Props) {
         wallet={wallet}
         onConnectWallet={onConnectWallet}
       />
-      {!wearableId && (
-        <>
-          <div>
-            <img
-              style={{ maxWidth: '100%', maxHeight: '100%', width: '35%' }}
-              className="map"
-              src={`https://api.decentraland.${networkName}/v1/parcels/${x}/${y}/map.png`}
-              alt={`Base parcel ${x},${y}`}
-            />
-          </div>
-          <LandInfo deployUrl={deployUrl} base={base} />
-          <p>
-            Project CID: <b>{rootCID}</b>
-          </p>
-        </>
-      )}
+      <div>
+        <img
+          style={{ maxWidth: '100%', maxHeight: '100%', width: '35%' }}
+          className="map"
+          src={`https://api.decentraland.${networkName}/v1/parcels/${x}/${y}/map.png`}
+          alt={`Base parcel ${x},${y}`}
+        />
+      </div>
+      <LandInfo deployUrl={deployUrl} base={base} />
+      <p>
+        Project CID: <b>{rootCID}</b>
+      </p>
       {isConnected && signed && (
         <p>
           Content was succesfully signed and it's being uploaded{' '}
