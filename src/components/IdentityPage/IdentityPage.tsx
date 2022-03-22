@@ -44,7 +44,6 @@ export default function IdentityPage(props: Props) {
           </Button>
         </div>
       </form>
-      
     </div>
   )
 }

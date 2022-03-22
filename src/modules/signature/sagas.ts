@@ -7,7 +7,7 @@ import {
 import { Web3Provider } from '@ethersproject/providers'
 import { toUtf8Bytes } from '@ethersproject/strings'
 import { ChainId } from '@dcl/schemas'
-import { Bytes, hexlify } from '@ethersproject/bytes'
+import { hexlify } from '@ethersproject/bytes'
 
 import { closeServer } from '../server/utils'
 import {
@@ -24,8 +24,8 @@ import {
   CreateIdentitySuccessAction
 } from './actions'
 import { Provider } from 'decentraland-connect/dist'
-import { Wallet } from '@ethersproject/wallet'
-import { Authenticator, AuthIdentity } from 'dcl-crypto'
+import { AuthIdentity } from 'dcl-crypto'
+import { createIdentity } from '@dcl/builder-client'
 
 export function* signatureSaga() {
   yield takeLatest(SIGN_CONTENT_REQUEST, handleSignContentRequest)
@@ -77,34 +77,7 @@ function* handleCreateIdentityRequest(_action: SignContentRequestAction) {
     const provider: Provider = yield call(() => getConnectedProvider())
     const web3provider = new Web3Provider(provider)
     const signer = web3provider.getSigner()
-
-    const address: string = yield call(() => signer.getAddress())
-    const randomWallet = Wallet.createRandom()
-    const payload = {
-      address: randomWallet.address,
-      privateKey: randomWallet.privateKey,
-      publicKey: randomWallet.publicKey
-    }
-
-    const identity: AuthIdentity = yield call(() =>
-      Authenticator.initializeAuthChain(
-        address,
-        payload,
-        1000,
-        async (message: string | Bytes) => {
-          const dataToSign =
-            typeof message === 'string' ? toUtf8Bytes(message) : message
-          const signedMessage: string = (await provider.send('personal_sign', [
-            hexlify(dataToSign),
-            address.toLowerCase()
-          ])) as string
-          return signedMessage
-        }
-      )
-    )
-
-    console.log({ identity })
-
+    const identity: AuthIdentity = yield () => createIdentity(signer, 1000)
     yield put(createIdentitySuccess(identity))
   } catch (error) {
     console.log({ error })
@@ -120,7 +93,10 @@ function* handleCreateIdentitySuccess(action: CreateIdentitySuccessAction) {
   try {
     yield call(() => {
       // tslint:disable-next-line: no-floating-promises
-      closeServer(true, { responseType: 'identity', payload: { identity, address , chainId} })
+      closeServer(true, {
+        responseType: 'identity',
+        payload: { identity, address, chainId }
+      })
     })
   } catch (error) {
     yield put(signContentFailure((error as Error).message))

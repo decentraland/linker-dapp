@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/core": "7.17.8",
+    "@dcl/builder-client": "^1.6.1",
     "@ethersproject/bytes": "^5.4.0",
     "@ethersproject/contracts": "^5.4.1",
     "@ethersproject/providers": "^5.4.5",
     "@ethersproject/strings": "^5.4.0",
     "@ethersproject/wallet": "^5.5.0",
     "comma-separated-values": "^3.6.4",
-    "dcl-crypto": "^2.3.0",
     "decentraland-dapps": "^12.25.4",
     "decentraland-ui": "^3.11.0",
     "react": "^17.0.2",
@@ -29,7 +30,7 @@
     "eject": "react-scripts eject",
     "lint": "tslint -p tsconfig.json",
     "lint:fix": "tslint -p tsconfig.json --fix",
-    "postinstall": "node ./scripts/hash_generator.js"
+    "postinstall": "node ./pre-scripts/hash_generator.js"
   },
   "eslintConfig": {
     "extends": [
