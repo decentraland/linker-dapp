@@ -29,7 +29,7 @@
     "eject": "react-scripts eject",
     "lint": "tslint -p tsconfig.json",
     "lint:fix": "tslint -p tsconfig.json --fix",
-    "postinstall": "node ./scripts/hash_generator.js"
+    "postinstall": "node ./pre-scripts/hash_generator.js"
   },
   "eslintConfig": {
     "extends": [
