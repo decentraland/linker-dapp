@@ -7,7 +7,7 @@ import {
 import { Web3Provider } from '@ethersproject/providers'
 import { toUtf8Bytes } from '@ethersproject/strings'
 import { ChainId } from '@dcl/schemas'
-import { Bytes, hexlify } from '@ethersproject/bytes'
+import { hexlify } from '@ethersproject/bytes'
 
 import { closeServer } from '../server/utils'
 import {
@@ -24,8 +24,7 @@ import {
   CreateIdentitySuccessAction
 } from './actions'
 import { Provider } from 'decentraland-connect/dist'
-import { Wallet } from '@ethersproject/wallet'
-import { Authenticator, AuthIdentity } from 'dcl-crypto'
+import { AuthIdentity } from 'dcl-crypto'
 import { createIdentity } from '@dcl/builder-client'
 
 export function* signatureSaga() {
