@@ -77,7 +77,7 @@ function* handleCreateIdentityRequest(_action: SignContentRequestAction) {
     const provider: Provider = yield call(() => getConnectedProvider())
     const web3provider = new Web3Provider(provider)
     const signer = web3provider.getSigner()
-    const identity: AuthIdentity = yield () => createIdentity(signer, 1000)
+    const identity: AuthIdentity = yield call(() => createIdentity(signer, 1000))
     yield put(createIdentitySuccess(identity))
   } catch (error) {
     console.log({ error })
