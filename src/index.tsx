@@ -4,9 +4,11 @@ import { Provider } from 'react-redux'
 
 import { initStore } from './store'
 
+import Root from './components/Root'
+
+// Do not move these before other imports 
 import 'decentraland-ui/lib/styles.css'
 import 'decentraland-ui/lib/dark-theme.css'
-import Root from './components/Root'
 
 // tslint:disable-next-line: no-floating-promises
 ReactDOM.render(
