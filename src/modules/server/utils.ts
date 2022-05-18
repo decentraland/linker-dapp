@@ -27,3 +27,7 @@ export async function closeServer(
 ): Promise<void> {
   await fetch(`/api/close?ok=${ok}&reason=${JSON.stringify(message)}`)
 }
+
+export async function getFiles(): Promise<void> {
+  return (await fetch('/api/files')).json()
+}

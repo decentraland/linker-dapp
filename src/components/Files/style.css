@@ -1,0 +1,24 @@
+.LinkScenePage {
+  text-align: center;
+}
+.map {
+  padding: 15px;
+}
+.options div input {
+  color: white;
+}
+
+.warning {
+    background: var(--primary);
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+    height: 24px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    padding-top: 2px;
+  }
+  .LinkScenePage {
+    padding-top: 24px;
+  }

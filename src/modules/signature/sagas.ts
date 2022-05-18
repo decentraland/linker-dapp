@@ -60,12 +60,9 @@ function* handleSignContentSuccess(action: SignContentSuccessAction) {
   const { signature } = action.payload
 
   try {
-    yield call(() => {
-      // tslint:disable-next-line: no-floating-promises
-      closeServer(true, {
-        responseType: 'scene-deploy',
-        payload: { signature, address, chainId }
-      })
+    yield call(closeServer, true, {
+      responseType: 'scene-deploy',
+      payload: { signature, address, chainId }
     })
   } catch (error) {
     yield put(signContentFailure((error as Error).message))
@@ -77,7 +74,9 @@ function* handleCreateIdentityRequest(_action: SignContentRequestAction) {
     const provider: Provider = yield call(() => getConnectedProvider())
     const web3provider = new Web3Provider(provider)
     const signer = web3provider.getSigner()
-    const identity: AuthIdentity = yield call(() => createIdentity(signer, 1000))
+    const identity: AuthIdentity = yield call(() =>
+      createIdentity(signer, 1000)
+    )
     yield put(createIdentitySuccess(identity))
   } catch (error) {
     console.log({ error })
@@ -91,12 +90,9 @@ function* handleCreateIdentitySuccess(action: CreateIdentitySuccessAction) {
   const chainId: ChainId = yield select(getChainId)
 
   try {
-    yield call(() => {
-      // tslint:disable-next-line: no-floating-promises
-      closeServer(true, {
-        responseType: 'identity',
-        payload: { identity, address, chainId }
-      })
+    yield call(closeServer, true, {
+      responseType: 'identity',
+      payload: { identity, address, chainId }
     })
   } catch (error) {
     yield put(signContentFailure((error as Error).message))

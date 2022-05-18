@@ -3,13 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@babel/core": "7.17.8",
     "@dcl/builder-client": "^1.6.1",
+    "@dcl/eslint-config": "^1.0.3",
     "@ethersproject/bytes": "^5.4.0",
     "@ethersproject/contracts": "^5.4.1",
     "@ethersproject/providers": "^5.4.5",
     "@ethersproject/strings": "^5.4.0",
-    "@ethersproject/wallet": "^5.5.0",
     "comma-separated-values": "^3.6.4",
     "decentraland-dapps": "^12.25.4",
     "decentraland-ui": "^3.11.0",
@@ -28,8 +27,8 @@
     "build:dev": "NODE_ENV=dev react-scripts build --dev --configuration=dev",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "tslint -p tsconfig.json",
-    "lint:fix": "tslint -p tsconfig.json --fix",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
     "postinstall": "node ./pre-scripts/hash_generator.js"
   },
   "eslintConfig": {
@@ -56,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "7.17.8",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
@@ -66,12 +66,8 @@
     "@types/redux-logger": "^3.0.9",
     "@typescript-eslint/eslint-plugin": "^4.13.0",
     "@typescript-eslint/parser": "^4.13.0",
-    "dcl-tslint-config-standard": "^2.0.0",
     "prettier": "^1.19.1",
     "react-scripts": "4.0.3",
-    "tslint": "^5.20.1",
-    "tslint-plugin-prettier": "^2.0.1",
-    "tslint-react": "^4.1.0",
     "typescript": "^4.4.3"
   },
   "homepage": ""
