@@ -27,6 +27,7 @@ import { RootState } from '../../types'
 import { MapStateProps, MapDispatchProps } from './types'
 
 import LinkerPage from './LinkerPage'
+import { fetchFilesRequest } from '../../modules/server/actions'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
@@ -46,7 +47,8 @@ const mapState = (state: RootState): MapStateProps => {
 
 const mapDispatch = (dispatch: Dispatch<AnyAction>): MapDispatchProps => ({
   onConnectWallet: () => dispatch(enableWalletRequest(ProviderType.INJECTED)),
-  onSignContent: (cid: string) => dispatch(signContentRequest(cid))
+  onSignContent: (cid: string) => dispatch(signContentRequest(cid)),
+  onFetchFiles: () => dispatch(fetchFilesRequest())
 })
 
 export default connect(mapState, mapDispatch)(LinkerPage)

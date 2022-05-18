@@ -1,5 +1,5 @@
 import IdentityPage from './IdentityPage'
-import LinkerPage from './LinkerPagev2'
+import LinkerPage from './LinkerPage'
 
 const Root = (props: any) => {
   const qs = new URLSearchParams(document.location.search)

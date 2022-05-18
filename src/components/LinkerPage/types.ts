@@ -22,6 +22,7 @@ export type Props = {
   isAuthorizationLoading: boolean
   onConnectWallet: () => EnableWalletRequestAction
   onSignContent: (cid: string) => SignContentRequestAction
+  onFetchFiles: () => void
 }
 
 export type MapStateProps = Pick<
@@ -38,4 +39,7 @@ export type MapStateProps = Pick<
   | 'isAuthorizationLoading'
   | 'isSigning'
 >
-export type MapDispatchProps = Pick<Props, 'onConnectWallet' | 'onSignContent'>
+export type MapDispatchProps = Pick<
+  Props,
+  'onConnectWallet' | 'onSignContent' | 'onFetchFiles'
+>
