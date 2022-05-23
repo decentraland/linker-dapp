@@ -57,7 +57,7 @@ export default function LinkScenePage(props: Props) {
   useEffect(() => {
     onFetchInfo()
     onFetchFiles()
-  }, [])
+  }, [onFetchFiles, onFetchInfo])
 
   return (
     <div className="Page-story-container">

@@ -19,7 +19,7 @@ export default function FilesPage({ files }: Props) {
         }
         return a.name < b.name ? -1 : 1
       }),
-    [filter]
+    [files, filter]
   )
 
   return (
