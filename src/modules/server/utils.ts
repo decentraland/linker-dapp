@@ -26,7 +26,7 @@ export async function closeServer(
 }
 
 export async function postDeploy(payload: DeployScene): Promise<void> {
-  await fetch('http://localhost:8000/api/deploy', {
+  await fetch('/api/deploy', {
     method: 'post',
     headers: {
       'Content-Type': 'application/json'
@@ -36,13 +36,13 @@ export async function postDeploy(payload: DeployScene): Promise<void> {
 }
 
 export async function getFilesRequest(): Promise<void> {
-  return (await fetch('http://localhost:8000/api/files')).json()
+  return (await fetch('/api/files')).json()
 }
 
 export async function getInfoRequest(): Promise<void> {
-  return (await fetch('http://localhost:8000/api/info')).json()
+  return (await fetch('/api/info')).json()
 }
 
 export async function getCatalystsPointer(): Promise<void> {
-  return (await fetch('http://localhost:8000/api/catalyst-pointers')).json()
+  return (await fetch('/api/catalyst-pointers')).json()
 }
