@@ -137,7 +137,7 @@ export default function LinkScenePage(props: Props) {
         {!!(authorizations?.length && !isUpdateAuthorized) && (
           <Toast
             type={ToastType.ERROR}
-            title="Check LAND parcels data"
+            title="Check LAND permissions"
             body="You dont have permissions to update some of the coords"
           />
         )}
