@@ -49,7 +49,7 @@ export default function FilesPage({ files }: Props) {
           {value.map(({ name, size }, index) => (
             <Table.Row key={index}>
               <Table.Cell>{name}</Table.Cell>
-              <Table.Cell>{Number(size) * 1e-6} MB </Table.Cell>
+              <Table.Cell>{(Number(size) * 1e-6).toFixed(2)} MB </Table.Cell>
               <Table.Cell />
             </Table.Row>
           ))}

@@ -1,9 +1,8 @@
-import { call, put, takeEvery, select } from 'redux-saga/effects'
+import { call, put, takeEvery, select, take } from 'redux-saga/effects'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
 import { getLandContract, getEstateContract } from '../../contracts'
-import { getConfig } from '../../config'
 import { coordsToString } from '../land/utils'
 import {
   FETCH_AUTHORIZATIONS_REQUEST,
@@ -13,6 +12,9 @@ import {
 } from './actions'
 import { Authorization } from './types'
 import { Contract } from '@ethersproject/contracts'
+import { Info } from '../server/reducer'
+import { FETCH_INFO_SUCCESS } from '../server/actions'
+import { getInfo } from '../server/selectors'
 
 export function* authorizationSaga() {
   yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
@@ -23,15 +25,24 @@ export function* authorizationSaga() {
 }
 
 function* handleFetchAuthorizationsRequest() {
-  const LANDRegistry: Contract = yield call(() => getLandContract())
-  const EstateRegistry: Contract = yield call(() => getEstateContract())
+  const info: Info = yield select(getInfo)
+
+  if (!info) {
+    yield take(FETCH_INFO_SUCCESS)
+  }
+
+  const { parcels, landRegistry, estateRegistry } = info
+  const LANDRegistry: Contract = yield call(() => getLandContract(landRegistry))
+  const EstateRegistry: Contract = yield call(() =>
+    getEstateContract(estateRegistry)
+  )
 
   try {
     const address: string = yield select(getAddress)
     const assetIds = new Map<string, string>()
 
     const pAuthorizations: Promise<unknown>[] = []
-    for (const parcel of getConfig('parcels')) {
+    for (const parcel of parcels) {
       const { x, y } = parcel
       const pAuthorization = new Promise((resolve, reject) => {
         LANDRegistry['encodeTokenId'](x, y)

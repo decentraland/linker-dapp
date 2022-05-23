@@ -1,4 +1,10 @@
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type Props = {}
-export type MapStateProps = Props
-export type MapDispatchProps = Props
+import { CatalystResponse } from '../../modules/server/reducer'
+
+export type Props = {
+  catalysts?: CatalystResponse['catalysts']
+  status?: CatalystResponse['status']
+  onFetchCatalyst: () => void
+}
+
+export type MapStateProps = Pick<Props, 'catalysts' | 'status'>
+export type MapDispatchProps = Pick<Props, 'onFetchCatalyst'>

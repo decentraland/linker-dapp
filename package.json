@@ -22,7 +22,7 @@
     "typesafe-actions": "^2.2.0"
   },
   "scripts": {
-    "start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build && tsc -p tsconfig.types.json",
     "build:dev": "NODE_ENV=dev react-scripts build --dev --configuration=dev",
     "test": "react-scripts test",

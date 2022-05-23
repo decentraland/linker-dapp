@@ -5,6 +5,7 @@ import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { LANDMeta } from '../../modules/land/types'
 import { SignContentRequestAction } from '../../modules/signature/actions'
 import { Authorization } from '../../modules/authorization/types'
+import { Info } from '../../modules/server/reducer'
 
 export type Props = {
   sceneOwner?: string
@@ -21,6 +22,8 @@ export type Props = {
   authorizations: Authorization[]
   isAuthorizationLoading: boolean
   onConnectWallet: () => EnableWalletRequestAction
+  onFetchInfo: () => void
+  info?: Info
   onSignContent: (cid: string) => SignContentRequestAction
   onFetchFiles: () => void
 }
@@ -38,8 +41,9 @@ export type MapStateProps = Pick<
   | 'authorizations'
   | 'isAuthorizationLoading'
   | 'isSigning'
+  | 'info'
 >
 export type MapDispatchProps = Pick<
   Props,
-  'onConnectWallet' | 'onSignContent' | 'onFetchFiles'
+  'onConnectWallet' | 'onSignContent' | 'onFetchFiles' | 'onFetchInfo'
 >

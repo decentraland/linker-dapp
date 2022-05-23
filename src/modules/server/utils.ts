@@ -1,14 +1,13 @@
 import { ChainId } from '@dcl/schemas'
 import { AuthIdentity } from 'dcl-crypto'
 
-export type LinkerResponseScenenDeploy = {
-  responseType: 'scene-deploy'
-  payload: {
-    address: string
-    signature: string
-    chainId: ChainId
-  }
-}
+export type DeployScene =
+  | {
+      address: string
+      signature: string
+      chainId: ChainId
+    }
+  | Record<string, never>
 
 export type LinkerResponseIdentity = {
   responseType: 'identity'
@@ -19,15 +18,31 @@ export type LinkerResponseIdentity = {
   }
 }
 
-export type LinkerResponse = LinkerResponseScenenDeploy | LinkerResponseIdentity
-
 export async function closeServer(
   ok: boolean,
-  message: LinkerResponse
+  message: LinkerResponseIdentity
 ): Promise<void> {
   await fetch(`/api/close?ok=${ok}&reason=${JSON.stringify(message)}`)
 }
 
-export async function getFiles(): Promise<void> {
-  return (await fetch('/api/files')).json()
+export async function postDeploy(payload: DeployScene): Promise<void> {
+  await fetch('http://localhost:8000/api/deploy', {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
+}
+
+export async function getFilesRequest(): Promise<void> {
+  return (await fetch('http://localhost:8000/api/files')).json()
+}
+
+export async function getInfoRequest(): Promise<void> {
+  return (await fetch('http://localhost:8000/api/info')).json()
+}
+
+export async function getCatalystsPointer(): Promise<void> {
+  return (await fetch('http://localhost:8000/api/catalyst-pointers')).json()
 }

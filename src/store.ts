@@ -4,12 +4,10 @@ import { createLogger } from 'redux-logger'
 import { createTransactionMiddleware } from 'decentraland-dapps/dist/modules/transaction/middleware'
 import { createStorageMiddleware } from 'decentraland-dapps/dist/modules/storage/middleware'
 
-import { init as initConfig } from './config'
 import { rootReducer } from './reducer'
 import { rootSaga } from './sagas'
 
 export function initStore() {
-  initConfig()
   const composeEnhancers =
     (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 

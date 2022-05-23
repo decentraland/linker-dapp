@@ -8,8 +8,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { toUtf8Bytes } from '@ethersproject/strings'
 import { ChainId } from '@dcl/schemas'
 import { hexlify } from '@ethersproject/bytes'
-
-import { closeServer } from '../server/utils'
+import { closeServer, postDeploy } from '../server/utils'
 import {
   SIGN_CONTENT_REQUEST,
   SIGN_CONTENT_SUCCESS,
@@ -26,6 +25,7 @@ import {
 import { Provider } from 'decentraland-connect/dist'
 import { AuthIdentity } from 'dcl-crypto'
 import { createIdentity } from '@dcl/builder-client'
+import { fetchCatalystRequest } from '../server/actions'
 
 export function* signatureSaga() {
   yield takeLatest(SIGN_CONTENT_REQUEST, handleSignContentRequest)
@@ -60,10 +60,7 @@ function* handleSignContentSuccess(action: SignContentSuccessAction) {
   const { signature } = action.payload
 
   try {
-    yield call(closeServer, true, {
-      responseType: 'scene-deploy',
-      payload: { signature, address, chainId }
-    })
+    yield call(postDeploy, { signature, address, chainId })
   } catch (error) {
     yield put(signContentFailure((error as Error).message))
   }
@@ -78,8 +75,8 @@ function* handleCreateIdentityRequest(_action: SignContentRequestAction) {
       createIdentity(signer, 1000)
     )
     yield put(createIdentitySuccess(identity))
+    yield put(fetchCatalystRequest())
   } catch (error) {
-    console.log({ error })
     yield put(createIdentityFailure((error as Error).message))
   }
 }

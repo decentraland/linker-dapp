@@ -13,7 +13,8 @@ import {
   Address,
   Blockie,
   Toast,
-  ToastType
+  ToastType,
+  Loader
 } from 'decentraland-ui'
 import { Props } from './types'
 import { useEffect, useState } from 'react'
@@ -21,9 +22,8 @@ import Files from '../Files'
 import Map from '../Map'
 
 import './style.css'
-import { getConfig } from '../../config'
 import { ChainId } from '@dcl/schemas'
-import DeploySuccess from '../DeploySuccess/DeploySuccess'
+import DeploySuccess from '../DeploySuccess/DeploySuccess.container'
 
 enum Tab {
   Map = 'Map',
@@ -41,20 +41,21 @@ export default function LinkScenePage(props: Props) {
     onConnectWallet,
     onSignContent,
     onFetchFiles,
+    onFetchInfo,
     isSigning,
-    base,
     error,
     isAuthorizationLoading,
-    signed
+    signed,
+    info
   } = props
 
-  const { x, y } = getConfig('baseParcel')
-  const rootCID = getConfig('rootCID')
+  const { x, y } = info?.baseParcel || { x: 0, y: 0 }
   const isRopsten = wallet?.chainId === ChainId.ETHEREUM_ROPSTEN
   const networkName = isRopsten ? 'zone' : 'org'
   const deployUrl = `https://play.decentraland.${networkName}/?position=${x},${y}`
 
   useEffect(() => {
+    onFetchInfo()
     onFetchFiles()
   }, [])
 
@@ -72,11 +73,11 @@ export default function LinkScenePage(props: Props) {
             <HeaderMenu.Left>
               <Container textAlign="center">
                 <Header size="large">
-                  Deploying {base.name || 'Untitled Scene'}
+                  Deploying {info?.title || 'Untitled Scene'}
                 </Header>
-                {true && (
+                {info?.description && (
                   <Header size="medium">
-                    {base.description || 'Some description'}
+                    {info?.description || 'Some description'}
                   </Header>
                 )}
               </Container>
@@ -122,7 +123,9 @@ export default function LinkScenePage(props: Props) {
                   }
                   disabled={!!error || (isConnected && !isUpdateAuthorized)}
                   onClick={
-                    isConnected ? () => onSignContent(rootCID) : onConnectWallet
+                    isConnected
+                      ? () => onSignContent(info!.rootCID)
+                      : onConnectWallet
                   }
                 >
                   {isConnected ? 'Sign & Deploy' : 'Connect Wallet'}
@@ -131,7 +134,7 @@ export default function LinkScenePage(props: Props) {
             )}
           </HeaderMenu>
         </Container>
-        {true && (
+        {!!(authorizations?.length && !isUpdateAuthorized) && (
           <Toast
             type={ToastType.ERROR}
             title="Check LAND parcels data"
@@ -147,9 +150,16 @@ export default function LinkScenePage(props: Props) {
             ))}
           </Tabs>
         )}
+        {!info && <Loader />}
         {signed && <DeploySuccess />}
         {!signed && tab === Tab.Files && <Files />}
-        {!signed && tab === Tab.Map && <Map authorizations={authorizations} />}
+        {!signed && info && tab === Tab.Map && (
+          <Map
+            authorizations={authorizations}
+            parcels={info!.parcels}
+            baseParcel={info!.baseParcel}
+          />
+        )}
       </Page>
       <Footer />
     </div>

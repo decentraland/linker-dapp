@@ -1,12 +1,10 @@
-import { call, put, takeEvery } from 'redux-saga/effects'
+import { call, put, select, takeEvery } from 'redux-saga/effects'
 import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import * as CSV from 'comma-separated-values'
 
-import { getConfig } from '../../config'
 import { getLandContract } from '../../contracts'
 import {
   FETCH_LAND_REQUEST,
-  FetchLandRequestAction,
   fetchLandSuccess,
   fetchLandFailure,
   fetchLandRequest
@@ -14,16 +12,21 @@ import {
 import { getEmptyLandData } from './utils'
 import { Contract } from '@ethersproject/contracts'
 import { LANDMeta } from './types'
+import { Info } from '../server/reducer'
+import { getInfo } from '../server/selectors'
 
 export function* landSaga() {
   yield takeEvery(FETCH_LAND_REQUEST, handleFetchLandRequest)
   yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
 }
 
-function* handleFetchLandRequest(action: FetchLandRequestAction) {
-  const LANDRegistry: Contract = yield call(() => getLandContract())
+function* handleFetchLandRequest() {
+  const info: Info = yield select(getInfo)
+  const LANDRegistry: Contract = yield call(() =>
+    getLandContract(info.landRegistry)
+  )
   try {
-    const { x, y } = action.payload
+    const { x, y } = info.baseParcel
     const data: string = yield call(() => LANDRegistry['landData'](x, y))
     const land: LANDMeta = data
       ? yield call(() => decodeLandData(data))
@@ -35,7 +38,7 @@ function* handleFetchLandRequest(action: FetchLandRequestAction) {
 }
 
 function* handleConnectWalletSuccess() {
-  yield put(fetchLandRequest(getConfig('baseParcel')))
+  yield put(fetchLandRequest())
 }
 
 function decodeLandData(data = '') {

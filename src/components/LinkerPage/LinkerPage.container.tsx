@@ -27,7 +27,11 @@ import { RootState } from '../../types'
 import { MapStateProps, MapDispatchProps } from './types'
 
 import LinkerPage from './LinkerPage'
-import { fetchFilesRequest } from '../../modules/server/actions'
+import {
+  fetchFilesRequest,
+  fetchInfoRequest
+} from '../../modules/server/actions'
+import { getInfo } from '../../modules/server/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
@@ -41,14 +45,16 @@ const mapState = (state: RootState): MapStateProps => {
     isUpdateAuthorized: isUpdateAuthorized(state),
     authorizations: getAuthorizations(state),
     isAuthorizationLoading: isAuthorizationLoading(state),
-    isSigning: isSigningTx(state)
+    isSigning: isSigningTx(state),
+    info: getInfo(state)
   }
 }
 
 const mapDispatch = (dispatch: Dispatch<AnyAction>): MapDispatchProps => ({
   onConnectWallet: () => dispatch(enableWalletRequest(ProviderType.INJECTED)),
   onSignContent: (cid: string) => dispatch(signContentRequest(cid)),
-  onFetchFiles: () => dispatch(fetchFilesRequest())
+  onFetchFiles: () => dispatch(fetchFilesRequest()),
+  onFetchInfo: () => dispatch(fetchInfoRequest())
 })
 
 export default connect(mapState, mapDispatch)(LinkerPage)
