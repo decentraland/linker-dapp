@@ -5,11 +5,11 @@ import {
   CHANGE_ACCOUNT
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 
-import { getConfig } from '../../config'
+import { getChainId } from '../../config'
 
 export function* walletSaga() {
   const baseWalletSaga = createWalletSaga({
-    CHAIN_ID: getConfig('chainId')
+    CHAIN_ID: getChainId()
   })
   yield all([baseWalletSaga(), fullWalletSaga()])
 }

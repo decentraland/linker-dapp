@@ -1,14 +1,37 @@
-import { SyntheticEvent } from 'react'
-import './style.css'
-import { Header, Button, Navbar } from 'decentraland-ui'
-import { ChainId } from '@dcl/schemas'
-import { getConfig, isDevelopment } from '../../config'
-import Error from '../Error'
+import {
+  Navbar,
+  Tabs,
+  Footer,
+  Page,
+  Header,
+  Icon,
+  Button,
+  Container,
+  HeaderMenu,
+  Color,
+  Badge,
+  Address,
+  Blockie,
+  Toast,
+  ToastType,
+  Loader
+} from 'decentraland-ui'
 import { Props } from './types'
-import LandInfo from '../LandInfo/LandInfo'
-import RenderWalletData from '../RenderWalletData/RenderWalletData'
+import { useEffect, useState } from 'react'
+import Files from '../Files'
+import Map from '../Map'
+
+import './style.css'
+import { ChainId } from '@dcl/schemas'
+import DeploySuccess from '../DeploySuccess/DeploySuccess.container'
+
+enum Tab {
+  Map = 'Map',
+  Files = 'Files'
+}
 
 export default function LinkScenePage(props: Props) {
+  const [tab, setTab] = useState<Tab>(Tab.Map)
   const {
     isConnected,
     wallet,
@@ -16,83 +39,129 @@ export default function LinkScenePage(props: Props) {
     isUpdateAuthorized,
     isConnecting,
     onConnectWallet,
+    onSignContent,
+    onFetchFiles,
+    onFetchInfo,
     isSigning,
-    base,
     error,
     isAuthorizationLoading,
-    signed
+    signed,
+    info
   } = props
 
-  const handleSignature = (e: SyntheticEvent) => {
-    e.preventDefault()
-    const { onSignContent } = props
-    onSignContent(getConfig('rootCID'))
-  }
-
-  const { x, y } = getConfig('baseParcel')
-  const rootCID = getConfig('rootCID')
+  const { x, y } = info?.baseParcel || { x: 0, y: 0 }
   const isRopsten = wallet?.chainId === ChainId.ETHEREUM_ROPSTEN
   const networkName = isRopsten ? 'zone' : 'org'
   const deployUrl = `https://play.decentraland.${networkName}/?position=${x},${y}`
 
+  useEffect(() => {
+    onFetchInfo()
+    onFetchFiles()
+  }, [onFetchFiles, onFetchInfo])
+
   return (
-    <div className="LinkScenePage">
-      {isRopsten && <div className="warning">Using Ropsten test network</div>}
-      <Navbar />
-      <Header>Update LAND data</Header>
-      <RenderWalletData
-        authorizations={authorizations}
-        isUpdateAuthorized={isUpdateAuthorized}
+    <div className="Page-story-container">
+      <Navbar
+        leftMenu={<></>}
         isConnected={isConnected}
         isConnecting={isConnecting}
-        wallet={wallet}
-        onConnectWallet={onConnectWallet}
+        address={wallet?.address}
       />
-      <div>
-        <img
-          style={{ maxWidth: '100%', maxHeight: '100%', width: '35%' }}
-          className="map"
-          src={`https://api.decentraland.${networkName}/v1/parcels/${x}/${y}/map.png`}
-          alt={`Base parcel ${x},${y}`}
-        />
-      </div>
-      <LandInfo deployUrl={deployUrl} base={base} />
-      <p>
-        Project CID: <b>{rootCID}</b>
-      </p>
-      {isConnected && signed && (
-        <p>
-          Content was succesfully signed and it's being uploaded{' '}
-          <a href={deployUrl} target="_blank" rel="noreferrer">
-            here
-          </a>
-          . You can close this page and check the CLI for more info.
-        </p>
-      )}
-      <form>
-        <div>
-          <Button
-            primary
-            onClick={handleSignature}
-            disabled={
-              !isConnected ||
-              !!error ||
-              isAuthorizationLoading ||
-              !isUpdateAuthorized
-            }
-            loading={isSigning}
-          >
-            Sign and Deploy
-          </Button>
-        </div>
-      </form>
-      {error ? (
-        isDevelopment() ? (
-          <Error>{error}</Error>
-        ) : (
-          <Error>There was an unexpected error.</Error>
-        )
-      ) : null}
+      <Page>
+        <Container>
+          <HeaderMenu>
+            <HeaderMenu.Left>
+              <Container textAlign="center">
+                <Header size="large">
+                  Deploying {info?.title || 'Untitled Scene'}
+                </Header>
+                {info?.description && (
+                  <Header size="medium">
+                    {info?.description || 'Some description'}
+                  </Header>
+                )}
+              </Container>
+            </HeaderMenu.Left>
+          </HeaderMenu>
+          <HeaderMenu>
+            <HeaderMenu.Left>
+              <div
+                className="address-header url"
+                onClick={() =>
+                  deployUrl && window.open(deployUrl!, '_blank')?.focus()
+                }
+              >
+                <Badge color={Color.SUMMER_RED}>
+                  <Icon name="point" />
+                  {x}, {y}
+                </Badge>
+              </div>
+              {!!isConnected && (
+                <div className="address-header">
+                  <Badge color={Color.SHADOWS}>
+                    {isRopsten ? 'Ropsten' : 'Mainnet'}
+                  </Badge>
+                </div>
+              )}
+              <div className="address-header">
+                {!!wallet?.address && (
+                  <Blockie scale={3} seed={wallet.address}>
+                    <Address tooltip strong value={wallet.address} />
+                  </Blockie>
+                )}
+              </div>
+            </HeaderMenu.Left>
+            {!signed && (
+              <HeaderMenu.Right>
+                <Button
+                  primary
+                  size="medium"
+                  loading={
+                    isConnecting ||
+                    isSigning ||
+                    (isConnected && isAuthorizationLoading)
+                  }
+                  disabled={!!error || (isConnected && !isUpdateAuthorized)}
+                  onClick={
+                    isConnected
+                      ? () => onSignContent(info!.rootCID)
+                      : onConnectWallet
+                  }
+                >
+                  {isConnected ? 'Sign & Deploy' : 'Connect Wallet'}
+                </Button>
+              </HeaderMenu.Right>
+            )}
+          </HeaderMenu>
+        </Container>
+        {!!(authorizations?.length && !isUpdateAuthorized) && (
+          <Toast
+            type={ToastType.ERROR}
+            title="Check LAND permissions"
+            body="You dont have permissions to update some of the coords"
+          />
+        )}
+        {!signed && (
+          <Tabs isFullscreen>
+            {Object.values(Tab).map(t => (
+              <Tabs.Tab key={t} onClick={() => setTab(t)} active={tab === t}>
+                {t}
+              </Tabs.Tab>
+            ))}
+          </Tabs>
+        )}
+        {!info && <Loader />}
+        {signed && <DeploySuccess />}
+        {!signed && tab === Tab.Files && <Files />}
+        {!signed && info && tab === Tab.Map && (
+          <Map
+            authorizations={authorizations}
+            parcels={info!.parcels}
+            baseParcel={info!.baseParcel}
+          />
+        )}
+      </Page>
+      <Footer />
     </div>
   )
 }

@@ -9,16 +9,29 @@
 }
 
 .warning {
-    background: var(--primary);
-    color: white;
-    text-align: center;
-    text-transform: uppercase;
-    height: 24px;
-    width: 100%;
-    position: fixed;
-    top: 0;
-    padding-top: 2px;
-  }
-  .LinkScenePage {
-    padding-top: 24px;
-  }
+  background: var(--primary);
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+  height: 24px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  padding-top: 2px;
+}
+.LinkScenePage {
+  padding-top: 24px;
+}
+
+.address-header {
+  margin-right: 16px;
+}
+
+div.url > div.dcl.badge {
+  cursor: pointer;
+}
+
+.dcl.toast.error {
+  margin-left: 0;
+  background-color: brown;
+}

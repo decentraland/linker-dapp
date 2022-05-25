@@ -5,6 +5,7 @@ import { TransactionState } from 'decentraland-dapps/dist/modules/transaction/re
 import { LandState } from './modules/land/reducer'
 import { SignatureState } from './modules/signature/reducer'
 import { AuthorizationState } from './modules/authorization/reducer'
+import { ApiState } from './modules/server/reducer'
 
 export type RootState = {
   wallet: WalletState
@@ -12,6 +13,7 @@ export type RootState = {
   land: LandState
   authorization: AuthorizationState
   signature: SignatureState
+  api: ApiState
 }
 
 export type RootReducer = Reducer<Store<RootState>>

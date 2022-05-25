@@ -1,0 +1,11 @@
+.map-table {
+  max-height: 200px;
+  overflow-y: scroll;
+}
+.permission-not-granted {
+  color: brown
+}
+
+.map-canvas > div {
+  height: unset !important
+}

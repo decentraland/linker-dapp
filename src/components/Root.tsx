@@ -1,7 +1,6 @@
 import IdentityPage from './IdentityPage'
 import LinkerPage from './LinkerPage'
 
-// TODO: implement a router
 const Root = (props: any) => {
   const qs = new URLSearchParams(document.location.search)
 

@@ -5,6 +5,7 @@ import { transactionReducer as transaction } from 'decentraland-dapps/dist/modul
 import { landReducer as land } from './modules/land/reducer'
 import { signatureReducer as signature } from './modules/signature/reducer'
 import { authorizationReducer as authorization } from './modules/authorization/reducer'
+import { apiReducer as api } from './modules/server/reducer'
 import { RootState } from './types'
 
 export const rootReducer = combineReducers<RootState>({
@@ -12,5 +13,6 @@ export const rootReducer = combineReducers<RootState>({
   transaction,
   land,
   signature,
-  authorization
+  authorization,
+  api
 })

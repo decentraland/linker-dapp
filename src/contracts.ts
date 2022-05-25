@@ -4,18 +4,17 @@ import { Web3Provider } from '@ethersproject/providers'
 
 import * as EstateRegistry from './abis/EstateRegistry.json'
 import * as LANDRegistry from './abis/LANDRegistry.json'
-import { getConfig, isRopsten } from './config'
+import { isRopsten } from './config'
 
 const contractInstances: {
   land?: Contract
   estate?: Contract
 } = {}
 
-export async function getLandContract() {
+export async function getLandContract(landRegistry?: string) {
   if (!contractInstances.land) {
     const provider = await getConnectedProvider()
     if (provider) {
-      const landRegistry = getConfig('landRegistry')
       const address =
         landRegistry ||
         (isRopsten()
@@ -32,11 +31,10 @@ export async function getLandContract() {
   return contractInstances.land
 }
 
-export async function getEstateContract() {
+export async function getEstateContract(estateRegistry?: string) {
   if (!contractInstances.estate) {
     const provider = await getConnectedProvider()
     if (provider) {
-      const estateRegistry = getConfig('landRegistry')
       const address =
         estateRegistry ||
         (isRopsten()
