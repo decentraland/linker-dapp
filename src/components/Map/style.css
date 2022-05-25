@@ -5,3 +5,7 @@
 .permission-not-granted {
   color: brown
 }
+
+.map-canvas > div {
+  height: unset !important
+}

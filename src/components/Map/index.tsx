@@ -62,7 +62,7 @@ export default function LinkScenePage({
         </Section>
       )}
       <Container>
-        <Section size="large">
+        <Section size="large" className="map-canvas">
           <Atlas
             height={300}
             x={baseParcel.x}
