@@ -18,10 +18,7 @@ export type LinkerResponseIdentity = {
   }
 }
 
-export async function closeServer(
-  ok: boolean,
-  message: LinkerResponseIdentity
-): Promise<void> {
+export async function closeServer(ok: boolean, message: LinkerResponseIdentity): Promise<void> {
   await fetch(`/api/close?ok=${ok}&reason=${JSON.stringify(message)}`)
 }
 

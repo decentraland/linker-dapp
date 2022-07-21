@@ -2,15 +2,9 @@ import './style.css'
 import { Atlas, Container, Coord, Layer, Section, Table } from 'decentraland-ui'
 import { Props } from './types'
 
-export default function LinkScenePage({
-  authorizations,
-  parcels,
-  baseParcel
-}: Props) {
-  const find = <T extends Coord>(coords: T[]) => (
-    x: number,
-    y: number
-  ): T | undefined => coords.find(s => s.x === x && s.y === y)
+export default function LinkScenePage({ authorizations, parcels, baseParcel }: Props) {
+  const find = <T extends Coord>(coords: T[]) => (x: number, y: number): T | undefined =>
+    coords.find(s => s.x === x && s.y === y)
 
   const selectedFillLayer: Layer = (x: number, y: number) => {
     return find(parcels)(x, y) ? { color: '#ff99', scale: 1.2 } : null
@@ -35,24 +29,15 @@ export default function LinkScenePage({
 
             <Table.Body>
               {parcels.map((coords, index) => {
-                const isAuthorized = !!find(authorizations || [])(
-                  coords.x,
-                  coords.y
-                )?.isUpdateAuthorized
+                const isAuthorized = !!find(authorizations || [])(coords.x, coords.y)?.isUpdateAuthorized
                 return (
                   <Table.Row key={index}>
                     <Table.Cell>Parcel {index}</Table.Cell>
                     <Table.Cell>
                       {coords.x}, {coords.y}
                     </Table.Cell>
-                    <Table.Cell
-                      className={!isAuthorized ? 'permission-not-granted' : ''}
-                    >
-                      {authorizations.length
-                        ? isAuthorized
-                          ? 'Granted'
-                          : 'Not granted'
-                        : ''}
+                    <Table.Cell className={!isAuthorized ? 'permission-not-granted' : ''}>
+                      {authorizations.length ? (isAuthorized ? 'Granted' : 'Not granted') : ''}
                     </Table.Cell>
                   </Table.Row>
                 )

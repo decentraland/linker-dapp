@@ -40,12 +40,7 @@ export default function RenderWalletData({
     <>
       {isConnecting ? null : <p>Could not find any wallet</p>}
       <p>
-        <Button
-          primary
-          onClick={onConnectWallet}
-          loading={isConnecting}
-          disabled={isConnecting}
-        >
+        <Button primary onClick={onConnectWallet} loading={isConnecting} disabled={isConnecting}>
           Reconnect&nbsp;
         </Button>
       </p>

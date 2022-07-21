@@ -6,14 +6,7 @@ import RenderWalletData from '../RenderWalletData/RenderWalletData'
 import { isTestnet } from '../../config'
 
 export default function IdentityPage(props: Props) {
-  const {
-    isConnected,
-    wallet,
-    isConnecting,
-    onConnectWallet,
-    isSigning,
-    onRequestIdentity
-  } = props
+  const { isConnected, wallet, isConnecting, onConnectWallet, isSigning, onRequestIdentity } = props
 
   const handleSignature = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -34,12 +27,7 @@ export default function IdentityPage(props: Props) {
       />
       <form>
         <div>
-          <Button
-            primary
-            onClick={handleSignature}
-            disabled={!isConnected}
-            loading={isSigning}
-          >
+          <Button primary onClick={handleSignature} disabled={!isConnected} loading={isSigning}>
             Sign ephemeral wallet
           </Button>
         </div>

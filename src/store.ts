@@ -8,8 +8,7 @@ import { rootReducer } from './reducer'
 import { rootSaga } from './sagas'
 
 export function initStore() {
-  const composeEnhancers =
-    (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+  const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
   const { storageMiddleware, loadStorageMiddleware } = createStorageMiddleware({
     storageKey: 'decentraland-linker'
@@ -21,12 +20,7 @@ export function initStore() {
     predicate: (_, _action) => false // isDevelopment() || action.type.includes('Failure')
   })
 
-  const middleware = applyMiddleware(
-    sagasMiddleware,
-    loggerMiddleware,
-    storageMiddleware,
-    transactionMiddleware
-  )
+  const middleware = applyMiddleware(sagasMiddleware, loggerMiddleware, storageMiddleware, transactionMiddleware)
 
   const enhancer = composeEnhancers(middleware)
   const store = createStore(rootReducer, enhancer)

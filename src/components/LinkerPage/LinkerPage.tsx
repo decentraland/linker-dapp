@@ -61,25 +61,14 @@ export default function LinkScenePage(props: Props) {
 
   return (
     <div className="Page-story-container">
-      <Navbar
-        leftMenu={<></>}
-        isConnected={isConnected}
-        isConnecting={isConnecting}
-        address={wallet?.address}
-      />
+      <Navbar leftMenu={<></>} isConnected={isConnected} isConnecting={isConnecting} address={wallet?.address} />
       <Page>
         <Container>
           <HeaderMenu>
             <HeaderMenu.Left>
               <Container textAlign="center">
-                <Header size="large">
-                  Deploying {info?.title || 'Untitled Scene'}
-                </Header>
-                {info?.description && (
-                  <Header size="medium">
-                    {info?.description || 'Some description'}
-                  </Header>
-                )}
+                <Header size="large">Deploying {info?.title || 'Untitled Scene'}</Header>
+                {info?.description && <Header size="medium">{info?.description || 'Some description'}</Header>}
               </Container>
             </HeaderMenu.Left>
           </HeaderMenu>
@@ -87,9 +76,7 @@ export default function LinkScenePage(props: Props) {
             <HeaderMenu.Left>
               <div
                 className="address-header url"
-                onClick={() =>
-                  deployUrl && window.open(deployUrl!, '_blank')?.focus()
-                }
+                onClick={() => deployUrl && window.open(deployUrl!, '_blank')?.focus()}
               >
                 <Badge color={Color.SUMMER_RED}>
                   <Icon name="point" />
@@ -98,9 +85,7 @@ export default function LinkScenePage(props: Props) {
               </div>
               {!!isConnected && (
                 <div className="address-header">
-                  <Badge color={Color.SHADOWS}>
-                    {isTestNet ? 'Goerli' : 'Mainnet'}
-                  </Badge>
+                  <Badge color={Color.SHADOWS}>{isTestNet ? 'Goerli' : 'Mainnet'}</Badge>
                 </div>
               )}
               <div className="address-header">
@@ -116,17 +101,9 @@ export default function LinkScenePage(props: Props) {
                 <Button
                   primary
                   size="medium"
-                  loading={
-                    isConnecting ||
-                    isSigning ||
-                    (isConnected && isAuthorizationLoading)
-                  }
+                  loading={isConnecting || isSigning || (isConnected && isAuthorizationLoading)}
                   disabled={!!error || (isConnected && !isUpdateAuthorized)}
-                  onClick={
-                    isConnected
-                      ? () => onSignContent(info!.rootCID)
-                      : onConnectWallet
-                  }
+                  onClick={isConnected ? () => onSignContent(info!.rootCID) : onConnectWallet}
                 >
                   {isConnected ? 'Sign & Deploy' : 'Connect Wallet'}
                 </Button>
@@ -154,11 +131,7 @@ export default function LinkScenePage(props: Props) {
         {signed && <DeploySuccess />}
         {!signed && tab === Tab.Files && <Files />}
         {!signed && info && tab === Tab.Map && (
-          <Map
-            authorizations={authorizations}
-            parcels={info!.parcels}
-            baseParcel={info!.baseParcel}
-          />
+          <Map authorizations={authorizations} parcels={info!.parcels} baseParcel={info!.baseParcel} />
         )}
       </Page>
       <Footer />

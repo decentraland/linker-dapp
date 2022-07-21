@@ -1,9 +1,6 @@
 import { takeEvery, all, call } from 'redux-saga/effects'
 import { createWalletSaga } from 'decentraland-dapps/dist/modules/wallet/sagas'
-import {
-  CHANGE_NETWORK,
-  CHANGE_ACCOUNT
-} from 'decentraland-dapps/dist/modules/wallet/actions'
+import { CHANGE_NETWORK, CHANGE_ACCOUNT } from 'decentraland-dapps/dist/modules/wallet/actions'
 
 import { getChainId } from '../../config'
 

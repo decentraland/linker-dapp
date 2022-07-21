@@ -5,9 +5,7 @@ export function isTestnet() {
 }
 
 export function getChainId() {
-  return (window?.ethereum as any)?.chainId === '0x1'
-    ? ChainId.ETHEREUM_MAINNET
-    : ChainId.ETHEREUM_GOERLI
+  return (window?.ethereum as any)?.chainId === '0x1' ? ChainId.ETHEREUM_MAINNET : ChainId.ETHEREUM_GOERLI
 }
 
 export function isDevelopment(): boolean {

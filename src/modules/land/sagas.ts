@@ -3,12 +3,7 @@ import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/a
 import * as CSV from 'comma-separated-values'
 
 import { getLandContract } from '../../contracts'
-import {
-  FETCH_LAND_REQUEST,
-  fetchLandSuccess,
-  fetchLandFailure,
-  fetchLandRequest
-} from './actions'
+import { FETCH_LAND_REQUEST, fetchLandSuccess, fetchLandFailure, fetchLandRequest } from './actions'
 import { getEmptyLandData } from './utils'
 import { Contract } from '@ethersproject/contracts'
 import { LANDMeta } from './types'
@@ -22,15 +17,11 @@ export function* landSaga() {
 
 function* handleFetchLandRequest() {
   const info: Info = yield select(getInfo)
-  const LANDRegistry: Contract = yield call(() =>
-    getLandContract(info.landRegistry)
-  )
+  const LANDRegistry: Contract = yield call(() => getLandContract(info.landRegistry))
   try {
     const { x, y } = info.baseParcel
     const data: string = yield call(() => LANDRegistry['landData'](x, y))
-    const land: LANDMeta = data
-      ? yield call(() => decodeLandData(data))
-      : getEmptyLandData()
+    const land: LANDMeta = data ? yield call(() => decodeLandData(data)) : getEmptyLandData()
     yield put(fetchLandSuccess(land))
   } catch (error) {
     yield put(fetchLandFailure((error as Error).message))
@@ -59,8 +50,6 @@ function decodeLandData(data = '') {
       }
     }
     default:
-      throw new Error(
-        `Unknown version when trying to decode land data: "${data}"`
-      )
+      throw new Error(`Unknown version when trying to decode land data: "${data}"`)
   }
 }
