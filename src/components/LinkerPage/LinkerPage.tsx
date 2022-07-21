@@ -50,8 +50,8 @@ export default function LinkScenePage(props: Props) {
   } = props
 
   const { x, y } = info?.baseParcel || { x: 0, y: 0 }
-  const isRopsten = wallet?.chainId === ChainId.ETHEREUM_ROPSTEN
-  const networkName = isRopsten ? 'zone' : 'org'
+  const isTestNet = wallet?.chainId === ChainId.ETHEREUM_GOERLI
+  const networkName = isTestNet ? 'zone' : 'org'
   const deployUrl = `https://play.decentraland.${networkName}/?position=${x},${y}`
 
   useEffect(() => {
@@ -99,7 +99,7 @@ export default function LinkScenePage(props: Props) {
               {!!isConnected && (
                 <div className="address-header">
                   <Badge color={Color.SHADOWS}>
-                    {isRopsten ? 'Ropsten' : 'Mainnet'}
+                    {isTestNet ? 'Goerli' : 'Mainnet'}
                   </Badge>
                 </div>
               )}

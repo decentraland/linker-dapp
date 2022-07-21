@@ -14,7 +14,9 @@ import 'decentraland-ui/lib/dark-theme.css'
 ReactDOM.render(
   <Provider store={initStore()}>
     <WalletProvider>
+      <div></div>
       <Root />
+      <Div style={{ display: '1' }} ></Div>
     </WalletProvider>
   </Provider>,
   document.getElementById('root')
