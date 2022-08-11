@@ -1,7 +1,4 @@
-import {
-  loadingReducer,
-  LoadingState
-} from 'decentraland-dapps/dist/modules/loading/reducer'
+import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 
 import {
   FetchLandRequestAction,
@@ -24,15 +21,9 @@ const INITIAL_STATE: LandState = {
   error: null
 }
 
-export type LandReducerAction =
-  | FetchLandRequestAction
-  | FetchLandSuccessAction
-  | FetchLandFailureAction
+export type LandReducerAction = FetchLandRequestAction | FetchLandSuccessAction | FetchLandFailureAction
 
-export const landReducer = (
-  state = INITIAL_STATE,
-  action: LandReducerAction
-): LandState => {
+export const landReducer = (state = INITIAL_STATE, action: LandReducerAction): LandState => {
   switch (action.type) {
     case FETCH_LAND_REQUEST:
       return {

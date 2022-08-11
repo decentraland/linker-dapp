@@ -33,11 +33,7 @@ export default function FilesPage({ files }: Props) {
               <Dropdown text={filter} direction="right">
                 <Dropdown.Menu>
                   {Object.values(Filter).map(f => (
-                    <Dropdown.Item
-                      key={f}
-                      onClick={() => setFilter(f)}
-                      text={f}
-                    />
+                    <Dropdown.Item key={f} onClick={() => setFilter(f)} text={f} />
                   ))}
                 </Dropdown.Menu>
               </Dropdown>

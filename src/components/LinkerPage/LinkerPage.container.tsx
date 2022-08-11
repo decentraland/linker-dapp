@@ -2,21 +2,10 @@ import { AnyAction, Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { ProviderType } from 'decentraland-connect'
 import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
-import {
-  getData as getWallet,
-  isConnected,
-  isConnecting
-} from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getData as getWallet, isConnected, isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
-import {
-  isLoading as isLandLoading,
-  getData as getLand,
-  getError as getLandError
-} from '../../modules/land/selectors'
-import {
-  getData as getSignature,
-  isLoading as isSigningTx
-} from '../../modules/signature/selectors'
+import { isLoading as isLandLoading, getData as getLand, getError as getLandError } from '../../modules/land/selectors'
+import { getData as getSignature, isLoading as isSigningTx } from '../../modules/signature/selectors'
 import {
   getData as getAuthorizations,
   isUpdateAuthorized,
@@ -27,10 +16,7 @@ import { RootState } from '../../types'
 import { MapStateProps, MapDispatchProps } from './types'
 
 import LinkerPage from './LinkerPage'
-import {
-  fetchFilesRequest,
-  fetchInfoRequest
-} from '../../modules/server/actions'
+import { fetchFilesRequest, fetchInfoRequest } from '../../modules/server/actions'
 import { getInfo } from '../../modules/server/selectors'
 
 const mapState = (state: RootState): MapStateProps => {

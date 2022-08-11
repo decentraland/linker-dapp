@@ -5,9 +5,7 @@ export function isRopsten() {
 }
 
 export function getChainId() {
-  return (window?.ethereum as any)?.chainId === '0x1'
-    ? ChainId.ETHEREUM_MAINNET
-    : ChainId.ETHEREUM_ROPSTEN
+  return (window?.ethereum as any)?.chainId === '0x1' ? ChainId.ETHEREUM_MAINNET : ChainId.ETHEREUM_ROPSTEN
 }
 
 export function isDevelopment(): boolean {

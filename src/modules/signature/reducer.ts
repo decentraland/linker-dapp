@@ -1,8 +1,5 @@
 import { AuthIdentity } from 'dcl-crypto'
-import {
-  loadingReducer,
-  LoadingState
-} from 'decentraland-dapps/dist/modules/loading/reducer'
+import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 
 import {
   SignContentRequestAction,
@@ -41,10 +38,7 @@ export type SignatureReducerAction =
   | CreateIdentitySuccessAction
   | CreateIdentityFailureAction
 
-export const signatureReducer = (
-  state = INITIAL_STATE,
-  action: SignatureReducerAction
-): SignatureState => {
+export const signatureReducer = (state = INITIAL_STATE, action: SignatureReducerAction): SignatureState => {
   switch (action.type) {
     case SIGN_CONTENT_REQUEST:
       return {

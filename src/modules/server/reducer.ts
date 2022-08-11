@@ -1,7 +1,4 @@
-import {
-  loadingReducer,
-  LoadingState
-} from 'decentraland-dapps/dist/modules/loading/reducer'
+import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 import { Coords } from '../land/types'
 
 import {
@@ -77,10 +74,7 @@ export type ApiReducerAction =
   | FetchCatalystRequest
   | FetchCatalystSuccess
 
-export const apiReducer = (
-  state = INITIAL_STATE,
-  action: ApiReducerAction
-): ApiState => {
+export const apiReducer = (state = INITIAL_STATE, action: ApiReducerAction): ApiState => {
   switch (action.type) {
     case FETCH_FILES_REQUEST:
       return {
@@ -134,13 +128,9 @@ export const apiReducer = (
         loading: loadingReducer(state.loading, action),
         info: {
           ...action.payload.info,
-          baseParcel: parseCoords(
-            (action.payload.info.baseParcel as any) as string
-          )[0],
+          baseParcel: parseCoords((action.payload.info.baseParcel as any) as string)[0],
           parcels: parseCoords((action.payload.info.parcels as any) as string),
-          rootCID:
-            action.payload.info.rootCID ||
-            'QmPjpPyibbryTCi75zzcdeuPUBcujtEqj43shwKBAdMojy'
+          rootCID: action.payload.info.rootCID || 'QmPjpPyibbryTCi75zzcdeuPUBcujtEqj43shwKBAdMojy'
         },
         error: null
       }

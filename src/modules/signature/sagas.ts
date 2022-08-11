@@ -1,9 +1,6 @@
 import { call, put, takeLatest, takeEvery, select } from 'redux-saga/effects'
 import { getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
-import {
-  getAddress,
-  getChainId
-} from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { getAddress, getChainId } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { Web3Provider } from '@ethersproject/providers'
 import { toUtf8Bytes } from '@ethersproject/strings'
 import { ChainId } from '@dcl/schemas'
@@ -71,9 +68,7 @@ function* handleCreateIdentityRequest(_action: SignContentRequestAction) {
     const provider: Provider = yield call(() => getConnectedProvider())
     const web3provider = new Web3Provider(provider)
     const signer = web3provider.getSigner()
-    const identity: AuthIdentity = yield call(() =>
-      createIdentity(signer, 1000)
-    )
+    const identity: AuthIdentity = yield call(() => createIdentity(signer, 1000))
     yield put(createIdentitySuccess(identity))
     yield put(fetchCatalystRequest())
   } catch (error) {

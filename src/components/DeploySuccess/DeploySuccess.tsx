@@ -4,11 +4,7 @@ import { useEffect } from 'react'
 
 import './style.css'
 
-export default function DeploySuccess({
-  onFetchCatalyst,
-  catalysts = [],
-  status
-}: Props) {
+export default function DeploySuccess({ onFetchCatalyst, catalysts = [], status }: Props) {
   const entityIds = new Set(catalysts.map(c => c.entityId))
   const deployedToAll = status === 'success' && entityIds.size === 1
 
@@ -24,9 +20,7 @@ export default function DeploySuccess({
     <Container>
       <HeaderMenu>
         <Badge color={deployedToAll ? '#20913e' : Color.SUNISH}>
-          {deployedToAll
-            ? 'Deployed successfully to Catalyst servers'
-            : 'Deploying..'}
+          {deployedToAll ? 'Deployed successfully to Catalyst servers' : 'Deploying..'}
         </Badge>
       </HeaderMenu>
       <Table basic="very">
