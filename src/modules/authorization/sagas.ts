@@ -31,75 +31,111 @@ function* handleFetchAuthorizationsRequest() {
     yield take(FETCH_INFO_SUCCESS)
   }
 
-  const { parcels, landRegistry, estateRegistry } = info
-  const LANDRegistry: Contract = yield call(() => getLandContract(landRegistry))
-  const EstateRegistry: Contract = yield call(() =>
-    getEstateContract(estateRegistry)
-  )
+  const qs = new URLSearchParams(document.location.search)
 
-  try {
-    const address: string = yield select(getAddress)
-    const assetIds = new Map<string, string>()
+  const authorizationServer = qs.get('authorization-server')
+  if (authorizationServer) {
+    try {
+      const { parcels } = info
+      const address: string = yield select(getAddress)
 
-    const pAuthorizations: Promise<unknown>[] = []
-    for (const parcel of parcels) {
-      const { x, y } = parcel
-      const pAuthorization = new Promise((resolve, reject) => {
-        LANDRegistry['encodeTokenId'](x, y)
-          .then((assetId: any) => {
-            LANDRegistry['isUpdateAuthorized'](address, assetId)
-              .then((isUpdateAuthorized: any) => {
-                assetIds.set(coordsToString(parcel), assetId)
-                resolve({ x, y, isUpdateAuthorized })
-              })
-              .catch(reject)
-          })
-          .catch(reject)
+      const res: Response = yield call(() => {
+        return fetch(
+          `https://${authorizationServer}/authorized?address=${address}&pointers=${parcels
+            .map(a => `${a.x},${a.y}`)
+            .join('&pointers=')}`
+        )
       })
-      pAuthorizations.push(pAuthorization)
+      const json: {
+        ok: boolean
+        pointers: { [coords: string]: boolean }
+      } = yield call(() => res.json())
+      yield put(
+        fetchAuthorizationsSuccess(
+          Object.keys(json.pointers).map(a => ({
+            x: +a.split(',')[0],
+            y: +a.split(',')[1],
+            isUpdateAuthorized: json.pointers[a]
+          }))
+        )
+      )
+    } catch (error) {
+      yield put(fetchAuthorizationsFailure((error as Error).message))
     }
-
-    const parcelAuthorizations: Authorization[] = yield call(() =>
-      Promise.all(pAuthorizations)
+  } else {
+    const { parcels, landRegistry, estateRegistry } = info
+    const LANDRegistry: Contract = yield call(() =>
+      getLandContract(landRegistry)
+    )
+    const EstateRegistry: Contract = yield call(() =>
+      getEstateContract(estateRegistry)
     )
 
-    // If not authorized check permissions on estate
-    const notAllowedAuthorizations = parcelAuthorizations.filter(
-      a => !a.isUpdateAuthorized
-    )
-    const allowedAuthorizations = parcelAuthorizations.filter(
-      a => a.isUpdateAuthorized
-    )
+    try {
+      const address: string = yield select(getAddress)
+      const assetIds = new Map<string, string>()
 
-    const pEstateAuthorizations: unknown[] = []
-    for (const a of notAllowedAuthorizations) {
-      const assetId = assetIds.get(coordsToString(a))
-      const pAuthorization = new Promise((resolve, reject) => {
-        EstateRegistry['getLandEstateId'](assetId)
-          .then((estate: any) => {
-            if (estate && estate > 0) {
-              return EstateRegistry['isUpdateAuthorized'](address, estate).then(
-                (isUpdateAuthorized: any) => {
+      const pAuthorizations: Promise<unknown>[] = []
+      for (const parcel of parcels) {
+        const { x, y } = parcel
+        const pAuthorization = new Promise((resolve, reject) => {
+          LANDRegistry['encodeTokenId'](x, y)
+            .then((assetId: any) => {
+              LANDRegistry['isUpdateAuthorized'](address, assetId)
+                .then((isUpdateAuthorized: any) => {
+                  assetIds.set(coordsToString(parcel), assetId)
+                  resolve({ x, y, isUpdateAuthorized })
+                })
+                .catch(reject)
+            })
+            .catch(reject)
+        })
+        pAuthorizations.push(pAuthorization)
+      }
+
+      const parcelAuthorizations: Authorization[] = yield call(() =>
+        Promise.all(pAuthorizations)
+      )
+
+      // If not authorized check permissions on estate
+      const notAllowedAuthorizations = parcelAuthorizations.filter(
+        a => !a.isUpdateAuthorized
+      )
+      const allowedAuthorizations = parcelAuthorizations.filter(
+        a => a.isUpdateAuthorized
+      )
+
+      const pEstateAuthorizations: unknown[] = []
+      for (const a of notAllowedAuthorizations) {
+        const assetId = assetIds.get(coordsToString(a))
+        const pAuthorization = new Promise((resolve, reject) => {
+          EstateRegistry['getLandEstateId'](assetId)
+            .then((estate: any) => {
+              if (estate && estate > 0) {
+                return EstateRegistry['isUpdateAuthorized'](
+                  address,
+                  estate
+                ).then((isUpdateAuthorized: any) => {
                   resolve({ ...a, isUpdateAuthorized })
-                }
-              )
-            } else {
-              return resolve(a) // If no estate leave authorization in false
-            }
-          })
-          .catch(reject)
-      })
-      pEstateAuthorizations.push(pAuthorization)
+                })
+              } else {
+                return resolve(a) // If no estate leave authorization in false
+              }
+            })
+            .catch(reject)
+        })
+        pEstateAuthorizations.push(pAuthorization)
+      }
+
+      const estateAuthorizations: Authorization[] = yield call(() =>
+        Promise.all(pEstateAuthorizations)
+      )
+
+      const authorizations = [...allowedAuthorizations, ...estateAuthorizations]
+      yield put(fetchAuthorizationsSuccess(authorizations))
+    } catch (error) {
+      yield put(fetchAuthorizationsFailure((error as Error).message))
     }
-
-    const estateAuthorizations: Authorization[] = yield call(() =>
-      Promise.all(pEstateAuthorizations)
-    )
-
-    const authorizations = [...allowedAuthorizations, ...estateAuthorizations]
-    yield put(fetchAuthorizationsSuccess(authorizations))
-  } catch (error) {
-    yield put(fetchAuthorizationsFailure((error as Error).message))
   }
 }
 
