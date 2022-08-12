@@ -15,11 +15,5 @@ export type Props = {
   onRequestIdentity: () => CreateIdentityRequestAction
 }
 
-export type MapStateProps = Pick<
-  Props,
-  'wallet' | 'isConnected' | 'isConnecting' | 'signed' | 'isSigning'
->
-export type MapDispatchProps = Pick<
-  Props,
-  'onConnectWallet' | 'onRequestIdentity'
->
+export type MapStateProps = Pick<Props, 'wallet' | 'isConnected' | 'isConnecting' | 'signed' | 'isSigning'>
+export type MapDispatchProps = Pick<Props, 'onConnectWallet' | 'onRequestIdentity'>

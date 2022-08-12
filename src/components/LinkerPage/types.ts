@@ -43,7 +43,4 @@ export type MapStateProps = Pick<
   | 'isSigning'
   | 'info'
 >
-export type MapDispatchProps = Pick<
-  Props,
-  'onConnectWallet' | 'onSignContent' | 'onFetchFiles' | 'onFetchInfo'
->
+export type MapDispatchProps = Pick<Props, 'onConnectWallet' | 'onSignContent' | 'onFetchFiles' | 'onFetchInfo'>

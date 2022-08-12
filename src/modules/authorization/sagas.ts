@@ -18,10 +18,7 @@ import { getInfo } from '../server/selectors'
 
 export function* authorizationSaga() {
   yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
-  yield takeEvery(
-    FETCH_AUTHORIZATIONS_REQUEST,
-    handleFetchAuthorizationsRequest
-  )
+  yield takeEvery(FETCH_AUTHORIZATIONS_REQUEST, handleFetchAuthorizationsRequest)
 }
 
 function* handleFetchAuthorizationsRequest() {
@@ -33,9 +30,7 @@ function* handleFetchAuthorizationsRequest() {
 
   const { parcels, landRegistry, estateRegistry } = info
   const LANDRegistry: Contract = yield call(() => getLandContract(landRegistry))
-  const EstateRegistry: Contract = yield call(() =>
-    getEstateContract(estateRegistry)
-  )
+  const EstateRegistry: Contract = yield call(() => getEstateContract(estateRegistry))
 
   try {
     const address: string = yield select(getAddress)
@@ -59,17 +54,11 @@ function* handleFetchAuthorizationsRequest() {
       pAuthorizations.push(pAuthorization)
     }
 
-    const parcelAuthorizations: Authorization[] = yield call(() =>
-      Promise.all(pAuthorizations)
-    )
+    const parcelAuthorizations: Authorization[] = yield call(() => Promise.all(pAuthorizations))
 
     // If not authorized check permissions on estate
-    const notAllowedAuthorizations = parcelAuthorizations.filter(
-      a => !a.isUpdateAuthorized
-    )
-    const allowedAuthorizations = parcelAuthorizations.filter(
-      a => a.isUpdateAuthorized
-    )
+    const notAllowedAuthorizations = parcelAuthorizations.filter(a => !a.isUpdateAuthorized)
+    const allowedAuthorizations = parcelAuthorizations.filter(a => a.isUpdateAuthorized)
 
     const pEstateAuthorizations: unknown[] = []
     for (const a of notAllowedAuthorizations) {
@@ -78,11 +67,9 @@ function* handleFetchAuthorizationsRequest() {
         EstateRegistry['getLandEstateId'](assetId)
           .then((estate: any) => {
             if (estate && estate > 0) {
-              return EstateRegistry['isUpdateAuthorized'](address, estate).then(
-                (isUpdateAuthorized: any) => {
-                  resolve({ ...a, isUpdateAuthorized })
-                }
-              )
+              return EstateRegistry['isUpdateAuthorized'](address, estate).then((isUpdateAuthorized: any) => {
+                resolve({ ...a, isUpdateAuthorized })
+              })
             } else {
               return resolve(a) // If no estate leave authorization in false
             }
@@ -92,9 +79,7 @@ function* handleFetchAuthorizationsRequest() {
       pEstateAuthorizations.push(pAuthorization)
     }
 
-    const estateAuthorizations: Authorization[] = yield call(() =>
-      Promise.all(pEstateAuthorizations)
-    )
+    const estateAuthorizations: Authorization[] = yield call(() => Promise.all(pEstateAuthorizations))
 
     const authorizations = [...allowedAuthorizations, ...estateAuthorizations]
     yield put(fetchAuthorizationsSuccess(authorizations))

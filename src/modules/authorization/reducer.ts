@@ -1,7 +1,4 @@
-import {
-  loadingReducer,
-  LoadingState
-} from 'decentraland-dapps/dist/modules/loading/reducer'
+import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
 
 import {
   FetchAuthorizationsRequestAction,
@@ -29,10 +26,7 @@ export type AuthorizationReducerAction =
   | FetchAuthorizationsSuccessAction
   | FetchAuthorizationsFailureAction
 
-export const authorizationReducer = (
-  state = INITIAL_STATE,
-  action: AuthorizationReducerAction
-): AuthorizationState => {
+export const authorizationReducer = (state = INITIAL_STATE, action: AuthorizationReducerAction): AuthorizationState => {
   switch (action.type) {
     case FETCH_AUTHORIZATIONS_REQUEST:
       return {

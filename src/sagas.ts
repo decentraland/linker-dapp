@@ -8,12 +8,6 @@ import { apiSaga } from './modules/server/sagas'
 
 export function rootSaga() {
   return function*() {
-    yield all([
-      walletSaga(),
-      landSaga(),
-      signatureSaga(),
-      authorizationSaga(),
-      apiSaga()
-    ])
+    yield all([walletSaga(), landSaga(), signatureSaga(), authorizationSaga(), apiSaga()])
   }
 }
