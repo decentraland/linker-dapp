@@ -10,7 +10,6 @@
     "@ethersproject/providers": "^5.4.5",
     "@ethersproject/strings": "^5.4.0",
     "comma-separated-values": "^3.6.4",
-    "dcl-catalyst-commons": "^9.0.8",
     "decentraland-dapps": "^12.25.4",
     "decentraland-ui": "^3.11.0",
     "react": "^17.0.2",
