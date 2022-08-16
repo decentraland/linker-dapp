@@ -30,7 +30,7 @@ function* handleFetchAuthorizationsRequest() {
 
   const qs = new URLSearchParams(document.location.search)
 
-  const authorizationServer = qs.get('authorization-server')
+  const authorizationServer = qs.get('authorizationServer')
   if (authorizationServer) {
     try {
       const { parcels } = info
