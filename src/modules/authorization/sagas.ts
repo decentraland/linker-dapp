@@ -30,29 +30,16 @@ function* handleFetchAuthorizationsRequest() {
 
   const qs = new URLSearchParams(document.location.search)
 
-  const authorizationServer = qs.get('authorizationServer')
-  if (authorizationServer) {
+  const skipValidations = qs.get('skipValidations')
+  if (skipValidations) {
     try {
       const { parcels } = info
-      const address: string = yield select(getAddress)
-
-      const res: Response = yield call(() => {
-        return fetch(
-          `https://${authorizationServer}/authorized?address=${address}&pointers=${parcels
-            .map(a => `${a.x},${a.y}`)
-            .join('&pointers=')}`
-        )
-      })
-      const json: {
-        ok: boolean
-        pointers: { [coords: string]: boolean }
-      } = yield call(() => res.json())
       yield put(
         fetchAuthorizationsSuccess(
-          Object.keys(json.pointers).map(a => ({
-            x: +a.split(',')[0],
-            y: +a.split(',')[1],
-            isUpdateAuthorized: json.pointers[a]
+          parcels.map(a => ({
+            x: a.x,
+            y: a.y,
+            isUpdateAuthorized: true
           }))
         )
       )
