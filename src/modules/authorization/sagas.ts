@@ -36,9 +36,9 @@ function* handleFetchAuthorizationsRequest() {
       const { parcels } = info
       yield put(
         fetchAuthorizationsSuccess(
-          parcels.map(a => ({
-            x: a.x,
-            y: a.y,
+          parcels.map(({ x, y }) => ({
+            x,
+            y,
             isUpdateAuthorized: true
           }))
         )
