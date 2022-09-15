@@ -31,7 +31,7 @@ function* handleFetchAuthorizationsRequest() {
   const qs = new URLSearchParams(document.location.search)
 
   const skipValidations = qs.get('skipValidations')
-  if (skipValidations) {
+  if (skipValidations === 'true') {
     try {
       const { parcels } = info
       yield put(
