@@ -1,4 +1,4 @@
-import { EnableWalletRequestAction } from 'decentraland-dapps/dist/modules/wallet/actions'
+import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 
@@ -11,7 +11,7 @@ export type Props = {
   isConnecting: boolean
   isSigning: boolean
   signed: boolean
-  onConnectWallet: () => EnableWalletRequestAction
+  onConnectWallet: typeof enableWalletRequest
   onRequestIdentity: () => CreateIdentityRequestAction
 }
 

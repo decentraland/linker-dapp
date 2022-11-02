@@ -1,6 +1,7 @@
-import { SyntheticEvent } from 'react'
+import { SyntheticEvent, useEffect, useState } from 'react'
 import './style.css'
 import { Header, Button, Navbar } from 'decentraland-ui'
+import LoginModal from 'decentraland-dapps/dist/containers/LoginModal'
 import { Props } from './types'
 import RenderWalletData from '../RenderWalletData/RenderWalletData'
 import { isTestnet } from '../../config'
@@ -8,10 +9,19 @@ import { isTestnet } from '../../config'
 export default function IdentityPage(props: Props) {
   const { isConnected, wallet, isConnecting, onConnectWallet, isSigning, onRequestIdentity } = props
 
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   const handleSignature = (e: SyntheticEvent) => {
     e.preventDefault()
     onRequestIdentity()
   }
+
+  // Close modal once the wallet is connected
+  useEffect(() => {
+    if (isConnected && isModalOpen) {
+      setIsModalOpen(false)
+    }
+  }, [isConnected, isModalOpen])
 
   return (
     <div className="LinkScenePage">
@@ -23,7 +33,7 @@ export default function IdentityPage(props: Props) {
         isConnected={isConnected}
         isConnecting={isConnecting}
         wallet={wallet}
-        onConnectWallet={onConnectWallet}
+        onConnectWallet={() => setIsModalOpen(true)}
       />
       <form>
         <div>
@@ -32,6 +42,12 @@ export default function IdentityPage(props: Props) {
           </Button>
         </div>
       </form>
+      <LoginModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConnect={onConnectWallet}
+          isLoading={isConnecting}
+        />
     </div>
   )
 }

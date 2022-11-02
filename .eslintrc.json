@@ -1,8 +1,5 @@
 {
-  "extends": [
-    "react-app",
-    "@dcl/eslint-config/sdk"
-  ],
+  "extends": ["react-app"],
   "parserOptions": {
     "project": ["tsconfig.json"]
   },
