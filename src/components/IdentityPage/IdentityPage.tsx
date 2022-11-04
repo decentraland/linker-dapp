@@ -1,10 +1,10 @@
 import { SyntheticEvent, useEffect, useState } from 'react'
-import './style.css'
+import { ChainId } from '@dcl/schemas'
 import { Header, Button, Navbar } from 'decentraland-ui'
 import LoginModal from 'decentraland-dapps/dist/containers/LoginModal'
-import { Props } from './types'
 import RenderWalletData from '../RenderWalletData/RenderWalletData'
-import { isTestnet } from '../../config'
+import { Props } from './types'
+import './style.css'
 
 export default function IdentityPage(props: Props) {
   const { isConnected, wallet, isConnecting, onConnectWallet, isSigning, onRequestIdentity } = props
@@ -25,7 +25,7 @@ export default function IdentityPage(props: Props) {
 
   return (
     <div className="LinkScenePage">
-      {isTestnet() && <div className="warning">Using Goerli test network</div>}
+      {wallet.chainId === ChainId.ETHEREUM_GOERLI && <div className="warning">Using Goerli test network</div>}
       <Navbar />
       <Header>Create an identity to sign deployments </Header>
       <RenderWalletData
