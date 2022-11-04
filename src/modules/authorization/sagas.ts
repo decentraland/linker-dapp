@@ -15,6 +15,7 @@ import { Contract } from '@ethersproject/contracts'
 import { Info } from '../server/reducer'
 import { FETCH_INFO_SUCCESS } from '../server/actions'
 import { getInfo } from '../server/selectors'
+import { patch } from './utils'
 
 export function* authorizationSaga() {
   yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
@@ -59,10 +60,10 @@ function* handleFetchAuthorizationsRequest() {
       for (const parcel of parcels) {
         const { x, y } = parcel
         const pAuthorization = new Promise((resolve, reject) => {
-          LANDRegistry['encodeTokenId'](x, y)
-            .then((assetId: any) => {
-              LANDRegistry['isUpdateAuthorized'](address, assetId)
-                .then((isUpdateAuthorized: any) => {
+          patch(LANDRegistry.populateTransaction['encodeTokenId'](x, y), ['uint256'])
+            .then(([assetId]: any) => {
+              patch(LANDRegistry.populateTransaction['isUpdateAuthorized'](address, assetId), ['bool'])
+                .then(([isUpdateAuthorized]: any) => {
                   assetIds.set(coordsToString(parcel), assetId)
                   resolve({ x, y, isUpdateAuthorized })
                 })
