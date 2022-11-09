@@ -1,6 +1,5 @@
 import { AnyAction, Dispatch } from 'redux'
 import { connect } from 'react-redux'
-import { ProviderType } from 'decentraland-connect'
 import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getData as getWallet, isConnected, isConnecting } from 'decentraland-dapps/dist/modules/wallet/selectors'
 
@@ -23,7 +22,7 @@ const mapState = (state: RootState): MapStateProps => {
 }
 
 const mapDispatch = (dispatch: Dispatch<AnyAction>): MapDispatchProps => ({
-  onConnectWallet: () => dispatch(enableWalletRequest(ProviderType.INJECTED)),
+  onConnectWallet: providerType => dispatch(enableWalletRequest(providerType)),
   onRequestIdentity: () => dispatch(createIdentityRequest())
 })
 

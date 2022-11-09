@@ -1,21 +1,31 @@
-import { SyntheticEvent } from 'react'
-import './style.css'
+import { SyntheticEvent, useEffect, useState } from 'react'
+import { ChainId } from '@dcl/schemas'
 import { Header, Button, Navbar } from 'decentraland-ui'
-import { Props } from './types'
+import LoginModal from 'decentraland-dapps/dist/containers/LoginModal'
 import RenderWalletData from '../RenderWalletData/RenderWalletData'
-import { isTestnet } from '../../config'
+import { Props } from './types'
+import './style.css'
 
 export default function IdentityPage(props: Props) {
   const { isConnected, wallet, isConnecting, onConnectWallet, isSigning, onRequestIdentity } = props
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleSignature = (e: SyntheticEvent) => {
     e.preventDefault()
     onRequestIdentity()
   }
 
+  // Close modal once the wallet is connected
+  useEffect(() => {
+    if (isConnected && isModalOpen) {
+      setIsModalOpen(false)
+    }
+  }, [isConnected, isModalOpen])
+
   return (
     <div className="LinkScenePage">
-      {isTestnet() && <div className="warning">Using Goerli test network</div>}
+      {wallet.chainId === ChainId.ETHEREUM_GOERLI && <div className="warning">Using Goerli test network</div>}
       <Navbar />
       <Header>Create an identity to sign deployments </Header>
       <RenderWalletData
@@ -23,7 +33,7 @@ export default function IdentityPage(props: Props) {
         isConnected={isConnected}
         isConnecting={isConnecting}
         wallet={wallet}
-        onConnectWallet={onConnectWallet}
+        onConnectWallet={() => setIsModalOpen(true)}
       />
       <form>
         <div>
@@ -32,6 +42,12 @@ export default function IdentityPage(props: Props) {
           </Button>
         </div>
       </form>
+      <LoginModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConnect={onConnectWallet}
+          isLoading={isConnecting}
+        />
     </div>
   )
 }

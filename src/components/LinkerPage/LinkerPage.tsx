@@ -16,6 +16,7 @@ import {
   ToastType,
   Loader
 } from 'decentraland-ui'
+import LoginModal from 'decentraland-dapps/dist/containers/LoginModal'
 import { Props } from './types'
 import { useEffect, useState } from 'react'
 import Files from '../Files'
@@ -32,6 +33,7 @@ enum Tab {
 
 export default function LinkScenePage(props: Props) {
   const [tab, setTab] = useState<Tab>(Tab.Map)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const {
     isConnected,
     wallet,
@@ -58,6 +60,13 @@ export default function LinkScenePage(props: Props) {
     onFetchInfo()
     onFetchFiles()
   }, [onFetchFiles, onFetchInfo])
+
+  // Close modal once the wallet is connected
+  useEffect(() => {
+    if (isConnected && isModalOpen) {
+      setIsModalOpen(false)
+    }
+  }, [isConnected, isModalOpen])
 
   return (
     <div className="Page-story-container">
@@ -103,7 +112,7 @@ export default function LinkScenePage(props: Props) {
                   size="medium"
                   loading={isConnecting || isSigning || (isConnected && isAuthorizationLoading)}
                   disabled={!!error || (isConnected && !isUpdateAuthorized)}
-                  onClick={isConnected ? () => onSignContent(info!.rootCID) : onConnectWallet}
+                  onClick={isConnected ? () => onSignContent(info!.rootCID) : () => setIsModalOpen(true)}
                 >
                   {isConnected ? 'Sign & Deploy' : 'Connect Wallet'}
                 </Button>
@@ -133,6 +142,12 @@ export default function LinkScenePage(props: Props) {
         {!signed && info && tab === Tab.Map && (
           <Map authorizations={authorizations} parcels={info!.parcels} baseParcel={info!.baseParcel} />
         )}
+        <LoginModal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConnect={onConnectWallet}
+          isLoading={isConnecting}
+        />
       </Page>
       <Footer />
     </div>

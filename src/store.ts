@@ -17,7 +17,7 @@ export function initStore() {
   const transactionMiddleware = createTransactionMiddleware()
   const loggerMiddleware = createLogger({
     collapsed: () => true,
-    predicate: (_, _action) => false // isDevelopment() || action.type.includes('Failure')
+    predicate: (_, _action) => true
   })
 
   const middleware = applyMiddleware(sagasMiddleware, loggerMiddleware, storageMiddleware, transactionMiddleware)
