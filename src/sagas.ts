@@ -9,6 +9,13 @@ import { translationSaga } from './modules/translation/sagas'
 
 export function rootSaga() {
   return function*() {
-    yield all([walletSaga(), landSaga(), signatureSaga(), authorizationSaga(), apiSaga(), translationSaga()])
+    yield all([
+      walletSaga(), 
+      landSaga(), 
+      signatureSaga(), 
+      authorizationSaga(), 
+      apiSaga(), 
+      translationSaga()
+    ])
   }
 }

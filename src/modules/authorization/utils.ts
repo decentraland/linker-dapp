@@ -1,24 +1,34 @@
-import { PopulatedTransaction } from "@ethersproject/contracts"
-import { defaultAbiCoder } from "@ethersproject/abi"
-import { getConnectedProvider } from "decentraland-dapps/dist/lib/eth"
-import { Provider } from "decentraland-dapps/dist/modules/wallet/types"
+import { getEstateContract, getLandContract } from "../../contracts"
+import { BigNumber } from "ethers"
 
-/**
- * This patch performs an eth_call using the decentraland-connect provider instead of the ethers provider, becuase it's failing for some calls when using WalletConnect
- * @param data 
- * @param types 
- * @returns 
- */
-export async function patch(data: Promise<PopulatedTransaction>, types: string[]) {
-  const provider: Provider | null = await getConnectedProvider()
-  if (!provider) {
-    throw new Error('no provider')
-  }
-  console.log('eth_call', await data)
-  const response: any = await provider.request({
-    method: 'eth_call',
-    params: [await data, "latest"]
-  })
+export async function isAuthorized(x: number, y: number, address: string, landRegistry?: string, estateRegistry?: string) {
+  // Do not delete me
+  await unlockRegeneratorRuntime()
+
+  const land = await getLandContract(landRegistry)
+  const landTokenId: BigNumber = await land.encodeTokenId(x, y)
+  const isUpdateAuthorized = await land.isUpdateAuthorized(address, landTokenId)
   
-  return defaultAbiCoder.decode(types, response)
+  if (!isUpdateAuthorized) {
+    // check if estate is authorized
+    const estate = await getEstateContract(estateRegistry)
+    const estateTokenId = await estate.getLandEstateId(landTokenId)
+    if (estateTokenId && estateTokenId > 0) {
+      const isUpdateAuthorized = await estate.isUpdateAuthorized(address, estateTokenId)
+      return { x, y, isUpdateAuthorized }
+    } 
+  }
+  return { x, y, isUpdateAuthorized }
+}
+
+async function unlockRegeneratorRuntime() {
+  // For some reason, without these awaits, the ones below never resolve. They don't throw either, they just get stuck...
+  
+  // BEGIN DRAGONS 🐉
+  const m = async (n: number) => n
+  await m(1)
+  await m(2)
+  await m(3)
+  await m(4)
+  // END DRAGONS 🐉
 }

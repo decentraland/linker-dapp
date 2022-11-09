@@ -6,7 +6,7 @@ import { getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
 import * as EstateRegistry from './abis/EstateRegistry.json'
 import * as LANDRegistry from './abis/LANDRegistry.json'
 
-enum ContractName {
+export enum ContractName {
   LANDRegistry = 'land',
   EstateRegistry = 'estate'
 }
@@ -58,10 +58,12 @@ export async function getContractByName(name: ContractName) {
 
 export async function getLandContract(landRegistry?: string) {
   const { address, abi } = await getContractByName(ContractName.LANDRegistry)
-  return new Contract(landRegistry || address, abi, await getProvider())
+  const provider = await getProvider()
+  const contract = new Contract(landRegistry || address, abi, provider)
+  return contract
 }
 
 export async function getEstateContract(estateRegistry?: string) {
-  const { address, abi } = await getContractByName(ContractName.LANDRegistry)
+  const { address, abi } = await getContractByName(ContractName.EstateRegistry)
   return new Contract(estateRegistry || address, abi, await getProvider())
 }

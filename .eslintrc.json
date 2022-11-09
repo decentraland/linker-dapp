@@ -1,9 +1,0 @@
-{
-  "extends": ["react-app"],
-  "parserOptions": {
-    "project": ["tsconfig.json"]
-  },
-  "rules": {
-    "@typescript-eslint/explicit-module-boundary-types": "off"
-  }
-}
