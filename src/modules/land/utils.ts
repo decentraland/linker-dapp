@@ -1,12 +1,4 @@
-import { LANDMeta, Coords } from './types'
-
-export function getEmptyLandData(): LANDMeta {
-  return {
-    version: 0,
-    name: '',
-    description: ''
-  }
-}
+import { Coords } from './types'
 
 export function coordsToString({ x, y }: Coords): string {
   return `${x},${y}`

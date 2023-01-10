@@ -14,7 +14,7 @@ import {
   Blockie,
   Toast,
   ToastType,
-  Loader
+  Loader,
 } from 'decentraland-ui'
 import LoginModal from 'decentraland-dapps/dist/containers/LoginModal'
 import { Props } from './types'
@@ -28,7 +28,7 @@ import DeploySuccess from '../DeploySuccess/DeploySuccess.container'
 
 enum Tab {
   Map = 'Map',
-  Files = 'Files'
+  Files = 'Files',
 }
 
 export default function LinkScenePage(props: Props) {
@@ -45,10 +45,9 @@ export default function LinkScenePage(props: Props) {
     onFetchFiles,
     onFetchInfo,
     isSigning,
-    error,
     isAuthorizationLoading,
     signed,
-    info
+    info,
   } = props
 
   const { x, y } = info?.baseParcel || { x: 0, y: 0 }
@@ -70,14 +69,25 @@ export default function LinkScenePage(props: Props) {
 
   return (
     <div className="Page-story-container">
-      <Navbar leftMenu={<></>} isConnected={isConnected} isConnecting={isConnecting} address={wallet?.address} />
+      <Navbar
+        leftMenu={<></>}
+        isConnected={isConnected}
+        isConnecting={isConnecting}
+        address={wallet?.address}
+      />
       <Page>
         <Container>
           <HeaderMenu>
             <HeaderMenu.Left>
               <Container textAlign="center">
-                <Header size="large">Deploying {info?.title || 'Untitled Scene'}</Header>
-                {info?.description && <Header size="medium">{info?.description || 'Some description'}</Header>}
+                <Header size="large">
+                  Deploying {info?.title || 'Untitled Scene'}
+                </Header>
+                {info?.description && (
+                  <Header size="medium">
+                    {info?.description || 'Some description'}
+                  </Header>
+                )}
               </Container>
             </HeaderMenu.Left>
           </HeaderMenu>
@@ -85,7 +95,9 @@ export default function LinkScenePage(props: Props) {
             <HeaderMenu.Left>
               <div
                 className="address-header url"
-                onClick={() => deployUrl && window.open(deployUrl!, '_blank')?.focus()}
+                onClick={() =>
+                  deployUrl && window.open(deployUrl!, '_blank')?.focus()
+                }
               >
                 <Badge color={Color.SUMMER_RED}>
                   <Icon name="point" />
@@ -94,7 +106,9 @@ export default function LinkScenePage(props: Props) {
               </div>
               {!!isConnected && (
                 <div className="address-header">
-                  <Badge color={Color.SHADOWS}>{isTestNet ? 'Goerli' : 'Mainnet'}</Badge>
+                  <Badge color={Color.SHADOWS}>
+                    {isTestNet ? 'Goerli' : 'Mainnet'}
+                  </Badge>
                 </div>
               )}
               <div className="address-header">
@@ -110,9 +124,17 @@ export default function LinkScenePage(props: Props) {
                 <Button
                   primary
                   size="medium"
-                  loading={isConnecting || isSigning || (isConnected && isAuthorizationLoading)}
-                  disabled={!!error || (isConnected && !isUpdateAuthorized)}
-                  onClick={isConnected ? () => onSignContent(info!.rootCID) : () => setIsModalOpen(true)}
+                  loading={
+                    isConnecting ||
+                    isSigning ||
+                    (isConnected && isAuthorizationLoading)
+                  }
+                  disabled={isConnected && !isUpdateAuthorized}
+                  onClick={
+                    isConnected
+                      ? () => onSignContent(info!.rootCID)
+                      : () => setIsModalOpen(true)
+                  }
                 >
                   {isConnected ? 'Sign & Deploy' : 'Connect Wallet'}
                 </Button>
@@ -129,7 +151,7 @@ export default function LinkScenePage(props: Props) {
         )}
         {!signed && (
           <Tabs isFullscreen>
-            {Object.values(Tab).map(t => (
+            {Object.values(Tab).map((t) => (
               <Tabs.Tab key={t} onClick={() => setTab(t)} active={tab === t}>
                 {t}
               </Tabs.Tab>
@@ -140,7 +162,11 @@ export default function LinkScenePage(props: Props) {
         {signed && <DeploySuccess />}
         {!signed && tab === Tab.Files && <Files />}
         {!signed && info && tab === Tab.Map && (
-          <Map authorizations={authorizations} parcels={info!.parcels} baseParcel={info!.baseParcel} />
+          <Map
+            authorizations={authorizations}
+            parcels={info!.parcels}
+            baseParcel={info!.baseParcel}
+          />
         )}
         <LoginModal
           open={isModalOpen}

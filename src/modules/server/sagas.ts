@@ -8,9 +8,10 @@ import {
   fetchInfoSuccess,
   FETCH_CATALYST_REQUEST,
   FETCH_FILES_REQUEST,
-  FETCH_INFO_REQUEST
+  FETCH_INFO_REQUEST,
 } from './actions'
-import { CatalystResponse, FileSize, Info } from './reducer'
+import { CatalystResponse, FileSize } from './reducer'
+import { InfoResponse } from './types'
 import { getCatalystsPointer, getFilesRequest, getInfoRequest } from './utils'
 
 export function* apiSaga() {
@@ -30,7 +31,7 @@ function* handleFetchFilesRequest() {
 
 function* handleFetchInfoRequest() {
   try {
-    const info: Info = yield call(getInfoRequest)
+    const info: InfoResponse = yield call(getInfoRequest)
     yield put(fetchInfoSuccess(info))
   } catch (e) {
     yield put(fetchInfoFailure((e as any).message))
