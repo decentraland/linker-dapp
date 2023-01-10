@@ -28,7 +28,6 @@ import { getInfo } from '../../modules/server/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
-    // base: getLand(state),
     wallet: getWallet(state)!,
     isConnected: isConnected(state),
     isConnecting: isConnecting(state),
