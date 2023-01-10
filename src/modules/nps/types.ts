@@ -1,0 +1,1 @@
+export type WindowWithNps = Window & { delightedNps4: { survey: Function } }
