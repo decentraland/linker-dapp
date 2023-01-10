@@ -1,5 +1,5 @@
 import { action } from 'typesafe-actions'
-import { CatalystResponse, FileSize, Info } from './reducer'
+import { CatalystResponse, FileSize } from './reducer'
 import { InfoResponse } from './types'
 
 export const FETCH_FILES_REQUEST = '[Request] Fetch Files'
