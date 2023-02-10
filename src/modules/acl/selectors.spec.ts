@@ -14,7 +14,7 @@ import { InfoResponse } from './types'
 
 let state: RootState
 
-describe('acl descriptors', () => {
+describe('acl selectors', () => {
   beforeEach(() => {
     state = {
       acl: {
