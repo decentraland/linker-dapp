@@ -1,5 +1,8 @@
 import { AuthIdentity } from 'dcl-crypto'
-import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
+import {
+  loadingReducer,
+  LoadingState,
+} from 'decentraland-dapps/dist/modules/loading/reducer'
 
 import {
   SignContentRequestAction,
@@ -13,7 +16,13 @@ import {
   CreateIdentityFailureAction,
   CREATE_IDENTITY_REQUEST,
   CREATE_IDENTITY_SUCCESS,
-  CREATE_IDENTITY_FAILURE
+  CREATE_IDENTITY_FAILURE,
+  SignWorldACLRequestAction,
+  SignWorldACLSuccessAction,
+  SignWorldACLFailureAction,
+  SIGN_WORLD_ACL_REQUEST,
+  SIGN_WORLD_ACL_SUCCESS,
+  SIGN_WORLD_ACL_FAILURE,
 } from './actions'
 
 export type SignatureState = {
@@ -27,7 +36,7 @@ const INITIAL_STATE: SignatureState = {
   data: '',
   loading: [],
   identity: null,
-  error: null
+  error: null,
 }
 
 export type SignatureReducerAction =
@@ -37,44 +46,68 @@ export type SignatureReducerAction =
   | CreateIdentityRequestAction
   | CreateIdentitySuccessAction
   | CreateIdentityFailureAction
+  | SignWorldACLRequestAction
+  | SignWorldACLSuccessAction
+  | SignWorldACLFailureAction
 
-export const signatureReducer = (state = INITIAL_STATE, action: SignatureReducerAction): SignatureState => {
+export const signatureReducer = (
+  state = INITIAL_STATE,
+  action: SignatureReducerAction
+): SignatureState => {
   switch (action.type) {
     case SIGN_CONTENT_REQUEST:
       return {
         ...state,
-        loading: loadingReducer(state.loading, action)
+        loading: loadingReducer(state.loading, action),
       }
     case SIGN_CONTENT_SUCCESS:
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         data: action.payload.signature,
-        error: null
+        error: null,
       }
     case SIGN_CONTENT_FAILURE:
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        error: action.payload.error
+        error: action.payload.error,
       }
     case CREATE_IDENTITY_REQUEST:
       return {
         ...state,
-        loading: loadingReducer(state.loading, action)
+        loading: loadingReducer(state.loading, action),
       }
     case CREATE_IDENTITY_SUCCESS:
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         identity: action.payload.identity,
-        error: null
+        error: null,
       }
     case CREATE_IDENTITY_FAILURE:
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        error: action.payload.error
+        error: action.payload.error,
+      }
+    case SIGN_WORLD_ACL_REQUEST:
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+      }
+    case SIGN_WORLD_ACL_SUCCESS:
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        data: action.payload.signature,
+        error: null,
+      }
+    case SIGN_WORLD_ACL_FAILURE:
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        error: action.payload.error,
       }
     default: {
       return state

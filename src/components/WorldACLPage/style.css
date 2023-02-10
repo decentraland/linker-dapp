@@ -1,0 +1,7 @@
+.address-header {
+  margin-right: 16px;
+}
+
+div.url > div.dcl.badge {
+  cursor: pointer;
+}
