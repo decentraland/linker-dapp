@@ -32,7 +32,7 @@ export type SignatureState = {
   error: string | null
 }
 
-const INITIAL_STATE: SignatureState = {
+export const INITIAL_STATE: SignatureState = {
   data: '',
   loading: [],
   identity: null,

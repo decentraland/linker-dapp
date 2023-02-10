@@ -8,7 +8,6 @@ import {
   fetchWorldACLFailure,
   updateWorldACLRequest,
   updateWorldACLFailure,
-  FETCH_INFO_REQUEST,
   FETCH_INFO_SUCCESS,
   FETCH_WORLD_ACL_SUCCESS,
   UPDATE_WORLD_ACL_SUCCESS,
@@ -86,7 +85,7 @@ describe('acl reducer', () => {
         '{"resource": "world.name.dcl.eth", "allowed": ["0xD9370c94253f080272BA1c28E216146ecE809f4d"] }',
     }
 
-    it('should return a state with the the loaded items plus the fetched trending items and the loading state cleared', () => {
+    it('should add the info to the store', () => {
       expect(aclReducer(initialState, fetchInfoSuccess(info))).toEqual({
         ...INITIAL_STATE,
         loading: [],
@@ -109,7 +108,7 @@ describe('acl reducer', () => {
       allowed: ['0xD9370c94253f080272BA1c28E216146ecE809f4d'],
     }
 
-    it('should return a state with the the loaded items plus the fetched trending items and the loading state cleared', () => {
+    it('should add the acl to the store', () => {
       expect(aclReducer(initialState, fetchWorldACLSuccess(acl))).toEqual({
         ...INITIAL_STATE,
         loading: [],
@@ -124,7 +123,7 @@ describe('acl reducer', () => {
       loading: loadingReducer([], updateWorldACLRequest('signature')),
     }
 
-    it('should return a state with the the loaded items plus the fetched trending items and the loading state cleared', () => {
+    it('should clear the loading state', () => {
       expect(aclReducer(initialState, updateWorldACLSuccess())).toEqual({
         ...INITIAL_STATE,
         loading: [],
