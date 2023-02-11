@@ -13,7 +13,6 @@ import { createIdentity } from '@dcl/builder-client'
 import { ChainId } from '@dcl/schemas'
 import { closeServer, postDeploy } from '../server/utils'
 import { fetchCatalystRequest } from '../server/actions'
-import { updateWorldACL } from '../acl/utils'
 import {
   SIGN_CONTENT_REQUEST,
   SIGN_CONTENT_SUCCESS,
@@ -82,7 +81,8 @@ function* handleSignContentSuccess(action: SignContentSuccessAction) {
   }
 }
 
-function* handleCreateIdentityRequest(_action: SignContentRequestAction) {
+function* handleCreateIdentityRequest(action: any) {
+  console.error('entro', action)
   try {
     const provider: Provider = yield call(() => getConnectedProvider())
     const web3provider = new Web3Provider(provider)

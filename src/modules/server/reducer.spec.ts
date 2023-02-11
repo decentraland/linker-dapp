@@ -35,7 +35,7 @@ const failureActions = [
   { request: fetchInfoRequest(), failure: fetchInfoFailure(error) },
 ]
 
-describe('acl reducer', () => {
+describe('server reducer', () => {
   requestActions.forEach((action) => {
     describe(`when reducing the "${action.type}" action`, () => {
       it('should return a state with the loading set', () => {

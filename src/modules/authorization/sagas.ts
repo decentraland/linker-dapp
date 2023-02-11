@@ -1,11 +1,9 @@
 import { call, put, takeEvery, select, take } from 'redux-saga/effects'
-import { CONNECT_WALLET_SUCCESS } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import {
   FETCH_AUTHORIZATIONS_REQUEST,
-  fetchAuthorizationsRequest,
   fetchAuthorizationsFailure,
-  fetchAuthorizationsSuccess
+  fetchAuthorizationsSuccess,
 } from './actions'
 import { Authorization } from './types'
 import { Info } from '../server/reducer'
@@ -14,8 +12,10 @@ import { getInfo } from '../server/selectors'
 import { isAuthorized } from './utils'
 
 export function* authorizationSaga() {
-  yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
-  yield takeEvery(FETCH_AUTHORIZATIONS_REQUEST, handleFetchAuthorizationsRequest)
+  yield takeEvery(
+    FETCH_AUTHORIZATIONS_REQUEST,
+    handleFetchAuthorizationsRequest
+  )
 }
 
 function* handleFetchAuthorizationsRequest() {
@@ -36,7 +36,7 @@ function* handleFetchAuthorizationsRequest() {
           parcels.map(({ x, y }) => ({
             x,
             y,
-            isUpdateAuthorized: true
+            isUpdateAuthorized: true,
           }))
         )
       )
@@ -48,16 +48,15 @@ function* handleFetchAuthorizationsRequest() {
 
     try {
       const address: string = yield select(getAddress)
-      const promises: Promise<Authorization>[] = parcels.map(parcel => isAuthorized(parcel.x, parcel.y, address, landRegistry, estateRegistry))
-      const authorizations: Authorization[] = yield call(() => Promise.all(promises))
+      const promises: Promise<Authorization>[] = parcels.map((parcel) =>
+        isAuthorized(parcel.x, parcel.y, address, landRegistry, estateRegistry)
+      )
+      const authorizations: Authorization[] = yield call(() =>
+        Promise.all(promises)
+      )
       yield put(fetchAuthorizationsSuccess(authorizations))
     } catch (error) {
       yield put(fetchAuthorizationsFailure((error as Error).message))
     }
   }
-}
-
-function* handleConnectWalletSuccess(): any {
-  const address = yield select(getAddress)
-  yield put(fetchAuthorizationsRequest(address))
 }

@@ -6,7 +6,7 @@ import { InfoResponse } from './types'
 
 let state: RootState
 
-describe('api selectors', () => {
+describe('server selectors', () => {
   beforeEach(() => {
     state = {
       api: {
