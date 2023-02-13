@@ -20,8 +20,7 @@ describe('nps sagas', () => {
   })
 
   describe('when handling the action signaling the success of the sign content request', () => {
-    // TODO: Cannot read property 'next' of undefined at getNext (/Users/kevinszuchet/Decentraland/linker-dapp/node_modules/redux-saga-test-plan/lib/expectSaga/sagaWrapper.js:51:32)
-    it.skip('should reload the page', async () => {
+    it('should reload the page', async () => {
       return expectSaga(npsSaga)
         .dispatch(signContentSuccess('signature'))
         .silentRun()
