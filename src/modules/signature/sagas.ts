@@ -82,7 +82,6 @@ function* handleSignContentSuccess(action: SignContentSuccessAction) {
 }
 
 function* handleCreateIdentityRequest(action: any) {
-  console.error('entro', action)
   try {
     const provider: Provider = yield call(() => getConnectedProvider())
     const web3provider = new Web3Provider(provider)
@@ -108,7 +107,7 @@ function* handleCreateIdentitySuccess(action: CreateIdentitySuccessAction) {
       payload: { identity, address, chainId },
     })
   } catch (error) {
-    yield put(signContentFailure((error as Error).message))
+    yield put(createIdentityFailure((error as Error).message))
   }
 }
 
