@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ChainId, getChainName } from '@dcl/schemas'
+import { getChainName } from '@dcl/schemas'
 import {
   Navbar,
   Footer,
