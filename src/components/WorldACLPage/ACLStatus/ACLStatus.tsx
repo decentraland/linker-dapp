@@ -10,7 +10,7 @@ export default function ACLStatus({ aclStatus, info, onFetchWorldACL }: Props) {
   useEffect(() => {
     if (aclUpdated || !info) return
     const interval = setInterval(() => {
-      onFetchWorldACL(info.targetServer, info.worldName)
+      onFetchWorldACL(info.targetContent, info.worldName)
     }, 5_000)
     return () => clearInterval(interval)
   }, [aclUpdated, info, onFetchWorldACL])
@@ -20,7 +20,7 @@ export default function ACLStatus({ aclStatus, info, onFetchWorldACL }: Props) {
       <HeaderMenu>
         <Badge color={aclUpdated ? '#20913e' : Color.SUNISH}>
           {aclUpdated
-            ? `World ACL updated successfully to ${info?.targetServer}`
+            ? `World ACL updated successfully to ${info?.targetContent}`
             : 'Updating ACL..'}
         </Badge>
       </HeaderMenu>

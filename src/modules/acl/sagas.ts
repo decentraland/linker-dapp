@@ -34,9 +34,9 @@ function* handleFetchInfoRequest() {
 }
 
 function* handleFetchWorldACLRequest(action: FetchWorldACLRequestAction) {
-  const { targetServer, worldName } = action.payload
+  const { targetContent, worldName } = action.payload
   try {
-    const acl: ACLResponse = yield call(getWorldACL, targetServer, worldName)
+    const acl: ACLResponse = yield call(getWorldACL, targetContent, worldName)
     yield put(fetchWorldACLSuccess(acl))
   } catch (e) {
     yield put(fetchWorldACLFailure((e as any).message))

@@ -1,7 +1,7 @@
 export type InfoResponse = {
   worldName: string
   allowed: string[]
-  targetServer: string
+  targetContent: string
   payload: string // This is the data to sign
 }
 

@@ -20,8 +20,8 @@ export const fetchInfoSuccess = (info: InfoResponse) =>
 export const fetchInfoFailure = (error: string) =>
   action(FETCH_INFO_FAILURE, { error })
 
-export const fetchWorldACLRequest = (targetServer: string, worldName: string) =>
-  action(FETCH_WORLD_ACL_REQUEST, { targetServer, worldName })
+export const fetchWorldACLRequest = (targetContent: string, worldName: string) =>
+  action(FETCH_WORLD_ACL_REQUEST, { targetContent, worldName })
 export const fetchWorldACLSuccess = (acl: ACLResponse) =>
   action(FETCH_WORLD_ACL_SUCCESS, { acl })
 export const fetchWorldACLFailure = (error: string) =>

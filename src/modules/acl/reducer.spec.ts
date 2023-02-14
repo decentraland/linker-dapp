@@ -20,14 +20,14 @@ const error = 'error'
 
 const requestActions = [
   fetchInfoRequest(),
-  fetchWorldACLRequest('targetServer', 'worldName'),
+  fetchWorldACLRequest('targetContent', 'worldName'),
   updateWorldACLRequest('signature'),
 ]
 
 const failureActions = [
   { request: fetchInfoRequest(), failure: fetchInfoFailure(error) },
   {
-    request: fetchWorldACLRequest('targetServer', 'worldName'),
+    request: fetchWorldACLRequest('targetContent', 'worldName'),
     failure: fetchWorldACLFailure(error),
   },
   {
@@ -80,7 +80,7 @@ describe('acl reducer', () => {
     const info: InfoResponse = {
       worldName: 'world.name.dcl.eth',
       allowed: ['0xD9370c94253f080272BA1c28E216146ecE809f4d'],
-      targetServer: 'target.server',
+      targetContent: 'target.content',
       payload:
         '{"resource": "world.name.dcl.eth", "allowed": ["0xD9370c94253f080272BA1c28E216146ecE809f4d"] }',
     }
@@ -99,7 +99,7 @@ describe('acl reducer', () => {
       ...INITIAL_STATE,
       loading: loadingReducer(
         [],
-        fetchWorldACLRequest('targetServer', 'worldName')
+        fetchWorldACLRequest('targetContent', 'worldName')
       ),
     }
 

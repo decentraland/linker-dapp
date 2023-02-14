@@ -12,8 +12,8 @@ const mapState = (state: RootState): MapStateProps => ({
 
 const mapDispatch = (dispatch: Dispatch<AnyAction>): MapDispatchProps => {
   return {
-    onFetchWorldACL: (targetServer: string, worldName: string) =>
-      dispatch(fetchWorldACLRequest(targetServer, worldName)),
+    onFetchWorldACL: (targetContent: string, worldName: string) =>
+      dispatch(fetchWorldACLRequest(targetContent, worldName)),
   }
 }
 

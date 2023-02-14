@@ -38,7 +38,7 @@ describe('acl actions', () => {
     const info: InfoResponse = {
       worldName: 'world.name.dcl.eth',
       allowed: ['0xD9370c94253f080272BA1c28E216146ecE809f4d'],
-      targetServer: 'target.server',
+      targetContent: 'target.content',
       payload:
         '{"resource": "world.name.dcl.eth", "allowed": ["0xD9370c94253f080272BA1c28E216146ecE809f4d"] }',
     }
@@ -63,14 +63,14 @@ describe('acl actions', () => {
   })
 
   describe('when creating the action to signal the start of the fetch world ACL request', () => {
-    const targetServer = 'targetServer'
+    const targetContent = 'targetContent'
     const worldName = 'worldName'
 
     it('should return an object representing the action', () => {
-      expect(fetchWorldACLRequest(targetServer, worldName)).toEqual({
+      expect(fetchWorldACLRequest(targetContent, worldName)).toEqual({
         type: FETCH_WORLD_ACL_REQUEST,
         meta: undefined,
-        payload: { targetServer, worldName },
+        payload: { targetContent: targetContent, worldName },
       })
     })
   })

@@ -44,7 +44,7 @@ describe('acl sagas', () => {
   })
 
   describe('when handling the fetch world ACL request', () => {
-    const targetServer = 'targetServer'
+    const targetContent = 'targetContent'
     const worldName = 'worldName'
 
     describe('when the request fails', () => {
@@ -52,12 +52,12 @@ describe('acl sagas', () => {
         return expectSaga(aclSaga)
           .provide([
             [
-              call(getWorldACL, targetServer, worldName),
+              call(getWorldACL, targetContent, worldName),
               Promise.reject(new Error(error)),
             ],
           ])
           .put(fetchWorldACLFailure(error))
-          .dispatch(fetchWorldACLRequest(targetServer, worldName))
+          .dispatch(fetchWorldACLRequest(targetContent, worldName))
           .run({ silenceTimeout: true })
       })
     })
@@ -66,9 +66,9 @@ describe('acl sagas', () => {
       const acl = {} as ACLResponse
       it('should dispatch an action signaling the success of the action', () => {
         return expectSaga(aclSaga)
-          .provide([[call(getWorldACL, targetServer, worldName), acl]])
+          .provide([[call(getWorldACL, targetContent, worldName), acl]])
           .put(fetchWorldACLSuccess(acl))
-          .dispatch(fetchWorldACLRequest(targetServer, worldName))
+          .dispatch(fetchWorldACLRequest(targetContent, worldName))
           .run({ silenceTimeout: true })
       })
     })
