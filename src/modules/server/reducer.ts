@@ -58,7 +58,7 @@ export type ApiState = {
   info: Info | undefined
 }
 
-const INITIAL_STATE: ApiState = {
+export const INITIAL_STATE: ApiState = {
   info: undefined,
   files: [],
   loading: [],

@@ -10,6 +10,7 @@ import {
 import { signatureReducer as signature } from './modules/signature/reducer'
 import { authorizationReducer as authorization } from './modules/authorization/reducer'
 import { apiReducer as api } from './modules/server/reducer'
+import { aclReducer as acl } from './modules/acl/reducer'
 import { RootState } from './types'
 
 export const rootReducer = storageReducerWrapper(
@@ -21,5 +22,6 @@ export const rootReducer = storageReducerWrapper(
     signature,
     authorization,
     api,
+    acl,
   })
 )

@@ -1,6 +1,7 @@
 import { takeEvery, call, put } from 'redux-saga/effects'
 
 import {
+  fetchCatalystFailure,
   fetchCatalystSuccess,
   fetchFilesFailure,
   fetchFilesSuccess,
@@ -43,6 +44,6 @@ function* handleFetchCatalystRequest() {
     const value: CatalystResponse = yield call(getCatalystsPointer)
     yield put(fetchCatalystSuccess(value))
   } catch (e) {
-    yield put(fetchInfoFailure((e as any).message))
+    yield put(fetchCatalystFailure((e as any).message))
   }
 }

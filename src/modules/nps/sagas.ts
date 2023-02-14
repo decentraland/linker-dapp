@@ -1,4 +1,4 @@
-import { takeEvery } from 'redux-saga/effects'
+import { call, takeEvery } from 'redux-saga/effects'
 import {
   SignContentSuccessAction,
   SIGN_CONTENT_SUCCESS,
@@ -9,9 +9,9 @@ export function* npsSaga() {
   yield takeEvery(SIGN_CONTENT_SUCCESS, handleSignContentSuccess)
 }
 
-function handleSignContentSuccess(_action: SignContentSuccessAction) {
+function* handleSignContentSuccess(_action: SignContentSuccessAction) {
   const windowWithNps = window as unknown as WindowWithNps
   if ('delightedNps4' in window) {
-    windowWithNps.delightedNps4.survey()
+    yield call(windowWithNps.delightedNps4.survey)
   }
 }

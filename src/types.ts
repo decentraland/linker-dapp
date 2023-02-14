@@ -7,15 +7,17 @@ import { TranslationState } from 'decentraland-dapps/dist/modules/translation/re
 import { SignatureState } from './modules/signature/reducer'
 import { AuthorizationState } from './modules/authorization/reducer'
 import { ApiState } from './modules/server/reducer'
+import { ACLState } from './modules/acl/reducer'
 
 export type RootState = {
+  api: ApiState
+  acl: ACLState
   storage: StorageState
   wallet: WalletState
   transaction: TransactionState
   translation: TranslationState
   authorization: AuthorizationState
   signature: SignatureState
-  api: ApiState
 }
 
 export type RootReducer = Reducer<Store<RootState>>

@@ -1,4 +1,7 @@
-import { loadingReducer, LoadingState } from 'decentraland-dapps/dist/modules/loading/reducer'
+import {
+  loadingReducer,
+  LoadingState,
+} from 'decentraland-dapps/dist/modules/loading/reducer'
 
 import {
   FetchAuthorizationsRequestAction,
@@ -6,7 +9,7 @@ import {
   FetchAuthorizationsFailureAction,
   FETCH_AUTHORIZATIONS_REQUEST,
   FETCH_AUTHORIZATIONS_SUCCESS,
-  FETCH_AUTHORIZATIONS_FAILURE
+  FETCH_AUTHORIZATIONS_FAILURE,
 } from './actions'
 
 export type AuthorizationState = {
@@ -15,10 +18,10 @@ export type AuthorizationState = {
   error: string | null
 }
 
-const INITIAL_STATE: AuthorizationState = {
+export const INITIAL_STATE: AuthorizationState = {
   data: [],
   loading: [],
-  error: null
+  error: null,
 }
 
 export type AuthorizationReducerAction =
@@ -26,24 +29,27 @@ export type AuthorizationReducerAction =
   | FetchAuthorizationsSuccessAction
   | FetchAuthorizationsFailureAction
 
-export const authorizationReducer = (state = INITIAL_STATE, action: AuthorizationReducerAction): AuthorizationState => {
+export const authorizationReducer = (
+  state = INITIAL_STATE,
+  action: AuthorizationReducerAction
+): AuthorizationState => {
   switch (action.type) {
     case FETCH_AUTHORIZATIONS_REQUEST:
       return {
         ...state,
-        loading: loadingReducer(state.loading, action)
+        loading: loadingReducer(state.loading, action),
       }
     case FETCH_AUTHORIZATIONS_SUCCESS:
       return {
         loading: loadingReducer(state.loading, action),
         data: action.payload.authorizations,
-        error: null
+        error: null,
       }
     case FETCH_AUTHORIZATIONS_FAILURE:
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        error: action.payload.error
+        error: action.payload.error,
       }
     default: {
       return state
