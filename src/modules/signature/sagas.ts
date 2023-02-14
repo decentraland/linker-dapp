@@ -31,6 +31,7 @@ import {
   SIGN_WORLD_ACL_SUCCESS,
   signWorldACLSuccess,
   signWorldACLFailure,
+  CreateIdentityRequestAction,
 } from './actions'
 import { updateWorldACLRequest } from '../acl/actions'
 
@@ -81,7 +82,7 @@ function* handleSignContentSuccess(action: SignContentSuccessAction) {
   }
 }
 
-function* handleCreateIdentityRequest(action: any) {
+function* handleCreateIdentityRequest(_action: CreateIdentityRequestAction) {
   try {
     const provider: Provider = yield call(() => getConnectedProvider())
     const web3provider = new Web3Provider(provider)
