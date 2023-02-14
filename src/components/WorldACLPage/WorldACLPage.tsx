@@ -113,11 +113,20 @@ export default function WorldACLPage(props: Props) {
               </Table.Header>
 
               <Table.Body>
-                {info.allowed.map((address, index) => (
-                  <Table.Row key={index}>
-                    <Table.Cell>{address}</Table.Cell>
+                {info.allowed.length > 0 ? (
+                  info.allowed.map((address, index) => (
+                    <Table.Row key={index}>
+                      <Table.Cell>{address}</Table.Cell>
+                    </Table.Row>
+                  ))
+                ) : (
+                  <Table.Row>
+                    <Table.Cell>
+                      No additional addresses are allowed to deploy. Only the
+                      world owner.
+                    </Table.Cell>
                   </Table.Row>
-                ))}
+                )}
               </Table.Body>
             </Table>
           </Container>
