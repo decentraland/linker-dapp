@@ -19,7 +19,7 @@ const failureActions = [
   },
 ]
 
-describe('authoriation reducer', () => {
+describe('authorization reducer', () => {
   requestActions.forEach((action) => {
     describe(`when reducing the "${action.type}" action`, () => {
       it('should return a state with the loading set', () => {
