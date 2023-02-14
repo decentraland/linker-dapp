@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ChainId } from '@dcl/schemas'
+import { ChainId, getChainName } from '@dcl/schemas'
 import {
   Navbar,
   Footer,
@@ -36,8 +36,6 @@ export default function WorldACLPage(props: Props) {
     onFetchInfo,
   } = props
 
-  const isTestNet = wallet?.chainId === ChainId.ETHEREUM_GOERLI
-
   useEffect(() => {
     onFetchInfo()
   }, [onFetchInfo])
@@ -70,10 +68,10 @@ export default function WorldACLPage(props: Props) {
           </HeaderMenu>
           <HeaderMenu>
             <HeaderMenu.Left>
-              {!!isConnected && (
+              {!!isConnected && wallet?.chainId && (
                 <div className="address-header">
                   <Badge color={Color.SHADOWS}>
-                    {isTestNet ? 'Goerli' : 'Mainnet'}
+                    {getChainName(wallet.chainId)}
                   </Badge>
                 </div>
               )}
