@@ -80,7 +80,10 @@ describe('acl reducer', () => {
     const info: InfoResponse = {
       worldName: 'world.name.dcl.eth',
       allowed: ['0xD9370c94253f080272BA1c28E216146ecE809f4d'],
+      oldAllowed: [],
       targetContent: 'target.content',
+      timestamp: new Date('2023-03-03T15:22:56.493Z'),
+      expiration: 120,
       payload:
         '{"resource": "world.name.dcl.eth", "allowed": ["0xD9370c94253f080272BA1c28E216146ecE809f4d"] }',
     }
