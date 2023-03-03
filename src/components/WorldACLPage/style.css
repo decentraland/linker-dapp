@@ -5,3 +5,53 @@
 div.url > div.dcl.badge {
   cursor: pointer;
 }
+
+.changes {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+
+.ui.container.sign-submit-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 28px;
+}
+
+.allowed {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  border-top: 1px solid var(--divider);
+  padding-top: 25px;
+}
+
+.allowed .owner, .allowed .deployers {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+}
+
+.allowed .description {
+  margin-right: 10px;
+}
+
+.allowed .addresses {
+  display: inline-flex;
+  flex-wrap: wrap;;
+  column-gap: 10px;
+  row-gap: 10px;
+}
+
+.ui.container.sign-submit-container p {
+  text-align: center;
+  margin-top: 5px;
+}
+
+.expired-message {
+  color: var(--danger);
+  opacity: 0.7;
+}
+
+.about-to-expire-message {
+  color: var(--text);
+}
