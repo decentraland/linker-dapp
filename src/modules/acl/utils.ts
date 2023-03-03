@@ -2,7 +2,7 @@ import { ACLResponse } from './reducer'
 import { InfoResponse, UpdatePayload } from './types'
 
 export async function getInfoRequest(): Promise<InfoResponse> {
-  return (await fetch('http://localhost:8000/api/acl')).json()
+  return (await fetch('/api/acl')).json()
 }
 
 export async function getWorldACL(
@@ -13,7 +13,7 @@ export async function getWorldACL(
 }
 
 export async function updateWorldACL(payload: UpdatePayload): Promise<void> {
-  await fetch(`http://localhost:8000/api/acl`, {
+  await fetch(`/api/acl`, {
     method: 'post',
     headers: {
       'Content-Type': 'application/json',
