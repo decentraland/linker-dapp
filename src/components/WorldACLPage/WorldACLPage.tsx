@@ -167,7 +167,7 @@ export default function WorldACLPage(props: Props) {
                 </ul>
               </p>
               <div className="allowed">
-                <h3>ACL</h3>
+                <h3>Access control list</h3>
                 <Allowed
                   className="owner"
                   description="Owner"
