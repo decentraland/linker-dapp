@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { getChainName } from '@dcl/schemas'
 import {
   Navbar,
@@ -13,16 +13,34 @@ import {
   Address,
   Blockie,
   Loader,
-  Table,
 } from 'decentraland-ui'
 import LoginModal from 'decentraland-dapps/dist/containers/LoginModal'
+import { Chip } from '../Chip'
 import { Props } from './types'
-
-import './style.css'
 import ACLStatus from './ACLStatus'
+import './style.css'
+
+function Allowed(props: {
+  className: string
+  description: string
+  addresses: string[]
+}) {
+  const { className, description, addresses } = props
+  return (
+    <div className={className}>
+      <span className="description">{description}:</span>
+      <div className="addresses">
+        {addresses.map((address) => (
+          <Chip text={address} type="circle" />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export default function WorldACLPage(props: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isPayloadExpired, setIsPayloadExpired] = useState(false)
 
   const {
     isConnected,
@@ -36,6 +54,16 @@ export default function WorldACLPage(props: Props) {
     onFetchInfo,
   } = props
 
+  const allowedDifference = useMemo(() => {
+    if (!info) return []
+
+    const { allowed, oldAllowed } = info
+
+    return allowed.length > oldAllowed.length
+      ? allowed.filter((address) => !oldAllowed.includes(address))
+      : oldAllowed.filter((address) => !allowed.includes(address))
+  }, [info])
+
   useEffect(() => {
     onFetchInfo()
   }, [onFetchInfo])
@@ -46,6 +74,18 @@ export default function WorldACLPage(props: Props) {
       setIsModalOpen(false)
     }
   }, [isConnected, isModalOpen])
+
+  useEffect(() => {
+    if (!info) return
+
+    const interval = setInterval(() => {
+      setIsPayloadExpired(true)
+    }, info.expiration * 1000)
+
+    return () => {
+      clearTimeout(interval)
+    }
+  }, [info])
 
   return (
     <div className="Page-story-container">
@@ -68,6 +108,16 @@ export default function WorldACLPage(props: Props) {
           </HeaderMenu>
           <HeaderMenu>
             <HeaderMenu.Left>
+              {!isConnected && (
+                <Button
+                  primary
+                  size="medium"
+                  loading={isConnecting}
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  Connect Wallet
+                </Button>
+              )}
               {!!isConnected && wallet?.chainId && (
                 <div className="address-header">
                   <Badge color={Color.SHADOWS}>
@@ -83,52 +133,70 @@ export default function WorldACLPage(props: Props) {
                 )}
               </div>
             </HeaderMenu.Left>
-            {!signed && (
-              <HeaderMenu.Right>
-                <Button
-                  primary
-                  size="medium"
-                  loading={isConnecting || isSigning}
-                  onClick={
-                    isConnected
-                      ? () => onSignContent(info!.payload)
-                      : () => setIsModalOpen(true)
-                  }
-                >
-                  {isConnected ? 'Sign & Deploy' : 'Connect Wallet'}
-                </Button>
-              </HeaderMenu.Right>
-            )}
           </HeaderMenu>
         </Container>
         {!info && <Loader />}
         {info && signed && <ACLStatus info={info} />}
-        {!signed && info && (
-          <Container>
-            <Table basic="very">
-              <Table.Header>
-                <Table.Row>
-                  <Table.HeaderCell>Address</Table.HeaderCell>
-                </Table.Row>
-              </Table.Header>
-
-              <Table.Body>
-                {info.allowed.length > 0 ? (
-                  info.allowed.map((address, index) => (
-                    <Table.Row key={index}>
-                      <Table.Cell>{address}</Table.Cell>
-                    </Table.Row>
-                  ))
-                ) : (
-                  <Table.Row>
-                    <Table.Cell>
-                      No additional addresses are allowed to deploy. Only the
-                      world owner.
-                    </Table.Cell>
-                  </Table.Row>
-                )}
-              </Table.Body>
-            </Table>
+        {isConnected && !signed && info && !info.allowed?.length && (
+          <p>
+            After this change, only you will be able to deploy scenes into the
+            world.
+          </p>
+        )}
+        {isConnected &&
+          wallet.address &&
+          !signed &&
+          info &&
+          info.allowed.length > 0 && (
+            <>
+              <p>
+                You are about to{' '}
+                <span>
+                  {info.allowed.length > info.oldAllowed.length
+                    ? 'grant'
+                    : 'revoke'}
+                </span>{' '}
+                the permissions to deploy to your world to the following{' '}
+                {allowedDifference.length > 1 ? 'addresses' : ' address'}:{' '}
+                <ul>
+                  {allowedDifference.map((address) => (
+                    <li>
+                      <strong>{address}</strong>
+                    </li>
+                  ))}
+                </ul>
+              </p>
+              <div className="allowed">
+                <h3>ACL</h3>
+                <Allowed
+                  className="owner"
+                  description="Owner"
+                  addresses={[wallet.address]}
+                />
+                <Allowed
+                  className="deployers"
+                  description="Deployers"
+                  addresses={info.allowed}
+                />
+              </div>
+            </>
+          )}
+        {isConnected && !signed && info && (
+          <Container className="sign-submit-container">
+            <div>
+              <Button
+                primary
+                size="medium"
+                loading={isSigning}
+                disabled={isPayloadExpired}
+                onClick={() => onSignContent(info!.payload)}
+              >
+                Sign & Submit
+              </Button>
+              {isPayloadExpired ? (
+                <p className="expired-message">The payload has expired</p>
+              ) : null}
+            </div>
           </Container>
         )}
         <LoginModal
