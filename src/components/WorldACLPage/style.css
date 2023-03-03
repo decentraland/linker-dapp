@@ -21,8 +21,8 @@ div.url > div.dcl.badge {
 }
 
 .allowed .owner, .allowed .deployers {
-  display: flex;
-  align-items: baseline;
+  display: grid;
+  grid-template-columns: 80px 1fr;
 }
 
 .allowed .description {

@@ -28,10 +28,10 @@ function Allowed(props: {
   const { className, description, addresses } = props
   return (
     <div className={className}>
-      <span className="description">{description}:</span>
+      <span className="description">{description}</span>
       <div className="addresses">
         {addresses.map((address) => (
-          <Chip text={address} type="circle" />
+          <Chip text={address} type="square" />
         ))}
       </div>
     </div>
@@ -152,16 +152,18 @@ export default function WorldACLPage(props: Props) {
               <p>
                 You are about to{' '}
                 <span>
-                  {info.allowed.length > info.oldAllowed.length
-                    ? 'grant'
-                    : 'revoke'}
+                  <strong>
+                    {info.allowed.length > info.oldAllowed.length
+                      ? 'grant'
+                      : 'revoke'}
+                  </strong>
                 </span>{' '}
                 the permissions to deploy to your world to the following{' '}
                 {allowedDifference.length > 1 ? 'addresses' : ' address'}:{' '}
                 <ul>
                   {allowedDifference.map((address) => (
                     <li>
-                      <strong>{address}</strong>
+                      <Chip text={address} type="square" />
                     </li>
                   ))}
                 </ul>

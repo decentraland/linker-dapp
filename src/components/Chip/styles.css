@@ -2,7 +2,7 @@
 .Chip.square {
   min-width: 10px;
   min-height: 26px;
-  padding: 3px 11px;
+  padding: 3px 10px;
 }
 
 .Chip.rectangle {
@@ -23,7 +23,7 @@
   justify-content: center;
   text-align: center;
   border-radius: 4px;
-  background: rgba(var(--bluish-steel-raw), 0.64);
+  background: rgba(var(--bluish-steel-raw), 0.3);
   color: #fff;
   display: inline-block;
 }
@@ -66,4 +66,5 @@
 
 .Chip .text {
   font-size: 12px;
+  text-transform: lowercase;
 }
