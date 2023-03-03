@@ -6,6 +6,12 @@ div.url > div.dcl.badge {
   cursor: pointer;
 }
 
+.changes {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+
 .ui.container.sign-submit-container {
   display: flex;
   justify-content: flex-end;

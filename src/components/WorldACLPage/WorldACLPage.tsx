@@ -160,7 +160,7 @@ export default function WorldACLPage(props: Props) {
                 </span>{' '}
                 the permissions to deploy to your world to the following{' '}
                 {allowedDifference.length > 1 ? 'addresses' : ' address'}:{' '}
-                <ul>
+                <ul className="changes">
                   {allowedDifference.map((address) => (
                     <li>
                       <Chip text={address} type="square" />
