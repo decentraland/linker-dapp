@@ -8,4 +8,6 @@ export type InfoResponse = {
   title?: string
   description?: string
   skipValidations: boolean
+  isPortableExperience: boolean
+  isWorld: boolean
 }

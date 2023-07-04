@@ -37,6 +37,8 @@ describe('authorization sagas', () => {
       y: 0,
     },
     parcels: [],
+    isPortableExperience: false,
+    isWorld: false
   }
   const owner = '0xowner'
   const address = '0xaddress'
