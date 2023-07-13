@@ -149,6 +149,13 @@ export default function LinkScenePage(props: Props) {
             body="You dont have permissions to update some of the coords"
           />
         )}
+        {info?.isPortableExperience && info?.isWorld && (
+          <Toast
+            type={ToastType.WARN}
+            title="Scene override"
+            body="Deploying a Portable Experience might override your current Scene"
+          />
+        )}
         {!signed && (
           <Tabs isFullscreen>
             {Object.values(Tab).map((t) => (

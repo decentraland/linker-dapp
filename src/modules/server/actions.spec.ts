@@ -73,6 +73,8 @@ describe('server actions', () => {
       rootCID: 'rootCID',
       debug: false,
       skipValidations: false,
+      isPortableExperience: false,
+      isWorld: false
     }
 
     it('should return an object representing the action', () => {

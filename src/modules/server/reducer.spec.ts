@@ -138,6 +138,8 @@ describe('server reducer', () => {
       rootCID: 'rootCID',
       debug: false,
       skipValidations: false,
+      isPortableExperience: false,
+      isWorld: false
     }
 
     it('should add the info to the store', () => {

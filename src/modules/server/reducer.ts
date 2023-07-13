@@ -34,6 +34,8 @@ export type Info = {
   description?: string
   baseParcel: Coords
   parcels: Coords[]
+  isPortableExperience: boolean
+  isWorld: boolean
 }
 
 export type FileSize = {
