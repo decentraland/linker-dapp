@@ -6,7 +6,7 @@ import './style.css'
 
 export default function DeploySuccess({ onFetchCatalyst, catalysts = [], status, info, deploySuccess, apiError }: Props) {
   const entityIds = new Set(catalysts.map(c => c.entityId))
-  const deployedToAll = (status === 'success' && entityIds.size === 1) || (deploySuccess && info?.isWorld)
+  const deployedToAll = (entityIds.size === 1) || (deploySuccess && info?.isWorld)
 
   useEffect(() => {
     if (deployedToAll || info?.isWorld || apiError) return
