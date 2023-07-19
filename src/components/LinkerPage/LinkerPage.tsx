@@ -48,6 +48,7 @@ export default function LinkScenePage(props: Props) {
     isAuthorizationLoading,
     signed,
     info,
+    deployError,
   } = props
 
   const { x, y } = info?.baseParcel || { x: 0, y: 0 }
@@ -156,6 +157,15 @@ export default function LinkScenePage(props: Props) {
             body="Deploying a Portable Experience might override your current Scene"
           />
         )}
+        {deployError && (
+          <div className='toast-full-with'>
+            <Toast
+              type={ToastType.ERROR}
+              title="Failed to deploy scene"
+              body={deployError ?? 'Look at the terminal for more info'}
+            />
+          </div>
+        )}
         {!signed && (
           <Tabs isFullscreen>
             {Object.values(Tab).map((t) => (
@@ -166,7 +176,7 @@ export default function LinkScenePage(props: Props) {
           </Tabs>
         )}
         {!info && <Loader />}
-        {signed && <DeploySuccess />}
+        {signed && !deployError && <DeploySuccess />}
         {!signed && tab === Tab.Files && <Files />}
         {!signed && info && tab === Tab.Map && (
           <Map

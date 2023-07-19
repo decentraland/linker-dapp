@@ -23,6 +23,8 @@ import {
   FETCH_CATALYST_REQUEST,
   FETCH_CATALYST_SUCCESS,
   FETCH_CATALYST_FAILURE,
+  DEPLOY_SUCCESS,
+  DeploySuccessAction,
 } from './actions'
 
 export type Info = {
@@ -58,6 +60,7 @@ export type ApiState = {
   error: string | null
   catalyst: CatalystResponse | undefined
   info: Info | undefined
+  deploySuccess: boolean
 }
 
 export const INITIAL_STATE: ApiState = {
@@ -66,6 +69,7 @@ export const INITIAL_STATE: ApiState = {
   loading: [],
   error: null,
   catalyst: undefined,
+  deploySuccess: false
 }
 
 export type ApiReducerAction =
@@ -78,12 +82,19 @@ export type ApiReducerAction =
   | FetchCatalystFailure
   | FetchCatalystRequest
   | FetchCatalystSuccess
+  | DeploySuccessAction
 
 export const apiReducer = (
   state = INITIAL_STATE,
   action: ApiReducerAction
 ): ApiState => {
   switch (action.type) {
+    case DEPLOY_SUCCESS: {
+      return {
+        ...state,
+        deploySuccess: true
+      }
+    }
     case FETCH_FILES_REQUEST:
       return {
         ...state,
@@ -122,8 +133,7 @@ export const apiReducer = (
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        error: action.payload.error,
-        catalyst: undefined,
+        error: action.payload.error
       }
     case FETCH_INFO_REQUEST:
       return {

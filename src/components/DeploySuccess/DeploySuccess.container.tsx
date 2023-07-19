@@ -5,11 +5,15 @@ import { MapStateProps, MapDispatchProps } from './types'
 
 import DeploySuccess from './DeploySuccess'
 import { fetchCatalystRequest } from '../../modules/server/actions'
+import { getInfo } from '../../modules/server/selectors'
 
 const mapState = (state: RootState): MapStateProps => {
   return {
     status: state.api.catalyst?.status,
-    catalysts: state.api.catalyst?.catalysts || []
+    catalysts: state.api.catalyst?.catalysts || [],
+    info: getInfo(state),
+    deploySuccess: state.api.deploySuccess,
+    apiError: state.api.error
   }
 }
 
