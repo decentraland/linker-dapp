@@ -7,6 +7,9 @@
 .options div input {
   color: white;
 }
+.toast-full-with .toast {
+  min-width: 100% !important;
+}
 
 .warning {
   background: var(--primary);

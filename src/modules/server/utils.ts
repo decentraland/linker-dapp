@@ -27,13 +27,18 @@ export async function closeServer(
 }
 
 export async function postDeploy(payload: DeployScene): Promise<void> {
-  await fetch(`/api/deploy`, {
+  const response = await fetch(`/api/deploy`, {
     method: 'post',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(payload),
   })
+  if (response.ok) {
+    return
+  }
+  const error = (await response.json()).message as string
+  throw new Error(error)
 }
 
 export async function getFilesRequest(): Promise<void> {

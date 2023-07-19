@@ -43,3 +43,7 @@ export type FetchInfoFailureAction = ReturnType<typeof fetchInfoFailure>
 export type FetchCatalystRequest = ReturnType<typeof fetchCatalystRequest>
 export type FetchCatalystSuccess = ReturnType<typeof fetchCatalystSuccess>
 export type FetchCatalystFailure = ReturnType<typeof fetchCatalystFailure>
+
+export const DEPLOY_SUCCESS = '[Success] Deploy content'
+export const deploySuccess = () => action(DEPLOY_SUCCESS)
+export type DeploySuccessAction = ReturnType<typeof deploySuccess>

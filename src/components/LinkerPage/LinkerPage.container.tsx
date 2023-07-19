@@ -37,6 +37,7 @@ const mapState = (state: RootState): MapStateProps => {
     isAuthorizationLoading: isAuthorizationLoading(state),
     isSigning: isSigningTx(state),
     info: getInfo(state),
+    deployError: state.signature.error
   }
 }
 

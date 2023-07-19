@@ -12,7 +12,7 @@ import { AuthIdentity } from 'dcl-crypto'
 import { createIdentity } from '@dcl/builder-client'
 import { ChainId } from '@dcl/schemas'
 import { closeServer, postDeploy } from '../server/utils'
-import { fetchCatalystRequest } from '../server/actions'
+import { deploySuccess, fetchCatalystRequest } from '../server/actions'
 import {
   SIGN_CONTENT_REQUEST,
   SIGN_CONTENT_SUCCESS,
@@ -77,6 +77,7 @@ function* handleSignContentSuccess(action: SignContentSuccessAction) {
 
   try {
     yield call(postDeploy, { signature, address, chainId })
+    yield put(deploySuccess())
   } catch (error) {
     yield put(signContentFailure((error as Error).message))
   }

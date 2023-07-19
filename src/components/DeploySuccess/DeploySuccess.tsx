@@ -4,26 +4,26 @@ import { useEffect } from 'react'
 
 import './style.css'
 
-export default function DeploySuccess({ onFetchCatalyst, catalysts = [], status }: Props) {
+export default function DeploySuccess({ onFetchCatalyst, catalysts = [], status, info, deploySuccess, apiError }: Props) {
   const entityIds = new Set(catalysts.map(c => c.entityId))
-  const deployedToAll = status === 'success' && entityIds.size === 1
+  const deployedToAll = (status === 'success' && entityIds.size === 1) || (deploySuccess && info?.isWorld)
 
   useEffect(() => {
-    if (deployedToAll) return
+    if (deployedToAll || info?.isWorld || apiError) return
     const interval = setInterval(() => {
       onFetchCatalyst()
     }, 5_000)
     return () => clearInterval(interval)
-  }, [onFetchCatalyst, deployedToAll])
+  }, [onFetchCatalyst, deployedToAll, info, apiError])
 
   return (
     <Container>
       <HeaderMenu>
-        <Badge color={deployedToAll ? '#20913e' : Color.SUNISH}>
-          {deployedToAll ? 'Deployed successfully to Catalyst servers' : 'Deploying..'}
+        <Badge color={deploySuccess ? '#20913e' : Color.SUNISH}>
+          {deploySuccess ? 'Deployed successfully' : 'Deploying...'}
         </Badge>
       </HeaderMenu>
-      <Table basic="very">
+      { !info?.isWorld && <Table basic="very">
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Catalyst Server</Table.HeaderCell>
@@ -42,6 +42,7 @@ export default function DeploySuccess({ onFetchCatalyst, catalysts = [], status 
           ))}
         </Table.Body>
       </Table>
+      }
     </Container>
   )
 }
