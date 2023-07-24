@@ -186,6 +186,7 @@ export default function LinkScenePage(props: Props) {
           />
         )}
         <LoginModal
+          name='Login'
           open={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onConnect={onConnectWallet}
