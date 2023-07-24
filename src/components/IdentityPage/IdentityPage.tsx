@@ -42,13 +42,12 @@ export default function IdentityPage(props: Props) {
           </Button>
         </div>
       </form>
-      <LoginModal
-          name='Login'
-          open={isModalOpen}
+      {isModalOpen ? <LoginModal
+          name='IdentityPageLoginModal'
           onClose={() => setIsModalOpen(false)}
           onConnect={onConnectWallet}
           isLoading={isConnecting}
-        />
+        /> : null}
     </div>
   )
 }

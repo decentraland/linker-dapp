@@ -201,13 +201,12 @@ export default function WorldACLPage(props: Props) {
             </div>
           </Container>
         )}
-        <LoginModal
-          name='Login'
-          open={isModalOpen}
+        {isModalOpen ? <LoginModal
+          name='WorldACLPageLoginModal'
           onClose={() => setIsModalOpen(false)}
           onConnect={onConnectWallet}
           isLoading={isConnecting}
-        />
+        /> : null}
       </Page>
       <Footer />
     </div>

@@ -185,13 +185,13 @@ export default function LinkScenePage(props: Props) {
             baseParcel={info!.baseParcel}
           />
         )}
-        <LoginModal
-          name='Login'
+        {isModalOpen ? <LoginModal
+          name='LinkerPageLoginModal'
           open={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onConnect={onConnectWallet}
           isLoading={isConnecting}
-        />
+        /> : null}
       </Page>
       <Footer />
     </div>
