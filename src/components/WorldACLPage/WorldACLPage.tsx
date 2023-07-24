@@ -202,6 +202,7 @@ export default function WorldACLPage(props: Props) {
           </Container>
         )}
         <LoginModal
+          name='Login'
           open={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onConnect={onConnectWallet}

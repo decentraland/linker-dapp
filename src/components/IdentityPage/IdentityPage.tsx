@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect, useState } from 'react'
+import { BaseSyntheticEvent, useEffect, useState } from 'react'
 import { ChainId } from '@dcl/schemas'
 import { Header, Button, Navbar } from 'decentraland-ui'
 import LoginModal from 'decentraland-dapps/dist/containers/LoginModal'
@@ -11,7 +11,7 @@ export default function IdentityPage(props: Props) {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleSignature = (e: SyntheticEvent) => {
+  const handleSignature = (e: BaseSyntheticEvent) => {
     e.preventDefault()
     onRequestIdentity()
   }
@@ -43,6 +43,7 @@ export default function IdentityPage(props: Props) {
         </div>
       </form>
       <LoginModal
+          name='Login'
           open={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onConnect={onConnectWallet}
