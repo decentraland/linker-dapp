@@ -17,8 +17,8 @@ const contractsByChainId: Record<ContractName, Partial<Record<ChainId, { abi: an
       address: '0xf87e31492faf9a91b02ee0deaad50d51d56d5d4d',
       abi: LANDRegistry.abi
     },
-    [ChainId.ETHEREUM_GOERLI]: {
-      address: '0x25b6B4bac4aDB582a0ABd475439dA6730777Fbf7',
+    [ChainId.ETHEREUM_SEPOLIA]: {
+      address: '0x42f4ba48791e2de32f5fbf553441c2672864bb33',
       abi: LANDRegistry.abi
     },
   },
@@ -27,8 +27,8 @@ const contractsByChainId: Record<ContractName, Partial<Record<ChainId, { abi: an
       address: '0x959e104e1a4db6317fa58f8295f586e1a978c297',
       abi: EstateRegistry.abi
     },
-    [ChainId.ETHEREUM_GOERLI]: {
-      address: '0xC9A46712E6913c24d15b46fF12221a79c4e251DC',
+    [ChainId.ETHEREUM_SEPOLIA]: {
+      address: '0x369a7fbe718c870c79f99fb423882e8dd8b20486',
       abi: EstateRegistry.abi
     }
   }
