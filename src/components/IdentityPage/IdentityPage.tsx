@@ -25,7 +25,7 @@ export default function IdentityPage(props: Props) {
 
   return (
     <div className="LinkScenePage">
-      {wallet.chainId === ChainId.ETHEREUM_GOERLI && <div className="warning">Using Goerli test network</div>}
+      {wallet.chainId === ChainId.ETHEREUM_SEPOLIA && <div className="warning">Using Sepolia test network</div>}
       <Navbar />
       <Header>Create an identity to sign deployments </Header>
       <RenderWalletData

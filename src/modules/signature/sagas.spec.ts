@@ -39,7 +39,7 @@ describe('signature sagas', () => {
   const error = 'error'
   const signature = 'signedMessage'
   const address = '0xanotherAddress'
-  const chainId = ChainId.ETHEREUM_GOERLI
+  const chainId = ChainId.ETHEREUM_SEPOLIA
 
   const mockedGetConnectedProvider =
     getConnectedProvider as jest.MockedFunction<typeof getConnectedProvider>

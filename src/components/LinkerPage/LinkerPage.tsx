@@ -52,9 +52,10 @@ export default function LinkScenePage(props: Props) {
   } = props
 
   const { x, y } = info?.baseParcel || { x: 0, y: 0 }
-  const isTestNet = wallet?.chainId === ChainId.ETHEREUM_GOERLI
-  const networkName = isTestNet ? 'zone' : 'org'
-  const deployUrl = `https://play.decentraland.${networkName}/?position=${x},${y}`
+  const isTestNet = wallet?.chainId !== ChainId.ETHEREUM_MAINNET
+  const networkName = isTestNet && `&NETWORK=sepolia`
+  const networkDomain = isTestNet ? 'zone' : 'org'
+  const deployUrl = `https://play.decentraland.${networkDomain}/?position=${x},${y}${networkName}`
 
   useEffect(() => {
     onFetchInfo()
@@ -108,7 +109,7 @@ export default function LinkScenePage(props: Props) {
               {!!isConnected && (
                 <div className="address-header">
                   <Badge color={Color.SHADOWS}>
-                    {isTestNet ? 'Goerli' : 'Mainnet'}
+                    {isTestNet ? 'Sepolia' : 'Mainnet'}
                   </Badge>
                 </div>
               )}
