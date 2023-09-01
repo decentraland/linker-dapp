@@ -40,7 +40,7 @@ import {
   SignQuestsSuccessAction,
 } from './actions'
 import { updateWorldACLRequest } from '../acl/actions'
-import { createQuestRequest } from '../quests/action'
+import { signQuestsFetchRequest } from '../quests/action'
 
 export function* signatureSaga() {
   yield takeLatest(SIGN_CONTENT_REQUEST, handleSignContentRequest)
@@ -148,5 +148,5 @@ function* handleQuestsSignRequest(action: SignQuestsRequestAction) {
 
 function* handleQuestsSignSuccess(action: SignQuestsSuccessAction) {
   const { signature } = action.payload
-  yield put(createQuestRequest(signature))
+  yield put(signQuestsFetchRequest(signature))
 }

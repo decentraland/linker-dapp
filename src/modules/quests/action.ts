@@ -13,21 +13,14 @@ export type FetchQuestsInfoRequestAction = ReturnType<typeof fetchQuestsInfoRequ
 export type FetchQuestsInfoSuccessAction = ReturnType<typeof fetchQuestsInfoSuccess>
 export type FetchQuestsInfoFailureAction = ReturnType<typeof fetchQuestsInfoFailure>
 
-export const CREATE_QUEST_REQUEST = '[Request] Create Quest'
-export const CREATE_QUEST_SUCCESS = '[Success] Create Quest'
-export const CREATE_QUEST_FAILURE = '[Failure] Create Quest'
+export const SIGN_QUESTS_FETCH_REQUEST = '[Request] Sign Quest Request'
+export const SIGN_QUESTS_FETCH_SUCCESS = '[Success] Sign Quest Request'
+export const SIGN_QUESTS_FETCH_FAILURE = '[Failure] Sign Quest Request'
 
-export const createQuestRequest = (signature: string) => action(CREATE_QUEST_REQUEST, { signature })
-export const createQuestSuccess = (id: string) => action(CREATE_QUEST_SUCCESS, { id })
-export const createQuestFailure = (error: string) => action(CREATE_QUEST_FAILURE, { error })
+export const signQuestsFetchRequest = (signature: string) => action(SIGN_QUESTS_FETCH_REQUEST, { signature })
+export const signQuestsFetchSuccess = () => action(SIGN_QUESTS_FETCH_SUCCESS)
+export const signQuestsFetchFailure = (error: string) => action(SIGN_QUESTS_FETCH_FAILURE, { error })
 
-export type CreateQuestRequestAction = ReturnType<typeof createQuestRequest>
-export type CreateQuestSuccessAction = ReturnType<typeof createQuestSuccess>
-export type CreateQuestFailureAction = ReturnType<typeof createQuestFailure>
-
-
-export const CHANGE_QUEST_ACTION_TYPE = "[Quests] Change ActionType"
-
-export const changeQuestActionType = (newAction: "create" | "list" | "activate" | "deactivate") => action(CHANGE_QUEST_ACTION_TYPE, { action: newAction })
-
-export type ChangeQuestActionTypeAction = ReturnType<typeof changeQuestActionType>
+export type SignQuestsFetchRequestAction = ReturnType<typeof signQuestsFetchRequest>
+export type SignQuestsFetchSuccessAction = ReturnType<typeof signQuestsFetchSuccess>
+export type SignQuestsFetchFailureAction = ReturnType<typeof signQuestsFetchFailure>

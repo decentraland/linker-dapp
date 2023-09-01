@@ -13,7 +13,7 @@ import {
 } from '../../modules/signature/selectors'
 import { connect } from "react-redux";
 import QuestsPage from "./QuestsPage";
-import { changeQuestActionType, fetchQuestsInfoRequest } from "../../modules/quests/action";
+import { fetchQuestsInfoRequest } from "../../modules/quests/action";
 import { getQuestsInfo } from "../../modules/quests/selector";
 import { signQuestsRequest } from "../../modules/signature/actions";
 
@@ -26,7 +26,6 @@ const mapState = (state: RootState): MapStateProps => {
 		signed: !!getSignature(state),
 		isSigning: isSigningTx(state),
 		info: getQuestsInfo(state),
-		actionType: state.quests.actionType
 	}
 }
 
@@ -34,7 +33,6 @@ const mapDispatch = (dispatch: Dispatch<AnyAction>): MapDispatchProps => ({
 	onConnectWallet: (providerType) => dispatch(enableWalletRequest(providerType)),
 	onSign: (payload) => dispatch(signQuestsRequest(payload)),
 	onFetchInfo: () => dispatch(fetchQuestsInfoRequest()),
-	onChangeType: (type) => dispatch(changeQuestActionType(type))
 })
 
 export default connect(mapState, mapDispatch)(QuestsPage)

@@ -5,12 +5,11 @@ import { useEffect, useState } from "react";
 import { getChainName } from "@dcl/schemas";
 import { QuestInfoResponse } from "../../modules/quests/types";
 
-export default function QuestsPage({ wallet, isConnected, isConnecting, info, signed, isSigning, actionType, onChangeType,  onConnectWallet, onFetchInfo, onSign }: Props) {
+export default function QuestsPage({ wallet, isConnected, isConnecting, info, signed, isSigning, onConnectWallet, onFetchInfo, onSign }: Props) {
 	const [isModalOpen, setIsModalOpen] = useState(false)
-	const [actionError, setError] = useState(false)
 
 	useEffect(() => {
-	onFetchInfo()
+		onFetchInfo()
 	}, [onFetchInfo])
 
 	useEffect(() => {
@@ -19,15 +18,9 @@ export default function QuestsPage({ wallet, isConnected, isConnecting, info, si
 	}
 	}, [isConnected, isModalOpen])
 
-	useEffect(() => {		
-		if (info) {
-			if (info?.actionType === "create" || info?.actionType === "list" || info?.actionType === "activate" || info?.actionType === "deactivate") {
-				onChangeType(info?.actionType)
-			} else {
-				setError(true)
-			}
-		}
-	}, [info, onChangeType])
+	useEffect(() => {
+    if (!info) return
+	}, [info])
 
 	return (
 		<div className="Page-story-container">
@@ -44,13 +37,13 @@ export default function QuestsPage({ wallet, isConnected, isConnecting, info, si
 							<Container textAlign="center">
 								<Header size="large">
 									{
-										actionType === "create" ? 
+										info?.actionType === "create" ? 
 											`Create ${info?.extraData?.questName} Quest` : 
-										actionType === "list" ? 
+										info?.actionType === "list" ? 
 											"List your Quests" : 
-										actionType === "activate" ? 
+										info?.actionType === "activate" ? 
 											`Activate Quest ${info?.extraData?.questId}` : 
-										actionType === "deactivate" ? 
+										info?.actionType === "deactivate" ? 
 											`Deactivate Quest ${info?.extraData?.questId}}`
 										: "Unknown"
 									}
@@ -90,16 +83,16 @@ export default function QuestsPage({ wallet, isConnected, isConnecting, info, si
 					</HeaderMenu>
 				</Container>
 				{!info && <Loader />}
-				{isConnected && wallet.address && !signed && !actionError && actionType === "create" && info && (
+				{isConnected && wallet.address && !signed && info?.actionType === "create" && info && (
 						<CreateQuestComponent info={info} />
 				)}
-				{isConnected && wallet.address && !signed && !actionError && actionType === "list" && info && (
+				{isConnected && wallet.address && !signed && info?.actionType === "list" && info && (
 						<ListQuestsComponent info={info} />
 				)}
-				{isConnected && wallet.address && !signed && !actionError && actionType === "activate" && info && (
+				{isConnected && wallet.address && !signed && info?.actionType === "activate" && info && (
 						<ActivateQuestsComponent info={info} />
 				)}
-				{isConnected && wallet.address && !signed && !actionError && actionType === "deactivate" && info && (
+				{isConnected && wallet.address && !signed && info?.actionType === "deactivate" && info && (
 						<DeactivateQuestsComponent info={info} />
 				)}
 				{isConnected && !signed && info && (
@@ -138,7 +131,7 @@ const CreateQuestComponent = ({ info }: { info: QuestInfoResponse }) => (
 		</p>
 		<p>Let's check if you're okay with the Quest that will be created. Otherwise, you can cancel this from your SDK console.</p>
 		<code>
-			{info.messageToSign}
+			{JSON.stringify(info.extraData?.createQuest, null, 2)}
 		</code>
 	</>
 )

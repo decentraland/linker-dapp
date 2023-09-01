@@ -1,12 +1,12 @@
 import { takeEvery, call, put, select } from "redux-saga/effects";
-import { CREATE_QUEST_REQUEST, CreateQuestRequestAction, FETCH_QUESTS_INFO_REQUEST, createQuestFailure, createQuestSuccess, fetchQuestsInfoFailure, fetchQuestsInfoSuccess } from "./action";
-import { createQuest, getQuestsInfoRequest } from "./utils";
+import { SIGN_QUESTS_FETCH_REQUEST, SignQuestsFetchRequestAction, signQuestsFetchFailure, signQuestsFetchSuccess, fetchQuestsInfoFailure, fetchQuestsInfoSuccess, FETCH_QUESTS_INFO_REQUEST } from "./action";
+import { sendSignedFetch, getQuestsInfoRequest } from "./utils";
 import { QuestInfoResponse } from "./types";
 import { getAddress } from "decentraland-dapps/dist/modules/wallet/selectors";
 
 export function* questsSaga() {
 	yield takeEvery(FETCH_QUESTS_INFO_REQUEST, handleFetchQuestsInfoRequest)
-	yield takeEvery(CREATE_QUEST_REQUEST, handleCreateQuest)
+	yield takeEvery(SIGN_QUESTS_FETCH_REQUEST, handleCreateQuest)
 }
 
 function* handleFetchQuestsInfoRequest() {
@@ -18,15 +18,14 @@ function* handleFetchQuestsInfoRequest() {
 	}
 }
 
-function* handleCreateQuest(action: CreateQuestRequestAction) {
+function* handleCreateQuest(action: SignQuestsFetchRequestAction) {
 	const { signature } = action.payload
 
 	try {
 		const address: string = yield select(getAddress)
-		const response: { id: string } = yield call(createQuest, { address, signature })
-		console.log("> Creation Quest ID: ", response)
-		yield put(createQuestSuccess(response.id))
+		yield call(sendSignedFetch, { address, signature })
+		yield put(signQuestsFetchSuccess())
 	} catch (error) {
-		yield put(createQuestFailure((error as any).message))
+		yield put(signQuestsFetchFailure((error as any).message))
 	}
 }
