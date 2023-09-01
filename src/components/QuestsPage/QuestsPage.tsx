@@ -126,8 +126,8 @@ export default function QuestsPage({ wallet, isConnected, isConnecting, info, si
 const CreateQuestComponent = ({ info }: { info: QuestInfoResponse }) => (
 	<>
 		<p>You're about to create a new Quest with name {info.extraData?.questName}.</p>
-		<p>You will be the creator of the Quest and you will be the only one with access to 
-			<strong>modify, deactivate, activate and see the defintion</strong>
+		<p>You will be the creator of the Quest and you will be the only one with access to
+			<strong> modify, deactivate, activate and see the defintion</strong>
 		</p>
 		<p>Let's check if you're okay with the Quest that will be created. Otherwise, you can cancel this from your SDK console.</p>
 		<code>
