@@ -10,6 +10,7 @@ import { initStore } from './store'
 
 import Root from './components/Root'
 import WorldACLPage from './components/WorldACLPage'
+import QuestsPage from './components/QuestsPage'
 
 import * as locales from './modules/translation/locales'
 
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: '/acl',
     element: <WorldACLPage />,
+  },
+  {
+    path: '/quests',
+    element: <QuestsPage />,
   },
 ])
 

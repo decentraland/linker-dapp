@@ -32,8 +32,15 @@ import {
   signWorldACLSuccess,
   signWorldACLFailure,
   CreateIdentityRequestAction,
+  SIGN_QUESTS_REQUEST,
+  SIGN_QUESTS_SUCCESS,
+  SignQuestsRequestAction,
+  signQuestsSuccess,
+  signQuestsFailure,
+  SignQuestsSuccessAction,
 } from './actions'
 import { updateWorldACLRequest } from '../acl/actions'
+import { createQuestRequest } from '../quests/action'
 
 export function* signatureSaga() {
   yield takeLatest(SIGN_CONTENT_REQUEST, handleSignContentRequest)
@@ -44,9 +51,12 @@ export function* signatureSaga() {
 
   yield takeLatest(SIGN_WORLD_ACL_REQUEST, handleSignWorldACLRequest)
   yield takeEvery(SIGN_WORLD_ACL_SUCCESS, handleSignWorldACLSuccess)
+
+  yield takeLatest(SIGN_QUESTS_REQUEST, handleQuestsSignRequest)
+  yield takeEvery(SIGN_QUESTS_SUCCESS, handleQuestsSignSuccess)
 }
 
-function* sign(action: SignContentRequestAction | SignWorldACLRequestAction) {
+function* sign(action: SignContentRequestAction | SignWorldACLRequestAction | SignQuestsRequestAction) {
   const dataToSign = toUtf8Bytes(action.payload)
 
   const provider: Provider = yield call(() => getConnectedProvider())
@@ -125,4 +135,18 @@ function* handleSignWorldACLRequest(action: SignWorldACLRequestAction) {
 function* handleSignWorldACLSuccess(action: SignWorldACLSuccessAction) {
   const { signature } = action.payload
   yield put(updateWorldACLRequest(signature))
+}
+
+function* handleQuestsSignRequest(action: SignQuestsRequestAction) {
+  try {
+    const signedMessage: string = yield call(sign, action)
+    yield put(signQuestsSuccess(signedMessage))
+  } catch (error) {
+    yield put(signQuestsFailure((error as Error).message))
+  }
+}
+
+function* handleQuestsSignSuccess(action: SignQuestsSuccessAction) {
+  const { signature } = action.payload
+  yield put(createQuestRequest(signature))
 }

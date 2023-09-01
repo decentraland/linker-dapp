@@ -50,3 +50,18 @@ export const signWorldACLFailure = (error: string) =>
 export type SignWorldACLRequestAction = ReturnType<typeof signWorldACLRequest>
 export type SignWorldACLSuccessAction = ReturnType<typeof signWorldACLSuccess>
 export type SignWorldACLFailureAction = ReturnType<typeof signWorldACLFailure>
+
+export const SIGN_QUESTS_REQUEST = '[Request] Sign Quests'
+export const SIGN_QUESTS_SUCCESS = '[Success] Sign Quests'
+export const SIGN_QUESTS_FAILURE = '[Failure] Sign Quests'
+
+export const signQuestsRequest = (payload: string) =>
+  action(SIGN_QUESTS_REQUEST, payload)
+export const signQuestsSuccess = (signature: string) =>
+  action(SIGN_QUESTS_SUCCESS, { signature })
+export const signQuestsFailure = (error: string) =>
+  action(SIGN_QUESTS_FAILURE, { error })
+
+export type SignQuestsRequestAction = ReturnType<typeof signQuestsRequest>
+export type SignQuestsSuccessAction = ReturnType<typeof signQuestsSuccess>
+export type SignQuestsFailureAction = ReturnType<typeof signQuestsFailure>
