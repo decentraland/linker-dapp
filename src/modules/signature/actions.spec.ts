@@ -18,6 +18,12 @@ import {
   signWorldACLRequest,
   signWorldACLSuccess,
   signWorldACLFailure,
+  signQuestsRequest,
+  SIGN_QUESTS_REQUEST,
+  signQuestsSuccess,
+  SIGN_QUESTS_SUCCESS,
+  SIGN_QUESTS_FAILURE,
+  signQuestsFailure,
 } from './actions'
 
 describe('signature actions', () => {
@@ -128,6 +134,27 @@ describe('signature actions', () => {
         meta: undefined,
         payload: { error },
       })
+    })
+  })
+
+  describe('when creating the action to signal the start of the sign quests request', () => {
+    expect(signQuestsRequest("get:/api/creators/0xA/quests")).toEqual({
+      type: SIGN_QUESTS_REQUEST,
+      payload: "get:/api/creators/0xA/quests",
+    })
+  })
+
+  describe('when creating the action to signal the failure of the sign quests request', () => {
+    expect(signQuestsSuccess("0xbascd")).toEqual({
+      type: SIGN_QUESTS_SUCCESS,
+      payload: { signature: "0xbascd" },
+    })
+  })
+
+  describe('when creating the action to signal the failure of the sign quests request', () => {
+    expect(signQuestsFailure("error")).toEqual({
+      type: SIGN_QUESTS_FAILURE,
+      payload: { error: "error" },
     })
   })
 })

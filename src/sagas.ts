@@ -7,6 +7,7 @@ import { apiSaga } from './modules/server/sagas'
 import { translationSaga } from './modules/translation/sagas'
 import { npsSaga } from './modules/nps/sagas'
 import { aclSaga } from './modules/acl/sagas'
+import { questsSaga } from './modules/quests/sagas'
 
 export function rootSaga() {
   return function* () {
@@ -18,6 +19,7 @@ export function rootSaga() {
       translationSaga(),
       npsSaga(),
       aclSaga(),
+      questsSaga(),
     ])
   }
 }
