@@ -38,6 +38,7 @@ export type Info = {
   parcels: Coords[]
   isPortableExperience: boolean
   isWorld: boolean
+  skipValidations?: boolean
 }
 
 export type FileSize = {

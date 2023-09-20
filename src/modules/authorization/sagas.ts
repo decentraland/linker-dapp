@@ -19,16 +19,14 @@ export function* authorizationSaga() {
 }
 
 function* handleFetchAuthorizationsRequest() {
-  const info: Info = yield select(getInfo)
+  let info: Info = yield select(getInfo)
 
   if (!info) {
     yield take(FETCH_INFO_SUCCESS)
+    info = yield select(getInfo)
   }
 
-  const qs = new URLSearchParams(document.location.search)
-
-  const skipValidations = qs.get('skipValidations')
-  if (skipValidations === 'true') {
+  if (info.skipValidations) {
     try {
       const { parcels } = info
       yield put(
