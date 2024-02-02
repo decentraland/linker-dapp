@@ -11,6 +11,12 @@ enum Filter {
 
 export default function FilesPage({ files }: Props) {
   const [filter, setFilter] = useState<Filter>(Filter.Size)
+
+  const totalFileSize = useMemo(
+    () => files.reduce((acc, file) => acc + Number(file.size), 0),
+    [files]
+  )
+
   const value = useMemo<FileSize[]>(
     () =>
       files.sort((a, b) => {
@@ -23,7 +29,11 @@ export default function FilesPage({ files }: Props) {
   )
 
   return (
-    <Container>
+    <Container className="FilesPage">
+      <div className="total-file-size">
+        <span>Total Size</span>
+        <b>{bytesToMB(totalFileSize)} MB</b>
+      </div>
       <Table basic="very">
         <Table.Header>
           <Table.Row>
@@ -45,7 +55,7 @@ export default function FilesPage({ files }: Props) {
           {value.map(({ name, size }, index) => (
             <Table.Row key={index}>
               <Table.Cell>{name}</Table.Cell>
-              <Table.Cell>{(Number(size) * 1e-6).toFixed(2)} MB </Table.Cell>
+              <Table.Cell>{bytesToMB(size)} MB </Table.Cell>
               <Table.Cell />
             </Table.Row>
           ))}
@@ -53,4 +63,8 @@ export default function FilesPage({ files }: Props) {
       </Table>
     </Container>
   )
+}
+
+function bytesToMB(size: string | number) {
+  return (Number(size) * 1e-6).toFixed(2)
 }
