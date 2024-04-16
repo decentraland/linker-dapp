@@ -13,10 +13,23 @@ export const getACLStatus = (state: RootState) => {
   const info = getInfo(state)
   const acl = getACL(state)
 
-  return info &&
-    acl &&
-    info.worldName === acl.resource &&
-    info.allowed.every((address) => acl.allowed.includes(address))
-    ? ACLStatus.UPDATED
-    : ACLStatus.UPDATING
+  if (
+    (
+      info &&
+      acl &&
+      info.worldName === acl.resource &&
+      info.method === 'put'  && 
+      info && acl?.allowed.includes(info.allowed[0].toLowerCase())
+    ) || 
+    (
+      info &&
+      acl &&
+      info.worldName === acl.resource &&
+      info.method === 'delete'  && 
+      !(info && acl?.allowed.includes(info.allowed[0].toLowerCase()))
+    )
+  ) {
+    return ACLStatus.UPDATED
+  }
+  return ACLStatus.UPDATING
 }

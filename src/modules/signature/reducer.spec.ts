@@ -3,16 +3,20 @@ import { loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
   SIGN_CONTENT_SUCCESS,
   CREATE_IDENTITY_SUCCESS,
-  SIGN_WORLD_ACL_SUCCESS,
+  SIGN_PUT_WORLD_ACL_SUCCESS,
+  SIGN_DELETE_WORLD_ACL_SUCCESS,
   signContentRequest,
   createIdentityRequest,
-  signWorldACLRequest,
+  signPutWorldACLRequest,
+  signDeleteWorldACLRequest,
   createIdentityFailure,
   signContentFailure,
-  signWorldACLFailure,
+  signPutWorldACLFailure,
+  signDeleteWorldACLFailure,
   signContentSuccess,
   createIdentitySuccess,
-  signWorldACLSuccess,
+  signPutWorldACLSuccess,
+  signDeleteWorldACLSuccess,
 } from './actions'
 import { INITIAL_STATE, signatureReducer } from './reducer'
 
@@ -21,15 +25,20 @@ const error = 'error'
 const requestActions = [
   signContentRequest('cid'),
   createIdentityRequest(),
-  signWorldACLRequest('payload'),
+  signPutWorldACLRequest('payload'),
+  signDeleteWorldACLRequest('payload'),
 ]
 
 const failureActions = [
   { request: signContentRequest('cid'), failure: signContentFailure(error) },
   { request: createIdentityRequest(), failure: createIdentityFailure(error) },
   {
-    request: signWorldACLRequest('payload'),
-    failure: signWorldACLFailure(error),
+    request: signPutWorldACLRequest('payload'),
+    failure: signPutWorldACLFailure(error),
+  },
+  {
+    request: signDeleteWorldACLRequest('payload'),
+    failure: signDeleteWorldACLFailure(error),
   },
 ]
 
@@ -112,17 +121,36 @@ describe('signature reducer', () => {
     })
   })
 
-  describe(`when reducing the ${SIGN_WORLD_ACL_SUCCESS} action`, () => {
+  describe(`when reducing the ${SIGN_PUT_WORLD_ACL_SUCCESS} action`, () => {
     const signature = 'signature'
 
     const initialState = {
       ...INITIAL_STATE,
-      loading: loadingReducer([], signWorldACLRequest(signature)),
+      loading: loadingReducer([], signPutWorldACLRequest(signature)),
     }
 
     it('should add the signature to the store', () => {
       expect(
-        signatureReducer(initialState, signWorldACLSuccess(signature))
+        signatureReducer(initialState, signPutWorldACLSuccess(signature))
+      ).toEqual({
+        ...INITIAL_STATE,
+        loading: [],
+        data: signature,
+      })
+    })
+  })
+
+  describe(`when reducing the ${SIGN_DELETE_WORLD_ACL_SUCCESS} action`, () => {
+    const signature = 'signature'
+
+    const initialState = {
+      ...INITIAL_STATE,
+      loading: loadingReducer([], signDeleteWorldACLRequest(signature)),
+    }
+
+    it('should add the signature to the store', () => {
+      expect(
+        signatureReducer(initialState, signDeleteWorldACLSuccess(signature))
       ).toEqual({
         ...INITIAL_STATE,
         loading: [],

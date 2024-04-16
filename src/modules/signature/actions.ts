@@ -36,20 +36,35 @@ export type CreateIdentityFailureAction = ReturnType<
   typeof createIdentityFailure
 >
 
-export const SIGN_WORLD_ACL_REQUEST = '[Request] Sign World ACL'
-export const SIGN_WORLD_ACL_SUCCESS = '[Success] Sign World ACL'
-export const SIGN_WORLD_ACL_FAILURE = '[Failure] Sign World ACL'
+export const SIGN_PUT_WORLD_ACL_REQUEST = '[Request] Sign Put World ACL'
+export const SIGN_PUT_WORLD_ACL_SUCCESS = '[Success] Sign Put World ACL'
+export const SIGN_PUT_WORLD_ACL_FAILURE = '[Failure] Sign Put World ACL'
 
-export const signWorldACLRequest = (payload: string) =>
-  action(SIGN_WORLD_ACL_REQUEST, payload)
-export const signWorldACLSuccess = (signature: string) =>
-  action(SIGN_WORLD_ACL_SUCCESS, { signature })
-export const signWorldACLFailure = (error: string) =>
-  action(SIGN_WORLD_ACL_FAILURE, { error })
+export const signPutWorldACLRequest = (payload: string) =>
+  action(SIGN_PUT_WORLD_ACL_REQUEST, payload)
+export const signPutWorldACLSuccess = (signature: string) =>
+  action(SIGN_PUT_WORLD_ACL_SUCCESS, { signature })
+export const signPutWorldACLFailure = (error: string) =>
+  action(SIGN_PUT_WORLD_ACL_FAILURE, { error })
 
-export type SignWorldACLRequestAction = ReturnType<typeof signWorldACLRequest>
-export type SignWorldACLSuccessAction = ReturnType<typeof signWorldACLSuccess>
-export type SignWorldACLFailureAction = ReturnType<typeof signWorldACLFailure>
+export type SignPutWorldACLRequestAction = ReturnType<typeof signPutWorldACLRequest>
+export type SignPutWorldACLSuccessAction = ReturnType<typeof signPutWorldACLSuccess>
+export type SignPutWorldACLFailureAction = ReturnType<typeof signPutWorldACLFailure>
+
+export const SIGN_DELETE_WORLD_ACL_REQUEST = '[Request] Sign Delete World ACL'
+export const SIGN_DELETE_WORLD_ACL_SUCCESS = '[Success] Sign Delete World ACL'
+export const SIGN_DELETE_WORLD_ACL_FAILURE = '[Failure] Sign Delete World ACL'
+
+export const signDeleteWorldACLRequest = (payload: string) =>
+  action(SIGN_DELETE_WORLD_ACL_REQUEST, payload)
+export const signDeleteWorldACLSuccess = (signature: string) =>
+  action(SIGN_DELETE_WORLD_ACL_SUCCESS, { signature })
+export const signDeleteWorldACLFailure = (error: string) =>
+  action(SIGN_DELETE_WORLD_ACL_FAILURE, { error })
+
+export type SignDeleteWorldACLRequestAction = ReturnType<typeof signDeleteWorldACLRequest>
+export type SignDeleteWorldACLSuccessAction = ReturnType<typeof signDeleteWorldACLSuccess>
+export type SignDeleteWorldACLFailureAction = ReturnType<typeof signDeleteWorldACLFailure>
 
 export const SIGN_QUESTS_REQUEST = '[Request] Sign Quests'
 export const SIGN_QUESTS_SUCCESS = '[Success] Sign Quests'

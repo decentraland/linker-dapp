@@ -6,6 +6,7 @@ export type InfoResponse = {
   timestamp: Date
   expiration: number
   payload: string // This is the data to sign
+  method: 'put' | 'delete'
 }
 
 export type UpdatePayload = {

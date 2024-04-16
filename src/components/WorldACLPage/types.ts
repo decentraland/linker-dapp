@@ -2,7 +2,7 @@ import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/acti
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { fetchInfoRequest } from '../../modules/acl/actions'
 import { InfoResponse } from '../../modules/acl/types'
-import { SignWorldACLRequestAction } from '../../modules/signature/actions'
+import { SignPutWorldACLRequestAction, SignDeleteWorldACLRequestAction } from '../../modules/signature/actions'
 
 export type Props = {
   wallet: Partial<Wallet>
@@ -13,7 +13,8 @@ export type Props = {
   info?: InfoResponse
   onConnectWallet: typeof enableWalletRequest
   onFetchInfo: typeof fetchInfoRequest
-  onSignContent: (payload: string) => SignWorldACLRequestAction
+  onSignPutContent: (payload: string) => SignPutWorldACLRequestAction
+  onSignDeleteContent: (payload: string) => SignDeleteWorldACLRequestAction
 }
 
 export type MapStateProps = Pick<
@@ -22,5 +23,5 @@ export type MapStateProps = Pick<
 >
 export type MapDispatchProps = Pick<
   Props,
-  'onConnectWallet' | 'onSignContent' | 'onFetchInfo'
+  'onConnectWallet' | 'onSignPutContent' | 'onSignDeleteContent' | 'onFetchInfo'
 >

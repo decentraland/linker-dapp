@@ -8,11 +8,11 @@ import {
   fetchWorldACLFailure,
   fetchWorldACLRequest,
   fetchWorldACLSuccess,
-  updateWorldACLFailure,
-  updateWorldACLRequest,
-  updateWorldACLSuccess,
+  putWorldACLFailure,
+  putWorldACLRequest,
+  putWorldACLSuccess,
 } from './actions'
-import { ACLResponse } from './reducer'
+import { WorldPermissionsResponse } from './reducer'
 import { aclSaga } from './sagas'
 import { InfoResponse } from './types'
 import { getInfoRequest, getWorldACL, updateWorldACL } from './utils'
@@ -63,11 +63,11 @@ describe('acl sagas', () => {
     })
 
     describe('when the request succeeds', () => {
-      const acl = {} as ACLResponse
+      const acl = {} as WorldPermissionsResponse
       it('should dispatch an action signaling the success of the action', () => {
         return expectSaga(aclSaga)
           .provide([[call(getWorldACL, targetContent, worldName), acl]])
-          .put(fetchWorldACLSuccess(acl))
+          .put(fetchWorldACLSuccess(acl, worldName))
           .dispatch(fetchWorldACLRequest(targetContent, worldName))
           .run({ silenceTimeout: true })
       })
@@ -84,26 +84,26 @@ describe('acl sagas', () => {
           .provide([
             [select(getAddress), address],
             [
-              call(updateWorldACL, { signature, address }),
+              call(updateWorldACL, { signature, address }, 'put'),
               Promise.reject(new Error(error)),
             ],
           ])
-          .put(updateWorldACLFailure(error))
-          .dispatch(updateWorldACLRequest(signature))
+          .put(putWorldACLFailure(error))
+          .dispatch(putWorldACLRequest(signature))
           .run({ silenceTimeout: true })
       })
     })
 
     describe('when the request succeeds', () => {
-      const acl = {} as ACLResponse
+      const acl = {} as WorldPermissionsResponse
       it('should dispatch an action signaling the success of the action', () => {
         return expectSaga(aclSaga)
           .provide([
             [select(getAddress), address],
-            [call(updateWorldACL, { signature, address }), null],
+            [call(updateWorldACL, { signature, address }, 'put'), null],
           ])
-          .put(updateWorldACLSuccess())
-          .dispatch(updateWorldACLRequest(signature))
+          .put(putWorldACLSuccess())
+          .dispatch(putWorldACLRequest(signature))
           .run({ silenceTimeout: true })
       })
     })
