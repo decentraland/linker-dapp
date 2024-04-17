@@ -84,7 +84,7 @@ describe('acl sagas', () => {
           .provide([
             [select(getAddress), address],
             [
-              call(updateWorldACL, { signature, address }, 'put'),
+              call(updateWorldACL, { signature, address }),
               Promise.reject(new Error(error)),
             ],
           ])
@@ -100,7 +100,7 @@ describe('acl sagas', () => {
         return expectSaga(aclSaga)
           .provide([
             [select(getAddress), address],
-            [call(updateWorldACL, { signature, address }, 'put'), null],
+            [call(updateWorldACL, { signature, address }), null],
           ])
           .put(putWorldACLSuccess())
           .dispatch(putWorldACLRequest(signature))

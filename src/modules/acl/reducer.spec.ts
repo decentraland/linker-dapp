@@ -16,7 +16,7 @@ import {
   PUT_WORLD_ACL_SUCCESS,
   DELETE_WORLD_ACL_SUCCESS,
 } from './actions'
-import { INITIAL_STATE, aclReducer, ACLResponse, WorldPermissionsResponse, WorldPermissionType } from './reducer'
+import { INITIAL_STATE, aclReducer, WorldPermissionsResponse, WorldPermissionType } from './reducer'
 import { InfoResponse } from './types'
 
 const error = 'error'

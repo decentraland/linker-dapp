@@ -12,7 +12,7 @@ export async function getWorldACL(
   return (await fetch(`${targetContent}/world/${worldName}/permissions`)).json()
 }
 
-export async function updateWorldACL(payload: UpdatePayload, method: 'put' | 'delete'): Promise<void> {
+export async function updateWorldACL(payload: UpdatePayload): Promise<void> {
   await fetch(`/api/acl`, {
     method: 'post',
     headers: {

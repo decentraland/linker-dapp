@@ -54,7 +54,7 @@ function* handlePutWorldACLRequest(action: PutWorldACLRequestAction) {
   const address: string = yield select(getAddress)
 
   try {
-    yield call(updateWorldACL, { signature, address }, 'put')
+    yield call(updateWorldACL, { signature, address })
     yield put(putWorldACLSuccess())
   } catch (e) {
     yield put(putWorldACLFailure((e as any).message))
@@ -67,7 +67,7 @@ function* handleDeleteWorldACLRequest(action: DeleteWorldACLRequestAction) {
   const address: string = yield select(getAddress)
 
   try {
-    yield call(updateWorldACL, { signature, address }, 'delete')
+    yield call(updateWorldACL, { signature, address })
     yield put(deleteWorldACLSuccess())
   } catch (e) {
     yield put(deleteWorldACLFailure((e as any).message))
