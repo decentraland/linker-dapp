@@ -1,4 +1,4 @@
-import { ACLResponse } from './reducer'
+import { WorldPermissionsResponse } from './reducer'
 import { InfoResponse, UpdatePayload } from './types'
 
 export async function getInfoRequest(): Promise<InfoResponse> {
@@ -8,8 +8,8 @@ export async function getInfoRequest(): Promise<InfoResponse> {
 export async function getWorldACL(
   targetContent: string,
   worldName: string
-): Promise<ACLResponse> {
-  return (await fetch(`${targetContent}/acl/${worldName}`)).json()
+): Promise<WorldPermissionsResponse> {
+  return (await fetch(`${targetContent}/world/${worldName}/permissions`)).json()
 }
 
 export async function updateWorldACL(payload: UpdatePayload): Promise<void> {

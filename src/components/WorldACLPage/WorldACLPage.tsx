@@ -50,7 +50,8 @@ export default function WorldACLPage(props: Props) {
     signed,
     info,
     onConnectWallet,
-    onSignContent,
+    onSignPutContent,
+    onSignDeleteContent,
     onFetchInfo,
   } = props
 
@@ -153,7 +154,7 @@ export default function WorldACLPage(props: Props) {
                 You are about to{' '}
                 <span>
                   <strong>
-                    {info.allowed.length > info.oldAllowed.length
+                    {info.method === 'put'
                       ? 'grant'
                       : 'revoke'}
                   </strong>
@@ -191,7 +192,7 @@ export default function WorldACLPage(props: Props) {
                 size="medium"
                 loading={isSigning}
                 disabled={isPayloadExpired}
-                onClick={() => onSignContent(info!.payload)}
+                onClick={() => info.method === 'put' ? onSignPutContent(info!.payload) : onSignDeleteContent(info!.payload)}
               >
                 Sign & Submit
               </Button>

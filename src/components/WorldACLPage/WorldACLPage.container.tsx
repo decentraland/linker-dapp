@@ -10,7 +10,7 @@ import {
   getData as getSignature,
   isLoading as isSigningTx,
 } from '../../modules/signature/selectors'
-import { signWorldACLRequest } from '../../modules/signature/actions'
+import { signPutWorldACLRequest, signDeleteWorldACLRequest } from '../../modules/signature/actions'
 import { RootState } from '../../types'
 import { fetchInfoRequest } from '../../modules/acl/actions'
 import { getInfo } from '../../modules/acl/selectors'
@@ -31,7 +31,8 @@ const mapState = (state: RootState): MapStateProps => {
 const mapDispatch = (dispatch: Dispatch<AnyAction>): MapDispatchProps => ({
   onConnectWallet: (providerType) =>
     dispatch(enableWalletRequest(providerType)),
-  onSignContent: (payload: string) => dispatch(signWorldACLRequest(payload)),
+  onSignPutContent: (payload: string) => dispatch(signPutWorldACLRequest(payload)),
+  onSignDeleteContent: (payload: string) => dispatch(signDeleteWorldACLRequest(payload)),
   onFetchInfo: () => dispatch(fetchInfoRequest()),
 })
 

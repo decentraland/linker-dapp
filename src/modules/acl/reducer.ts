@@ -15,18 +15,43 @@ import {
   FETCH_WORLD_ACL_REQUEST,
   FETCH_WORLD_ACL_SUCCESS,
   FETCH_WORLD_ACL_FAILURE,
-  UpdateWorldACLFailureAction,
-  UpdateWorldACLRequestAction,
-  UpdateWorldACLSuccessAction,
-  UPDATE_WORLD_ACL_FAILURE,
-  UPDATE_WORLD_ACL_REQUEST,
-  UPDATE_WORLD_ACL_SUCCESS,
+  DELETE_WORLD_ACL_REQUEST,
+  PUT_WORLD_ACL_REQUEST,
+  DeleteWorldACLFailureAction,
+  DeleteWorldACLRequestAction,
+  DeleteWorldACLSuccessAction,
+  PutWorldACLFailureAction,
+  PutWorldACLRequestAction,
+  PutWorldACLSuccessAction,
+  DELETE_WORLD_ACL_FAILURE,
+  DELETE_WORLD_ACL_SUCCESS,
+  PUT_WORLD_ACL_FAILURE,
+  PUT_WORLD_ACL_SUCCESS,
 } from './actions'
 import { InfoResponse } from './types'
 
+/** @deprecated */
 export type ACLResponse = {
   resource: string
   allowed: string[]
+}
+
+export enum WorldPermissionType {
+  Unrestricted = 'unrestricted',
+  AllowList = 'allow-list'
+}
+
+export type AllowListPermissionSetting = {
+  type: WorldPermissionType.AllowList
+  wallets: string[]
+}
+
+export type WorldPermissions = {
+  deployment: AllowListPermissionSetting
+}
+
+export type WorldPermissionsResponse = {
+  permissions: WorldPermissions
 }
 
 export type ACLState = {
@@ -50,9 +75,12 @@ export type ApiReducerAction =
   | FetchWorldACLFailureAction
   | FetchWorldACLRequestAction
   | FetchWorldACLSuccessAction
-  | UpdateWorldACLFailureAction
-  | UpdateWorldACLRequestAction
-  | UpdateWorldACLSuccessAction
+  | PutWorldACLFailureAction
+  | PutWorldACLRequestAction
+  | PutWorldACLSuccessAction
+  | DeleteWorldACLFailureAction
+  | DeleteWorldACLRequestAction
+  | DeleteWorldACLSuccessAction
 
 export const aclReducer = (
   state = INITIAL_STATE,
@@ -87,7 +115,7 @@ export const aclReducer = (
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        acl: action.payload.acl,
+        acl: {resource: action.payload.worldName, allowed: action.payload.acl.permissions.deployment.wallets},
         error: null,
       }
     case FETCH_WORLD_ACL_FAILURE:
@@ -97,18 +125,21 @@ export const aclReducer = (
         error: action.payload.error,
         acl: undefined,
       }
-    case UPDATE_WORLD_ACL_REQUEST:
+    case PUT_WORLD_ACL_REQUEST:
+    case DELETE_WORLD_ACL_REQUEST:
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
       }
-    case UPDATE_WORLD_ACL_SUCCESS:
+    case PUT_WORLD_ACL_SUCCESS:
+    case DELETE_WORLD_ACL_SUCCESS:
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
         error: null,
       }
-    case UPDATE_WORLD_ACL_FAILURE:
+    case PUT_WORLD_ACL_FAILURE:
+    case DELETE_WORLD_ACL_FAILURE:
       return {
         ...state,
         loading: loadingReducer(state.loading, action),

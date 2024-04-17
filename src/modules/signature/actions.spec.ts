@@ -12,12 +12,18 @@ import {
   createIdentityRequest,
   createIdentitySuccess,
   createIdentityFailure,
-  SIGN_WORLD_ACL_REQUEST,
-  SIGN_WORLD_ACL_SUCCESS,
-  SIGN_WORLD_ACL_FAILURE,
-  signWorldACLRequest,
-  signWorldACLSuccess,
-  signWorldACLFailure,
+  SIGN_PUT_WORLD_ACL_REQUEST,
+  SIGN_PUT_WORLD_ACL_SUCCESS,
+  SIGN_PUT_WORLD_ACL_FAILURE,
+  SIGN_DELETE_WORLD_ACL_REQUEST,
+  SIGN_DELETE_WORLD_ACL_SUCCESS,
+  SIGN_DELETE_WORLD_ACL_FAILURE,
+  signPutWorldACLRequest,
+  signPutWorldACLSuccess,
+  signPutWorldACLFailure,
+  signDeleteWorldACLRequest,
+  signDeleteWorldACLSuccess,
+  signDeleteWorldACLFailure,
   signQuestsRequest,
   SIGN_QUESTS_REQUEST,
   signQuestsSuccess,
@@ -103,34 +109,68 @@ describe('signature actions', () => {
     })
   })
 
-  describe('when creating the action to signal the start of the sign world ACL request', () => {
+  describe('when creating the action to signal the start of the sign put world ACL request', () => {
     const payload = '{ "resource": "resource", "allowed": ["0xaddress"] }'
 
     it('should return an object representing the action', () => {
-      expect(signWorldACLRequest(payload)).toEqual({
-        type: SIGN_WORLD_ACL_REQUEST,
+      expect(signPutWorldACLRequest(payload)).toEqual({
+        type: SIGN_PUT_WORLD_ACL_REQUEST,
         meta: undefined,
         payload,
       })
     })
   })
 
-  describe('when creating the action to signal a success in the sign world ACL request', () => {
+  describe('when creating the action to signal a success in the sign put world ACL request', () => {
     const signature = 'signature'
 
     it('should return an object representing the action', () => {
-      expect(signWorldACLSuccess(signature)).toEqual({
-        type: SIGN_WORLD_ACL_SUCCESS,
+      expect(signPutWorldACLSuccess(signature)).toEqual({
+        type: SIGN_PUT_WORLD_ACL_SUCCESS,
         meta: undefined,
         payload: { signature },
       })
     })
   })
 
-  describe('when creating the action to signal a failure in the sign world ACL request', () => {
+  describe('when creating the action to signal a failure in the sign put world ACL request', () => {
     it('should return an object representing the action', () => {
-      expect(signWorldACLFailure(error)).toEqual({
-        type: SIGN_WORLD_ACL_FAILURE,
+      expect(signPutWorldACLFailure(error)).toEqual({
+        type: SIGN_PUT_WORLD_ACL_FAILURE,
+        meta: undefined,
+        payload: { error },
+      })
+    })
+  })
+
+  describe('when creating the action to signal the start of the sign delete world ACL request', () => {
+    const payload = '{ "resource": "resource", "allowed": ["0xaddress"] }'
+
+    it('should return an object representing the action', () => {
+      expect(signDeleteWorldACLRequest(payload)).toEqual({
+        type: SIGN_DELETE_WORLD_ACL_REQUEST,
+        meta: undefined,
+        payload,
+      })
+    })
+  })
+
+  describe('when creating the action to signal a success in the sign delete world ACL request', () => {
+    const signature = 'signature'
+
+    it('should return an object representing the action', () => {
+      expect(signDeleteWorldACLSuccess(signature)).toEqual({
+        type: SIGN_DELETE_WORLD_ACL_SUCCESS,
+        meta: undefined,
+        payload: { signature },
+      })
+    })
+  })
+
+  describe('when creating the action to signal a failure in the sign delete world ACL request', () => {
+    it('should return an object representing the action', () => {
+      expect(signDeleteWorldACLFailure(error)).toEqual({
+        type: SIGN_DELETE_WORLD_ACL_FAILURE,
         meta: undefined,
         payload: { error },
       })

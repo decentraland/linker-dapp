@@ -15,7 +15,7 @@ import {
 } from 'decentraland-dapps/dist/modules/wallet/selectors'
 import { expectSaga } from 'redux-saga-test-plan'
 import { call, select } from 'redux-saga/effects'
-import { updateWorldACLRequest } from '../acl/actions'
+import { putWorldACLRequest, deleteWorldACLRequest } from '../acl/actions'
 import { closeServer, postDeploy } from '../server/utils'
 import { fetchCatalystRequest } from '../server/actions'
 import {
@@ -25,9 +25,9 @@ import {
   signContentFailure,
   signContentRequest,
   signContentSuccess,
-  signWorldACLFailure,
-  signWorldACLRequest,
-  signWorldACLSuccess,
+  signPutWorldACLFailure,
+  signPutWorldACLRequest,
+  signPutWorldACLSuccess,
 } from './actions'
 import { signatureSaga } from './sagas'
 
@@ -176,7 +176,7 @@ describe('signature sagas', () => {
     })
   })
 
-  describe('when handling the sign world ACL request', () => {
+  describe('when handling the sign world ACL put request', () => {
     describe('when the request fails', () => {
       beforeEach(() => {
         mockedGetConnectedProvider.mockRejectedValue(new Error(error))
@@ -184,8 +184,8 @@ describe('signature sagas', () => {
 
       it('should dispatch an action signaling the failure of the action', () => {
         return expectSaga(signatureSaga)
-          .put(signWorldACLFailure(error))
-          .dispatch(signWorldACLRequest('payload'))
+          .put(signPutWorldACLFailure(error))
+          .dispatch(signPutWorldACLRequest('payload'))
           .run({ silenceTimeout: true })
       })
     })
@@ -197,11 +197,12 @@ describe('signature sagas', () => {
 
       it('should dispatch an action signaling the success of the action and the update world ACL request', () => {
         return expectSaga(signatureSaga)
-          .put(signWorldACLSuccess(signature))
-          .put(updateWorldACLRequest(signature))
-          .dispatch(signWorldACLRequest('payload'))
+          .put(signPutWorldACLSuccess(signature))
+          .put(putWorldACLRequest(signature))
+          .dispatch(signPutWorldACLRequest('payload'))
           .run({ silenceTimeout: true })
       })
     })
   })
+
 })

@@ -6,14 +6,17 @@ import {
   fetchWorldACLRequest,
   fetchWorldACLSuccess,
   fetchWorldACLFailure,
-  updateWorldACLRequest,
-  updateWorldACLFailure,
+  putWorldACLRequest,
+  putWorldACLSuccess,
+  putWorldACLFailure,
+  deleteWorldACLRequest,
+  deleteWorldACLFailure,
   FETCH_INFO_SUCCESS,
   FETCH_WORLD_ACL_SUCCESS,
-  UPDATE_WORLD_ACL_SUCCESS,
-  updateWorldACLSuccess,
+  PUT_WORLD_ACL_SUCCESS,
+  DELETE_WORLD_ACL_SUCCESS,
 } from './actions'
-import { INITIAL_STATE, aclReducer, ACLResponse } from './reducer'
+import { INITIAL_STATE, aclReducer, WorldPermissionsResponse, WorldPermissionType } from './reducer'
 import { InfoResponse } from './types'
 
 const error = 'error'
@@ -21,7 +24,8 @@ const error = 'error'
 const requestActions = [
   fetchInfoRequest(),
   fetchWorldACLRequest('targetContent', 'worldName'),
-  updateWorldACLRequest('signature'),
+  putWorldACLRequest('signature'),
+  deleteWorldACLRequest('signature'),
 ]
 
 const failureActions = [
@@ -31,8 +35,12 @@ const failureActions = [
     failure: fetchWorldACLFailure(error),
   },
   {
-    request: updateWorldACLRequest('signature'),
-    failure: updateWorldACLFailure(error),
+    request: putWorldACLRequest('signature'),
+    failure: putWorldACLFailure(error),
+  },
+  {
+    request: deleteWorldACLRequest('signature'),
+    failure: deleteWorldACLFailure(error),
   },
 ]
 
@@ -84,6 +92,7 @@ describe('acl reducer', () => {
       targetContent: 'target.content',
       timestamp: new Date('2023-03-03T15:22:56.493Z'),
       expiration: 120,
+      method: 'put',
       payload:
         '{"resource": "world.name.dcl.eth", "allowed": ["0xD9370c94253f080272BA1c28E216146ecE809f4d"] }',
     }
@@ -106,28 +115,46 @@ describe('acl reducer', () => {
       ),
     }
 
-    const acl: ACLResponse = {
-      resource: 'world.name.dcl.eth',
-      allowed: ['0xD9370c94253f080272BA1c28E216146ecE809f4d'],
+    const permissions: WorldPermissionsResponse = {
+      permissions: {
+        deployment: {
+          type: WorldPermissionType.AllowList,
+          wallets: ['0xD9370c94253f080272BA1c28E216146ecE809f4d'],
+        },
+      },
     }
 
     it('should add the acl to the store', () => {
-      expect(aclReducer(initialState, fetchWorldACLSuccess(acl))).toEqual({
+      expect(aclReducer(initialState, fetchWorldACLSuccess(permissions, 'world.name.dcl.eth'))).toEqual({
         ...INITIAL_STATE,
         loading: [],
-        acl,
+        acl: {resource: 'world.name.dcl.eth', allowed: permissions.permissions.deployment.wallets},
       })
     })
   })
 
-  describe(`when reducing the ${UPDATE_WORLD_ACL_SUCCESS} action`, () => {
+  describe(`when reducing the ${PUT_WORLD_ACL_SUCCESS} action`, () => {
     const initialState = {
       ...INITIAL_STATE,
-      loading: loadingReducer([], updateWorldACLRequest('signature')),
+      loading: loadingReducer([], putWorldACLRequest('signature')),
     }
 
     it('should clear the loading state', () => {
-      expect(aclReducer(initialState, updateWorldACLSuccess())).toEqual({
+      expect(aclReducer(initialState, putWorldACLSuccess())).toEqual({
+        ...INITIAL_STATE,
+        loading: [],
+      })
+    })
+  })
+
+  describe(`when reducing the ${DELETE_WORLD_ACL_SUCCESS} action`, () => {
+    const initialState = {
+      ...INITIAL_STATE,
+      loading: loadingReducer([], putWorldACLRequest('signature')),
+    }
+
+    it('should clear the loading state', () => {
+      expect(aclReducer(initialState, putWorldACLSuccess())).toEqual({
         ...INITIAL_STATE,
         loading: [],
       })

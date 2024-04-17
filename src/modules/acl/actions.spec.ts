@@ -5,20 +5,26 @@ import {
   fetchWorldACLRequest,
   fetchWorldACLSuccess,
   fetchWorldACLFailure,
-  updateWorldACLRequest,
-  updateWorldACLSuccess,
-  updateWorldACLFailure,
+  putWorldACLRequest,
+  putWorldACLSuccess,
+  putWorldACLFailure,
+  deleteWorldACLRequest,
+  deleteWorldACLSuccess,
+  deleteWorldACLFailure,
   FETCH_INFO_REQUEST,
   FETCH_INFO_SUCCESS,
   FETCH_INFO_FAILURE,
   FETCH_WORLD_ACL_FAILURE,
   FETCH_WORLD_ACL_REQUEST,
   FETCH_WORLD_ACL_SUCCESS,
-  UPDATE_WORLD_ACL_FAILURE,
-  UPDATE_WORLD_ACL_REQUEST,
-  UPDATE_WORLD_ACL_SUCCESS,
+  PUT_WORLD_ACL_FAILURE,
+  PUT_WORLD_ACL_REQUEST,
+  PUT_WORLD_ACL_SUCCESS,
+  DELETE_WORLD_ACL_FAILURE,
+  DELETE_WORLD_ACL_REQUEST,
+  DELETE_WORLD_ACL_SUCCESS,
 } from './actions'
-import { ACLResponse } from './reducer'
+import { WorldPermissionType, WorldPermissionsResponse } from './reducer'
 import { InfoResponse } from './types'
 
 describe('acl actions', () => {
@@ -42,6 +48,7 @@ describe('acl actions', () => {
       targetContent: 'target.content',
       timestamp: new Date('2023-03-03T15:22:56.493Z'),
       expiration: 120,
+      method: 'put',
       payload:
         '{"resource": "world.name.dcl.eth", "allowed": ["0xD9370c94253f080272BA1c28E216146ecE809f4d"] }',
     }
@@ -79,16 +86,20 @@ describe('acl actions', () => {
   })
 
   describe('when creating the action to signal a success in the fetch world ACL request', () => {
-    const acl: ACLResponse = {
-      resource: 'world.name.dcl.eth',
-      allowed: ['0xD9370c94253f080272BA1c28E216146ecE809f4d'],
+    const permissions: WorldPermissionsResponse = {
+      permissions: {
+        deployment: {
+          wallets: ['0xD9370c94253f080272BA1c28E216146ecE809f4d'],
+          type: WorldPermissionType.AllowList
+        },
+      }
     }
 
     it('should return an object representing the action', () => {
-      expect(fetchWorldACLSuccess(acl)).toEqual({
+      expect(fetchWorldACLSuccess(permissions, 'world.name.dcl.eth')).toEqual({
         type: FETCH_WORLD_ACL_SUCCESS,
         meta: undefined,
-        payload: { acl },
+        payload: { acl: permissions, worldName: 'world.name.dcl.eth'},
       })
     })
   })
@@ -103,32 +114,64 @@ describe('acl actions', () => {
     })
   })
 
-  describe('when creating the action to signal the start of the update world ACL request', () => {
+  describe('when creating the action to signal the start of the put world ACL request', () => {
     const signature = 'signature'
 
     it('should return an object representing the action', () => {
-      expect(updateWorldACLRequest(signature)).toEqual({
-        type: UPDATE_WORLD_ACL_REQUEST,
+      expect(putWorldACLRequest(signature)).toEqual({
+        type: PUT_WORLD_ACL_REQUEST,
         meta: undefined,
         payload: { signature },
       })
     })
   })
 
-  describe('when creating the action to signal a success in the update world ACL request', () => {
+  describe('when creating the action to signal a success in the put world ACL request', () => {
     it('should return an object representing the action', () => {
-      expect(updateWorldACLSuccess()).toEqual({
-        type: UPDATE_WORLD_ACL_SUCCESS,
+      expect(putWorldACLSuccess()).toEqual({
+        type: PUT_WORLD_ACL_SUCCESS,
         meta: undefined,
         payload: undefined,
       })
     })
   })
 
-  describe('when creating the action to signal a failure in the update world ACL request', () => {
+  describe('when creating the action to signal a failure in the put world ACL request', () => {
     it('should return an object representing the action', () => {
-      expect(updateWorldACLFailure(error)).toEqual({
-        type: UPDATE_WORLD_ACL_FAILURE,
+      expect(putWorldACLFailure(error)).toEqual({
+        type: PUT_WORLD_ACL_FAILURE,
+        meta: undefined,
+        payload: { error },
+      })
+    })
+  })
+
+  describe('when creating the action to signal the start of the delete world ACL request', () => {
+    const signature = 'signature'
+
+    it('should return an object representing the action', () => {
+      expect(deleteWorldACLRequest(signature)).toEqual({
+        type: DELETE_WORLD_ACL_REQUEST,
+        meta: undefined,
+        payload: { signature },
+      })
+    })
+  })
+
+  describe('when creating the action to signal a success in the delete world ACL request', () => {
+    it('should return an object representing the action', () => {
+      expect(deleteWorldACLSuccess()).toEqual({
+        type: DELETE_WORLD_ACL_SUCCESS,
+        meta: undefined,
+        payload: undefined,
+      })
+    })
+  })
+
+  describe('when creating the action to signal a failure in the delete world ACL request', () => {
+    it('should return an object representing the action', () => {
+      expect(deleteWorldACLFailure(error)).toEqual({
+        type: DELETE_WORLD_ACL_FAILURE,
         meta: undefined,
         payload: { error },
       })

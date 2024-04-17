@@ -11,9 +11,6 @@ import {
   fetchInfoFailure,
   fetchInfoRequest,
   fetchInfoSuccess,
-  FETCH_CATALYST_REQUEST,
-  FETCH_FILES_REQUEST,
-  FETCH_INFO_REQUEST,
 } from './actions'
 import { CatalystResponse, FileSize } from './reducer'
 import { apiSaga } from './sagas'

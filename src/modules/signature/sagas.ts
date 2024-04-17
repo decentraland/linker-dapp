@@ -25,12 +25,6 @@ import {
   createIdentityFailure,
   CREATE_IDENTITY_SUCCESS,
   CreateIdentitySuccessAction,
-  SignWorldACLRequestAction,
-  SignWorldACLSuccessAction,
-  SIGN_WORLD_ACL_REQUEST,
-  SIGN_WORLD_ACL_SUCCESS,
-  signWorldACLSuccess,
-  signWorldACLFailure,
   CreateIdentityRequestAction,
   SIGN_QUESTS_REQUEST,
   SIGN_QUESTS_SUCCESS,
@@ -38,8 +32,18 @@ import {
   signQuestsSuccess,
   signQuestsFailure,
   SignQuestsSuccessAction,
+  SIGN_DELETE_WORLD_ACL_REQUEST,
+  SIGN_DELETE_WORLD_ACL_SUCCESS,
+  SIGN_PUT_WORLD_ACL_REQUEST,
+  SIGN_PUT_WORLD_ACL_SUCCESS,
+  SignDeleteWorldACLRequestAction,
+  SignPutWorldACLRequestAction,
+  SignDeleteWorldACLSuccessAction,
+  SignPutWorldACLSuccessAction,
+  signPutWorldACLSuccess,
+  signPutWorldACLFailure,
 } from './actions'
-import { updateWorldACLRequest } from '../acl/actions'
+import { putWorldACLRequest, deleteWorldACLRequest } from '../acl/actions'
 import { signQuestsFetchRequest } from '../quests/action'
 
 export function* signatureSaga() {
@@ -49,14 +53,17 @@ export function* signatureSaga() {
   yield takeLatest(CREATE_IDENTITY_REQUEST, handleCreateIdentityRequest)
   yield takeLatest(CREATE_IDENTITY_SUCCESS, handleCreateIdentitySuccess)
 
-  yield takeLatest(SIGN_WORLD_ACL_REQUEST, handleSignWorldACLRequest)
-  yield takeEvery(SIGN_WORLD_ACL_SUCCESS, handleSignWorldACLSuccess)
+  yield takeLatest(SIGN_PUT_WORLD_ACL_REQUEST, handleSignWorldACLRequest)
+  yield takeEvery(SIGN_PUT_WORLD_ACL_SUCCESS, handleSignPutWorldACLSuccess)
+
+  yield takeLatest(SIGN_DELETE_WORLD_ACL_REQUEST, handleSignWorldACLRequest)
+  yield takeEvery(SIGN_DELETE_WORLD_ACL_SUCCESS, handleSignDeleteWorldACLSuccess)
 
   yield takeLatest(SIGN_QUESTS_REQUEST, handleQuestsSignRequest)
   yield takeEvery(SIGN_QUESTS_SUCCESS, handleQuestsSignSuccess)
 }
 
-function* sign(action: SignContentRequestAction | SignWorldACLRequestAction | SignQuestsRequestAction) {
+function* sign(action: SignContentRequestAction | SignPutWorldACLRequestAction | SignDeleteWorldACLRequestAction | SignQuestsRequestAction) {
   const dataToSign = toUtf8Bytes(action.payload)
 
   const provider: Provider = yield call(() => getConnectedProvider())
@@ -123,18 +130,34 @@ function* handleCreateIdentitySuccess(action: CreateIdentitySuccessAction) {
   }
 }
 
-function* handleSignWorldACLRequest(action: SignWorldACLRequestAction) {
+function* handleSignWorldACLRequest(action: SignPutWorldACLRequestAction | SignDeleteWorldACLRequestAction) {
   try {
     const signedMessage: string = yield call(sign, action)
-    yield put(signWorldACLSuccess(signedMessage))
+    if(action.type === SIGN_PUT_WORLD_ACL_REQUEST) {
+      yield put(signPutWorldACLSuccess(signedMessage))
+    }
+    if(action.type === SIGN_DELETE_WORLD_ACL_REQUEST) {
+      yield put(signPutWorldACLSuccess(signedMessage))
+    }
+    
   } catch (error) {
-    yield put(signWorldACLFailure((error as Error).message))
+    if(action.type === SIGN_PUT_WORLD_ACL_REQUEST) {
+      yield put(signPutWorldACLFailure((error as Error).message))
+    }
+    if(action.type === SIGN_DELETE_WORLD_ACL_REQUEST) {
+      yield put(signPutWorldACLFailure((error as Error).message))
+    }
   }
 }
 
-function* handleSignWorldACLSuccess(action: SignWorldACLSuccessAction) {
+function* handleSignPutWorldACLSuccess(action: SignPutWorldACLSuccessAction) {
   const { signature } = action.payload
-  yield put(updateWorldACLRequest(signature))
+  yield put(putWorldACLRequest(signature))
+}
+
+function* handleSignDeleteWorldACLSuccess(action: SignDeleteWorldACLSuccessAction) {
+  const { signature } = action.payload
+  yield put(deleteWorldACLRequest(signature))
 }
 
 function* handleQuestsSignRequest(action: SignQuestsRequestAction) {
