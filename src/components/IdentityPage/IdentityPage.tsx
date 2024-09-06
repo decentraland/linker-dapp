@@ -1,31 +1,25 @@
-import { BaseSyntheticEvent, useEffect, useState } from 'react'
+import { BaseSyntheticEvent } from 'react'
 import { ChainId } from '@dcl/schemas'
-import { Header, Button, Navbar } from 'decentraland-ui'
-import LoginModal from 'decentraland-dapps/dist/containers/LoginModal'
+import { Header, Button } from 'decentraland-ui'
 import RenderWalletData from '../RenderWalletData/RenderWalletData'
+import { Navbar } from '../Navbar'
 import { Props } from './types'
 import './style.css'
 
 export default function IdentityPage(props: Props) {
-  const { isConnected, wallet, isConnecting, onConnectWallet, isSigning, onRequestIdentity } = props
-
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const { isConnected, wallet, isConnecting, isSigning, onRequestIdentity } =
+    props
 
   const handleSignature = (e: BaseSyntheticEvent) => {
     e.preventDefault()
     onRequestIdentity()
   }
 
-  // Close modal once the wallet is connected
-  useEffect(() => {
-    if (isConnected && isModalOpen) {
-      setIsModalOpen(false)
-    }
-  }, [isConnected, isModalOpen])
-
-  return (
+  return wallet ? (
     <div className="LinkScenePage">
-      {wallet.chainId === ChainId.ETHEREUM_SEPOLIA && <div className="warning">Using Sepolia test network</div>}
+      {wallet.chainId === ChainId.ETHEREUM_SEPOLIA && (
+        <div className="warning">Using Sepolia test network</div>
+      )}
       <Navbar />
       <Header>Create an identity to sign deployments </Header>
       <RenderWalletData
@@ -33,21 +27,19 @@ export default function IdentityPage(props: Props) {
         isConnected={isConnected}
         isConnecting={isConnecting}
         wallet={wallet}
-        onConnectWallet={() => setIsModalOpen(true)}
       />
       <form>
         <div>
-          <Button primary onClick={handleSignature} disabled={!isConnected} loading={isSigning}>
+          <Button
+            primary
+            onClick={handleSignature}
+            disabled={!isConnected}
+            loading={isSigning}
+          >
             Sign ephemeral wallet
           </Button>
         </div>
       </form>
-      {isModalOpen ? <LoginModal
-          name='IdentityPageLoginModal'
-          onClose={() => setIsModalOpen(false)}
-          onConnect={onConnectWallet}
-          isLoading={isConnecting}
-        /> : null}
     </div>
-  )
+  ) : null
 }

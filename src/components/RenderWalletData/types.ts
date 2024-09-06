@@ -7,5 +7,4 @@ export type Props = {
   isConnected: boolean
   isUpdateAuthorized: boolean
   authorizations?: Authorization[]
-  onConnectWallet: () => void
 }
