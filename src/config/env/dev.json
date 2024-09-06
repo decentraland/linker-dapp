@@ -1,3 +1,6 @@
 {
-  "CHAIN_ID": "5"
+  "CHAIN_ID": "11155111",
+  "ENVIRONMENT": "development",
+  "AUTH_URL": "/auth",
+  "SEGMENT_API_KEY": "mjCV5Dc4VAKXLJAH5g7LyHyW1jrIR3to"
 }
