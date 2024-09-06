@@ -1,12 +1,11 @@
 import react from '@vitejs/plugin-react-swc'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { defineConfig, loadEnv } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const envVariables = loadEnv(mode, process.cwd())
   return {
-    plugins: [react(), nodePolyfills()],
+    plugins: [react()],
     define: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'process.env': {
