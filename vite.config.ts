@@ -1,13 +1,22 @@
+import fs from 'fs'
+import path from 'path'
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig, loadEnv } from 'vite'
+import dotenv from 'dotenv'
 
-// https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
+  const envDefaultPath = path.resolve(process.cwd(), `.env.default`)
+  const envPath = path.resolve(process.cwd(), '.env')
+
+  if (!fs.existsSync(envPath) && fs.existsSync(envDefaultPath)) {
+    dotenv.config({ path: envDefaultPath })
+  }
+
   const envVariables = loadEnv(mode, process.cwd())
+
   return {
     plugins: [react()],
     define: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       'process.env': {
         VITE_REACT_APP_DCL_DEFAULT_ENV:
           envVariables.VITE_REACT_APP_DCL_DEFAULT_ENV,
@@ -16,7 +25,6 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       proxy: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         '/auth': {
           target: 'https://decentraland.zone',
           followRedirects: true,
@@ -28,7 +36,6 @@ export default defineConfig(({ mode }) => {
     },
     optimizeDeps: {
       esbuildOptions: {
-        // Node.js global to browser globalThis
         define: {
           global: 'globalThis',
         },
