@@ -16,16 +16,30 @@ import {
   PUT_WORLD_ACL_SUCCESS,
   DELETE_WORLD_ACL_SUCCESS,
 } from './actions'
-import { INITIAL_STATE, aclReducer, WorldPermissionsResponse, WorldPermissionType } from './reducer'
+import {
+  INITIAL_STATE,
+  aclReducer,
+  WorldPermissionsResponse,
+  WorldPermissionType,
+} from './reducer'
 import { InfoResponse } from './types'
+import { AuthLinkType } from '@dcl/crypto'
 
 const error = 'error'
+
+const authChain = [
+  {
+    type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
+    payload: 'abcd',
+    signature: 'signedMessage',
+  },
+]
 
 const requestActions = [
   fetchInfoRequest(),
   fetchWorldACLRequest('targetContent', 'worldName'),
-  putWorldACLRequest('signature'),
-  deleteWorldACLRequest('signature'),
+  putWorldACLRequest(authChain),
+  deleteWorldACLRequest(authChain),
 ]
 
 const failureActions = [
@@ -35,11 +49,11 @@ const failureActions = [
     failure: fetchWorldACLFailure(error),
   },
   {
-    request: putWorldACLRequest('signature'),
+    request: putWorldACLRequest(authChain),
     failure: putWorldACLFailure(error),
   },
   {
-    request: deleteWorldACLRequest('signature'),
+    request: deleteWorldACLRequest(authChain),
     failure: deleteWorldACLFailure(error),
   },
 ]
@@ -125,10 +139,18 @@ describe('acl reducer', () => {
     }
 
     it('should add the acl to the store', () => {
-      expect(aclReducer(initialState, fetchWorldACLSuccess(permissions, 'world.name.dcl.eth'))).toEqual({
+      expect(
+        aclReducer(
+          initialState,
+          fetchWorldACLSuccess(permissions, 'world.name.dcl.eth')
+        )
+      ).toEqual({
         ...INITIAL_STATE,
         loading: [],
-        acl: {resource: 'world.name.dcl.eth', allowed: permissions.permissions.deployment.wallets},
+        acl: {
+          resource: 'world.name.dcl.eth',
+          allowed: permissions.permissions.deployment.wallets,
+        },
       })
     })
   })
@@ -136,7 +158,7 @@ describe('acl reducer', () => {
   describe(`when reducing the ${PUT_WORLD_ACL_SUCCESS} action`, () => {
     const initialState = {
       ...INITIAL_STATE,
-      loading: loadingReducer([], putWorldACLRequest('signature')),
+      loading: loadingReducer([], putWorldACLRequest(authChain)),
     }
 
     it('should clear the loading state', () => {
@@ -150,7 +172,7 @@ describe('acl reducer', () => {
   describe(`when reducing the ${DELETE_WORLD_ACL_SUCCESS} action`, () => {
     const initialState = {
       ...INITIAL_STATE,
-      loading: loadingReducer([], putWorldACLRequest('signature')),
+      loading: loadingReducer([], putWorldACLRequest(authChain)),
     }
 
     it('should clear the loading state', () => {

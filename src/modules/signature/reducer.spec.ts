@@ -1,4 +1,4 @@
-import { AuthIdentity } from 'dcl-crypto'
+import { AuthIdentity, AuthLinkType } from '@dcl/crypto'
 import { loadingReducer } from 'decentraland-dapps/dist/modules/loading/reducer'
 import {
   SIGN_CONTENT_SUCCESS,
@@ -79,6 +79,13 @@ describe('signature reducer', () => {
 
   describe(`when reducing the ${SIGN_CONTENT_SUCCESS} action`, () => {
     const cid = 'cid'
+    const authChain = [
+      {
+        type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
+        payload: 'abcd',
+        signature: 'signedMessage',
+      },
+    ]
 
     const initialState = {
       ...INITIAL_STATE,
@@ -86,10 +93,12 @@ describe('signature reducer', () => {
     }
 
     it('should add the cid to the store', () => {
-      expect(signatureReducer(initialState, signContentSuccess(cid))).toEqual({
+      expect(
+        signatureReducer(initialState, signContentSuccess(authChain))
+      ).toEqual({
         ...INITIAL_STATE,
         loading: [],
-        data: cid,
+        data: authChain,
       })
     })
   })
@@ -123,6 +132,13 @@ describe('signature reducer', () => {
 
   describe(`when reducing the ${SIGN_PUT_WORLD_ACL_SUCCESS} action`, () => {
     const signature = 'signature'
+    const authChain = [
+      {
+        type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
+        payload: 'abcd',
+        signature: 'signedMessage',
+      },
+    ]
 
     const initialState = {
       ...INITIAL_STATE,
@@ -131,17 +147,24 @@ describe('signature reducer', () => {
 
     it('should add the signature to the store', () => {
       expect(
-        signatureReducer(initialState, signPutWorldACLSuccess(signature))
+        signatureReducer(initialState, signPutWorldACLSuccess(authChain))
       ).toEqual({
         ...INITIAL_STATE,
         loading: [],
-        data: signature,
+        data: authChain,
       })
     })
   })
 
   describe(`when reducing the ${SIGN_DELETE_WORLD_ACL_SUCCESS} action`, () => {
     const signature = 'signature'
+    const authChain = [
+      {
+        type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
+        payload: 'abcd',
+        signature: 'signedMessage',
+      },
+    ]
 
     const initialState = {
       ...INITIAL_STATE,
@@ -150,11 +173,11 @@ describe('signature reducer', () => {
 
     it('should add the signature to the store', () => {
       expect(
-        signatureReducer(initialState, signDeleteWorldACLSuccess(signature))
+        signatureReducer(initialState, signDeleteWorldACLSuccess(authChain))
       ).toEqual({
         ...INITIAL_STATE,
         loading: [],
-        data: signature,
+        data: authChain,
       })
     })
   })

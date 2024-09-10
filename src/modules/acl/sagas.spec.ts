@@ -16,6 +16,7 @@ import { WorldPermissionsResponse } from './reducer'
 import { aclSaga } from './sagas'
 import { InfoResponse } from './types'
 import { getInfoRequest, getWorldACL, updateWorldACL } from './utils'
+import { AuthLinkType } from '@dcl/crypto'
 
 describe('acl sagas', () => {
   const error = 'error'
@@ -77,6 +78,13 @@ describe('acl sagas', () => {
   describe('when handling the update world ACL request', () => {
     const signature = 'signature'
     const address = '0xaddress'
+    const authChain = [
+      {
+        type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
+        payload: 'abcd',
+        signature: 'signedMessage',
+      },
+    ]
 
     describe('when the request fails', () => {
       it('should dispatch an action signaling the failure of the action', () => {
@@ -84,12 +92,12 @@ describe('acl sagas', () => {
           .provide([
             [select(getAddress), address],
             [
-              call(updateWorldACL, { signature, address }),
+              call(updateWorldACL, { authChain, address }),
               Promise.reject(new Error(error)),
             ],
           ])
           .put(putWorldACLFailure(error))
-          .dispatch(putWorldACLRequest(signature))
+          .dispatch(putWorldACLRequest(authChain))
           .run({ silenceTimeout: true })
       })
     })
@@ -100,10 +108,10 @@ describe('acl sagas', () => {
         return expectSaga(aclSaga)
           .provide([
             [select(getAddress), address],
-            [call(updateWorldACL, { signature, address }), null],
+            [call(updateWorldACL, { authChain, address }), null],
           ])
           .put(putWorldACLSuccess())
-          .dispatch(putWorldACLRequest(signature))
+          .dispatch(putWorldACLRequest(authChain))
           .run({ silenceTimeout: true })
       })
     })

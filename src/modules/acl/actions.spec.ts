@@ -1,3 +1,4 @@
+import { AuthLinkType } from '@dcl/crypto'
 import {
   fetchInfoRequest,
   fetchInfoSuccess,
@@ -90,16 +91,16 @@ describe('acl actions', () => {
       permissions: {
         deployment: {
           wallets: ['0xD9370c94253f080272BA1c28E216146ecE809f4d'],
-          type: WorldPermissionType.AllowList
+          type: WorldPermissionType.AllowList,
         },
-      }
+      },
     }
 
     it('should return an object representing the action', () => {
       expect(fetchWorldACLSuccess(permissions, 'world.name.dcl.eth')).toEqual({
         type: FETCH_WORLD_ACL_SUCCESS,
         meta: undefined,
-        payload: { acl: permissions, worldName: 'world.name.dcl.eth'},
+        payload: { acl: permissions, worldName: 'world.name.dcl.eth' },
       })
     })
   })
@@ -115,13 +116,19 @@ describe('acl actions', () => {
   })
 
   describe('when creating the action to signal the start of the put world ACL request', () => {
-    const signature = 'signature'
+    const authChain = [
+      {
+        type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
+        payload: 'abcd',
+        signature: 'signedMessage',
+      },
+    ]
 
     it('should return an object representing the action', () => {
-      expect(putWorldACLRequest(signature)).toEqual({
+      expect(putWorldACLRequest(authChain)).toEqual({
         type: PUT_WORLD_ACL_REQUEST,
         meta: undefined,
-        payload: { signature },
+        payload: { authChain },
       })
     })
   })
@@ -147,13 +154,19 @@ describe('acl actions', () => {
   })
 
   describe('when creating the action to signal the start of the delete world ACL request', () => {
-    const signature = 'signature'
+    const authChain = [
+      {
+        type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
+        payload: 'abcd',
+        signature: 'signedMessage',
+      },
+    ]
 
     it('should return an object representing the action', () => {
-      expect(deleteWorldACLRequest(signature)).toEqual({
+      expect(deleteWorldACLRequest(authChain)).toEqual({
         type: DELETE_WORLD_ACL_REQUEST,
         meta: undefined,
-        payload: { signature },
+        payload: { authChain },
       })
     })
   })
