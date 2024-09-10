@@ -88,21 +88,25 @@ export default function QuestsPage({
         </Container>
         {!info && <Loader />}
         {isConnected &&
+          wallet &&
           wallet.address &&
           !signed &&
           info?.actionType === 'create' &&
           info && <CreateQuestComponent info={info} />}
         {isConnected &&
+          wallet &&
           wallet.address &&
           !signed &&
           info?.actionType === 'list' &&
           info && <ListQuestsComponent info={info} />}
         {isConnected &&
+          wallet &&
           wallet.address &&
           !signed &&
           info?.actionType === 'activate' &&
           info && <ActivateQuestsComponent info={info} />}
         {isConnected &&
+          wallet &&
           wallet.address &&
           !signed &&
           info?.actionType === 'deactivate' &&
