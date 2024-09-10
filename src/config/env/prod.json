@@ -1,6 +1,5 @@
 {
   "CHAIN_ID": "1",
   "ENVIRONMENT": "production",
-  "AUTH_URL": "/auth",
-  "SEGMENT_API_KEY": "sFdziRVDJo0taOnGzTZwafEL9nLIANZ3"
+  "AUTH_URL": "/auth"
 }
