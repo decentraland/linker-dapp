@@ -1,3 +1,4 @@
+import { AuthChain } from '@dcl/crypto'
 import { action } from 'typesafe-actions'
 import { WorldPermissionsResponse } from './reducer'
 import { InfoResponse } from './types'
@@ -28,10 +29,14 @@ export const fetchInfoSuccess = (info: InfoResponse) =>
 export const fetchInfoFailure = (error: string) =>
   action(FETCH_INFO_FAILURE, { error })
 
-export const fetchWorldACLRequest = (targetContent: string, worldName: string) =>
-  action(FETCH_WORLD_ACL_REQUEST, { targetContent, worldName })
-export const fetchWorldACLSuccess = (acl: WorldPermissionsResponse, worldName: string) =>
-  action(FETCH_WORLD_ACL_SUCCESS, { acl, worldName })
+export const fetchWorldACLRequest = (
+  targetContent: string,
+  worldName: string
+) => action(FETCH_WORLD_ACL_REQUEST, { targetContent, worldName })
+export const fetchWorldACLSuccess = (
+  acl: WorldPermissionsResponse,
+  worldName: string
+) => action(FETCH_WORLD_ACL_SUCCESS, { acl, worldName })
 export const fetchWorldACLFailure = (error: string) =>
   action(FETCH_WORLD_ACL_FAILURE, { error })
 
@@ -43,24 +48,18 @@ export type FetchWorldACLRequestAction = ReturnType<typeof fetchWorldACLRequest>
 export type FetchWorldACLSuccessAction = ReturnType<typeof fetchWorldACLSuccess>
 export type FetchWorldACLFailureAction = ReturnType<typeof fetchWorldACLFailure>
 
-export const putWorldACLRequest = (signature: string ) =>
-  action(PUT_WORLD_ACL_REQUEST, { signature })
+export const putWorldACLRequest = (authChain: AuthChain) =>
+  action(PUT_WORLD_ACL_REQUEST, { authChain })
 export const putWorldACLSuccess = () => action(PUT_WORLD_ACL_SUCCESS)
 export const putWorldACLFailure = (error: string) =>
   action(PUT_WORLD_ACL_FAILURE, { error })
 
-export type PutWorldACLRequestAction = ReturnType<
-  typeof putWorldACLRequest
->
-export type PutWorldACLSuccessAction = ReturnType<
-  typeof putWorldACLSuccess
->
-export type PutWorldACLFailureAction = ReturnType<
-  typeof putWorldACLFailure
->
+export type PutWorldACLRequestAction = ReturnType<typeof putWorldACLRequest>
+export type PutWorldACLSuccessAction = ReturnType<typeof putWorldACLSuccess>
+export type PutWorldACLFailureAction = ReturnType<typeof putWorldACLFailure>
 
-export const deleteWorldACLRequest = (signature: string ) =>
-  action(DELETE_WORLD_ACL_REQUEST, { signature })
+export const deleteWorldACLRequest = (authChain: AuthChain) =>
+  action(DELETE_WORLD_ACL_REQUEST, { authChain })
 export const deleteWorldACLSuccess = () => action(DELETE_WORLD_ACL_SUCCESS)
 export const deleteWorldACLFailure = (error: string) =>
   action(DELETE_WORLD_ACL_FAILURE, { error })

@@ -1,3 +1,5 @@
+import { AuthChain } from '@dcl/crypto'
+
 export type InfoResponse = {
   worldName: string
   allowed: string[]
@@ -10,6 +12,6 @@ export type InfoResponse = {
 }
 
 export type UpdatePayload = {
-  signature: string
+  authChain: AuthChain
   address: string
 }

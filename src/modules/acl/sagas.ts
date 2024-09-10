@@ -41,7 +41,11 @@ function* handleFetchInfoRequest() {
 function* handleFetchWorldACLRequest(action: FetchWorldACLRequestAction) {
   const { targetContent, worldName } = action.payload
   try {
-    const acl: WorldPermissionsResponse = yield call(getWorldACL, targetContent, worldName)
+    const acl: WorldPermissionsResponse = yield call(
+      getWorldACL,
+      targetContent,
+      worldName
+    )
     yield put(fetchWorldACLSuccess(acl, worldName))
   } catch (e) {
     yield put(fetchWorldACLFailure((e as any).message))
@@ -49,12 +53,12 @@ function* handleFetchWorldACLRequest(action: FetchWorldACLRequestAction) {
 }
 
 function* handlePutWorldACLRequest(action: PutWorldACLRequestAction) {
-  const { signature } = action.payload
+  const { authChain } = action.payload
 
   const address: string = yield select(getAddress)
 
   try {
-    yield call(updateWorldACL, { signature, address })
+    yield call(updateWorldACL, { authChain, address })
     yield put(putWorldACLSuccess())
   } catch (e) {
     yield put(putWorldACLFailure((e as any).message))
@@ -62,12 +66,12 @@ function* handlePutWorldACLRequest(action: PutWorldACLRequestAction) {
 }
 
 function* handleDeleteWorldACLRequest(action: DeleteWorldACLRequestAction) {
-  const { signature } = action.payload
+  const { authChain } = action.payload
 
   const address: string = yield select(getAddress)
 
   try {
-    yield call(updateWorldACL, { signature, address })
+    yield call(updateWorldACL, { authChain, address })
     yield put(deleteWorldACLSuccess())
   } catch (e) {
     yield put(deleteWorldACLFailure((e as any).message))
