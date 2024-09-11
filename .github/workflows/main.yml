@@ -43,6 +43,8 @@ jobs:
           deterministic-snapshot: true
           access: public
           cwd: './dist'
+          ## sign the deployment
+          provenance: true
 
           ## inform gitlab after publishing to proceed with CDN propagation and rollouts
           # 104 == https://dcl.tools/pipelines/static-sites-pipeline
