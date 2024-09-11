@@ -11,6 +11,9 @@ name: build-deploy-to-cdn
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@master
       - name: Use Node.js 20.x
@@ -32,8 +35,8 @@ jobs:
       - name: build
         run: VITE_REACT_APP_DCL_DEFAULT_ENV=prod NODE_ENV=prod npm run build
 
-      # - name: test
-      #   run: npm run test
+      - name: test
+        run: npm run test
 
       - name: publish npm package
         uses: menduz/oddish-action@master
