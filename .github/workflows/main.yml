@@ -38,6 +38,7 @@ jobs:
       - name: publish npm package
         uses: menduz/oddish-action@master
         with:
+          registry-url: 'https://registry.npmjs.org'
           ## use action runId instead of current date to generate snapshot numbers
           deterministic-snapshot: true
           access: public
