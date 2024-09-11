@@ -1,15 +1,15 @@
-import { Props } from './types'
 import { Blockie, Address, Button } from 'decentraland-ui'
 import { coordsToString } from '../../modules/land/utils'
+import { redirectToAuthDapp } from '../../modules/wallet/utils'
 import Error from '../Error'
+import { Props } from './types'
 
 export default function RenderWalletData({
   isConnected,
   isConnecting,
   wallet,
   authorizations,
-  isUpdateAuthorized,
-  onConnectWallet
+  isUpdateAuthorized
 }: Props) {
   function getFormattedUnauthorized() {
     return (authorizations || [])
@@ -40,7 +40,7 @@ export default function RenderWalletData({
     <>
       {isConnecting ? null : <p>Could not find any wallet</p>}
       <p>
-        <Button primary onClick={onConnectWallet} loading={isConnecting} disabled={isConnecting}>
+        <Button primary onClick={redirectToAuthDapp} loading={isConnecting} disabled={isConnecting}>
           Reconnect&nbsp;
         </Button>
       </p>

@@ -38,7 +38,7 @@ describe('authorization sagas', () => {
     },
     parcels: [],
     isPortableExperience: false,
-    isWorld: false
+    isWorld: false,
   }
   const owner = '0xowner'
   const address = '0xaddress'
@@ -61,7 +61,10 @@ describe('authorization sagas', () => {
 
       it('should dispatch an action signaling the success of the fetch authorization request', () => {
         return expectSaga(authorizationSaga)
-          .provide([[select(getInfo), info]])
+          .provide([
+            [select(getInfo), info],
+            [select(getAddress), address],
+          ])
           .put(fetchAuthorizationsSuccess([]))
           .dispatch(fetchAuthorizationsRequest(owner))
           .run({ silenceTimeout: true })
@@ -71,6 +74,7 @@ describe('authorization sagas', () => {
         return expectSaga(authorizationSaga)
           .provide([
             [select(getInfo), info],
+            [select(getAddress), address],
             [
               put(fetchAuthorizationsSuccess([])),
               Promise.reject(new Error(error)),

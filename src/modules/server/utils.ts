@@ -1,11 +1,11 @@
 import { ChainId } from '@dcl/schemas'
-import { AuthIdentity } from 'dcl-crypto'
+import { AuthChain, AuthIdentity } from '@dcl/crypto'
 import { InfoResponse } from './types'
 
 export type DeployScene =
   | {
       address: string
-      signature: string
+      authChain: AuthChain
       chainId: ChainId
     }
   | Record<string, never>

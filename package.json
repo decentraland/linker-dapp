@@ -3,17 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@dcl/builder-client": "^3.0.1",
-    "@dcl/schemas": "^8.2.2",
-    "@dcl/ui-env": "^1.3.0",
+    "@dcl/builder-client": "^6.0.1",
+    "@dcl/crypto": "^3.4.5",
+    "@dcl/schemas": "^13.9.0",
+    "@dcl/ui-env": "^1.5.1",
     "@ethersproject/bytes": "^5.4.0",
     "@ethersproject/contracts": "^5.4.1",
     "@ethersproject/providers": "^5.4.5",
     "@ethersproject/strings": "^5.4.0",
+    "@reduxjs/toolkit": "^1.9.5",
     "classnames": "^2.3.2",
     "comma-separated-values": "^3.6.4",
-    "decentraland-dapps": "^15.5.0",
-    "decentraland-ui": "^4.2.0",
+    "decentraland-connect": "^7.1.0",
+    "decentraland-dapps": "^23.3.0",
+    "decentraland-ui": "^6.6.0",
+    "dotenv": "^16.4.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.5",
@@ -25,14 +29,12 @@
     "typesafe-actions": "^2.2.0"
   },
   "scripts": {
-    "start": "ESLINT_NO_DEV_ERRORS=true DISABLE_ESLINT_PLUGIN=true TSC_COMPILE_ON_ERROR=true react-scripts start",
-    "build": "react-scripts build && tsc -p tsconfig.types.json",
-    "build:dev": "NODE_ENV=dev react-scripts build --dev --configuration=dev",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "prebuild": "node scripts/prebuild.js",
+    "build": "tsc && vite build",
+    "test": "jest",
     "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "postinstall": "node ./pre-scripts/hash_generator.js"
+    "lint:fix": "eslint . --ext .ts,.tsx --fix"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -47,21 +49,29 @@
     "not dead",
     "not op_mini all"
   ],
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
-    "@babel/core": "7.17.8",
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@swc/core": "^1.4.13",
+    "@swc/jest": "^0.2.36",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "@types/jest": "^26.0.24",
     "@types/jsdom": "^21.1.0",
-    "@types/node": "^12.20.26",
+    "@types/node": "^20.16.5",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
     "@types/redux-logger": "^3.0.9",
-    "react-scripts": "4.0.3",
+    "@vitejs/plugin-react-swc": "^3.7.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "redux-saga-test-plan": "^4.0.6",
-    "typescript": "^4.4.3"
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.3"
   },
   "homepage": ""
 }

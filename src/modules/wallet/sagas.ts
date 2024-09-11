@@ -5,8 +5,10 @@ import {
   CHANGE_NETWORK,
   CHANGE_ACCOUNT,
   CONNECT_WALLET_SUCCESS,
+  DISCONNECT_WALLET_SUCCESS,
 } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { localStorageClearIdentity } from '@dcl/single-sign-on-client'
 import { config } from '../../config'
 import { fetchAuthorizationsRequest } from '../authorization/actions'
 
@@ -21,13 +23,21 @@ function* fullWalletSaga() {
   yield takeEvery(CHANGE_NETWORK, handleWallet)
   yield takeEvery(CHANGE_ACCOUNT, handleWallet)
   yield takeEvery(CONNECT_WALLET_SUCCESS, handleConnectWalletSuccess)
-}
+  yield takeEvery(DISCONNECT_WALLET_SUCCESS, handleDisconnectWallet)
 
-function* handleWallet() {
-  yield call(() => window.location.reload())
-}
+  function* handleWallet() {
+    yield call(() => window.location.reload())
+  }
 
-function* handleConnectWalletSuccess() {
-  const address: string = yield select(getAddress)
-  yield put(fetchAuthorizationsRequest(address))
+  function* handleConnectWalletSuccess() {
+    const address: string = yield select(getAddress)
+    yield put(fetchAuthorizationsRequest(address))
+  }
+
+  function* handleDisconnectWallet() {
+    const address: string = yield select(getAddress)
+    if (address) {
+      yield call(localStorageClearIdentity, address)
+    }
+  }
 }

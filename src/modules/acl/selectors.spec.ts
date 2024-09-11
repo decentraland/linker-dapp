@@ -142,6 +142,7 @@ describe('acl selectors', () => {
         state.acl.info = {
           worldName,
           allowed,
+          method: 'put',
         } as InfoResponse
         state.acl.acl = {
           resource: worldName,

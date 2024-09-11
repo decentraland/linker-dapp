@@ -1,4 +1,4 @@
-import { AuthIdentity } from 'dcl-crypto'
+import { AuthIdentity, AuthLinkType } from '@dcl/crypto'
 import {
   SIGN_CONTENT_REQUEST,
   SIGN_CONTENT_SUCCESS,
@@ -48,13 +48,19 @@ describe('signature actions', () => {
   })
 
   describe('when creating the action to signal a success in the sign content request', () => {
-    const signature = 'signature'
+    const authChain = [
+      {
+        type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
+        payload: 'abcd',
+        signature: 'signedMessage',
+      },
+    ]
 
     it('should return an object representing the action', () => {
-      expect(signContentSuccess(signature)).toEqual({
+      expect(signContentSuccess(authChain)).toEqual({
         type: SIGN_CONTENT_SUCCESS,
         meta: undefined,
-        payload: { signature },
+        payload: { authChain },
       })
     })
   })
@@ -122,13 +128,19 @@ describe('signature actions', () => {
   })
 
   describe('when creating the action to signal a success in the sign put world ACL request', () => {
-    const signature = 'signature'
+    const authChain = [
+      {
+        type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
+        payload: 'abcd',
+        signature: 'signedMessage',
+      },
+    ]
 
     it('should return an object representing the action', () => {
-      expect(signPutWorldACLSuccess(signature)).toEqual({
+      expect(signPutWorldACLSuccess(authChain)).toEqual({
         type: SIGN_PUT_WORLD_ACL_SUCCESS,
         meta: undefined,
-        payload: { signature },
+        payload: { authChain },
       })
     })
   })
@@ -156,13 +168,19 @@ describe('signature actions', () => {
   })
 
   describe('when creating the action to signal a success in the sign delete world ACL request', () => {
-    const signature = 'signature'
+    const authChain = [
+      {
+        type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
+        payload: 'abcd',
+        signature: 'signedMessage',
+      },
+    ]
 
     it('should return an object representing the action', () => {
-      expect(signDeleteWorldACLSuccess(signature)).toEqual({
+      expect(signDeleteWorldACLSuccess(authChain)).toEqual({
         type: SIGN_DELETE_WORLD_ACL_SUCCESS,
         meta: undefined,
-        payload: { signature },
+        payload: { authChain },
       })
     })
   })
@@ -178,23 +196,30 @@ describe('signature actions', () => {
   })
 
   describe('when creating the action to signal the start of the sign quests request', () => {
-    expect(signQuestsRequest("get:/api/creators/0xA/quests")).toEqual({
+    expect(signQuestsRequest('get:/api/creators/0xA/quests')).toEqual({
       type: SIGN_QUESTS_REQUEST,
-      payload: "get:/api/creators/0xA/quests",
+      payload: 'get:/api/creators/0xA/quests',
     })
   })
 
   describe('when creating the action to signal the failure of the sign quests request', () => {
-    expect(signQuestsSuccess("0xbascd")).toEqual({
+    const authChain = [
+      {
+        type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
+        payload: 'abcd',
+        signature: 'signedMessage',
+      },
+    ]
+    expect(signQuestsSuccess(authChain)).toEqual({
       type: SIGN_QUESTS_SUCCESS,
-      payload: { signature: "0xbascd" },
+      payload: { authChain: authChain },
     })
   })
 
   describe('when creating the action to signal the failure of the sign quests request', () => {
-    expect(signQuestsFailure("error")).toEqual({
+    expect(signQuestsFailure('error')).toEqual({
       type: SIGN_QUESTS_FAILURE,
-      payload: { error: "error" },
+      payload: { error: 'error' },
     })
   })
 })

@@ -1,5 +1,5 @@
+import { useEffect, useState } from 'react'
 import {
-  Navbar,
   Tabs,
   Footer,
   Page,
@@ -16,15 +16,15 @@ import {
   ToastType,
   Loader,
 } from 'decentraland-ui'
-import LoginModal from 'decentraland-dapps/dist/containers/LoginModal'
-import { Props } from './types'
-import { useEffect, useState } from 'react'
+import { ChainId } from '@dcl/schemas'
+import { redirectToAuthDapp } from '../../modules/wallet/utils'
+import { Navbar } from '../Navbar'
 import Files from '../Files'
 import Map from '../Map'
+import DeploySuccess from '../DeploySuccess/DeploySuccess.container'
+import { Props } from './types'
 
 import './style.css'
-import { ChainId } from '@dcl/schemas'
-import DeploySuccess from '../DeploySuccess/DeploySuccess.container'
 
 enum Tab {
   Map = 'Map',
@@ -33,14 +33,12 @@ enum Tab {
 
 export default function LinkScenePage(props: Props) {
   const [tab, setTab] = useState<Tab>(Tab.Map)
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const {
     isConnected,
     wallet,
     authorizations,
     isUpdateAuthorized,
     isConnecting,
-    onConnectWallet,
     onSignContent,
     onFetchFiles,
     onFetchInfo,
@@ -62,21 +60,9 @@ export default function LinkScenePage(props: Props) {
     onFetchFiles()
   }, [onFetchFiles, onFetchInfo])
 
-  // Close modal once the wallet is connected
-  useEffect(() => {
-    if (isConnected && isModalOpen) {
-      setIsModalOpen(false)
-    }
-  }, [isConnected, isModalOpen])
-
   return (
     <div className="Page-story-container">
-      <Navbar
-        leftMenu={<></>}
-        isConnected={isConnected}
-        isConnecting={isConnecting}
-        address={wallet?.address}
-      />
+      <Navbar />
       <Page>
         <Container>
           <HeaderMenu>
@@ -135,7 +121,7 @@ export default function LinkScenePage(props: Props) {
                   onClick={
                     isConnected
                       ? () => onSignContent(info!.rootCID)
-                      : () => setIsModalOpen(true)
+                      : redirectToAuthDapp
                   }
                 >
                   {isConnected ? 'Sign & Deploy' : 'Connect Wallet'}
@@ -159,7 +145,7 @@ export default function LinkScenePage(props: Props) {
           />
         )}
         {deployError && (
-          <div className='toast-full-with'>
+          <div className="toast-full-with">
             <Toast
               type={ToastType.ERROR}
               title="Failed to deploy scene"
@@ -186,13 +172,6 @@ export default function LinkScenePage(props: Props) {
             baseParcel={info!.baseParcel}
           />
         )}
-        {isModalOpen ? <LoginModal
-          name='LinkerPageLoginModal'
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onConnect={onConnectWallet}
-          isLoading={isConnecting}
-        /> : null}
       </Page>
       <Footer />
     </div>

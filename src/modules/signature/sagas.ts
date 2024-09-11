@@ -1,14 +1,12 @@
 import { call, put, takeLatest, takeEvery, select } from 'redux-saga/effects'
 import { Web3Provider } from '@ethersproject/providers'
-import { toUtf8Bytes } from '@ethersproject/strings'
-import { hexlify } from '@ethersproject/bytes'
 import { getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
 import {
   getAddress,
   getChainId,
 } from 'decentraland-dapps/dist/modules/wallet/selectors'
-import { Provider } from 'decentraland-connect/dist'
-import { AuthIdentity } from 'dcl-crypto'
+import { Provider } from 'decentraland-connect'
+import { AuthChain, Authenticator, AuthIdentity } from '@dcl/crypto'
 import { createIdentity } from '@dcl/builder-client'
 import { ChainId } from '@dcl/schemas'
 import { closeServer, postDeploy } from '../server/utils'
@@ -45,6 +43,7 @@ import {
 } from './actions'
 import { putWorldACLRequest, deleteWorldACLRequest } from '../acl/actions'
 import { signQuestsFetchRequest } from '../quests/action'
+import { getIdentity } from '../wallet/selectors'
 
 export function* signatureSaga() {
   yield takeLatest(SIGN_CONTENT_REQUEST, handleSignContentRequest)
@@ -57,31 +56,35 @@ export function* signatureSaga() {
   yield takeEvery(SIGN_PUT_WORLD_ACL_SUCCESS, handleSignPutWorldACLSuccess)
 
   yield takeLatest(SIGN_DELETE_WORLD_ACL_REQUEST, handleSignWorldACLRequest)
-  yield takeEvery(SIGN_DELETE_WORLD_ACL_SUCCESS, handleSignDeleteWorldACLSuccess)
+  yield takeEvery(
+    SIGN_DELETE_WORLD_ACL_SUCCESS,
+    handleSignDeleteWorldACLSuccess
+  )
 
   yield takeLatest(SIGN_QUESTS_REQUEST, handleQuestsSignRequest)
   yield takeEvery(SIGN_QUESTS_SUCCESS, handleQuestsSignSuccess)
 }
 
-function* sign(action: SignContentRequestAction | SignPutWorldACLRequestAction | SignDeleteWorldACLRequestAction | SignQuestsRequestAction) {
-  const dataToSign = toUtf8Bytes(action.payload)
+function* sign(
+  action:
+    | SignContentRequestAction
+    | SignPutWorldACLRequestAction
+    | SignDeleteWorldACLRequestAction
+    | SignQuestsRequestAction
+) {
+  const identity: AuthIdentity | undefined = yield select(getIdentity)
+  if (!identity) {
+    throw new Error('No identity found')
+  }
 
-  const provider: Provider = yield call(() => getConnectedProvider())
-  const web3provider = new Web3Provider(provider)
-  const signer = web3provider.getSigner()
-
-  const addr: string = yield call(() => signer.getAddress())
-
-  const signedMessage: string = yield call(() =>
-    provider.send('personal_sign', [hexlify(dataToSign), addr.toLowerCase()])
-  )
-  return signedMessage
+  return Authenticator.signPayload(identity, action.payload)
 }
 
 function* handleSignContentRequest(action: SignContentRequestAction) {
   try {
-    const signedMessage: string = yield call(sign, action)
-    yield put(signContentSuccess(signedMessage))
+    const authChain: AuthChain = yield call(sign, action)
+    debugger
+    yield put(signContentSuccess(authChain))
   } catch (error) {
     yield put(signContentFailure((error as Error).message))
   }
@@ -90,10 +93,10 @@ function* handleSignContentRequest(action: SignContentRequestAction) {
 function* handleSignContentSuccess(action: SignContentSuccessAction) {
   const address: string = yield select(getAddress)
   const chainId: ChainId = yield select(getChainId)
-  const { signature } = action.payload
+  const { authChain } = action.payload
 
   try {
-    yield call(postDeploy, { signature, address, chainId })
+    yield call(postDeploy, { authChain, address, chainId })
     yield put(deploySuccess())
   } catch (error) {
     yield put(signContentFailure((error as Error).message))
@@ -130,46 +133,50 @@ function* handleCreateIdentitySuccess(action: CreateIdentitySuccessAction) {
   }
 }
 
-function* handleSignWorldACLRequest(action: SignPutWorldACLRequestAction | SignDeleteWorldACLRequestAction) {
+function* handleSignWorldACLRequest(
+  action: SignPutWorldACLRequestAction | SignDeleteWorldACLRequestAction
+) {
   try {
-    const signedMessage: string = yield call(sign, action)
-    if(action.type === SIGN_PUT_WORLD_ACL_REQUEST) {
-      yield put(signPutWorldACLSuccess(signedMessage))
+    const authChain: AuthChain = yield call(sign, action)
+
+    if (action.type === SIGN_PUT_WORLD_ACL_REQUEST) {
+      yield put(signPutWorldACLSuccess(authChain))
     }
-    if(action.type === SIGN_DELETE_WORLD_ACL_REQUEST) {
-      yield put(signPutWorldACLSuccess(signedMessage))
+    if (action.type === SIGN_DELETE_WORLD_ACL_REQUEST) {
+      yield put(signPutWorldACLSuccess(authChain))
     }
-    
   } catch (error) {
-    if(action.type === SIGN_PUT_WORLD_ACL_REQUEST) {
+    if (action.type === SIGN_PUT_WORLD_ACL_REQUEST) {
       yield put(signPutWorldACLFailure((error as Error).message))
     }
-    if(action.type === SIGN_DELETE_WORLD_ACL_REQUEST) {
+    if (action.type === SIGN_DELETE_WORLD_ACL_REQUEST) {
       yield put(signPutWorldACLFailure((error as Error).message))
     }
   }
 }
 
 function* handleSignPutWorldACLSuccess(action: SignPutWorldACLSuccessAction) {
-  const { signature } = action.payload
-  yield put(putWorldACLRequest(signature))
+  const { authChain } = action.payload
+  yield put(putWorldACLRequest(authChain))
 }
 
-function* handleSignDeleteWorldACLSuccess(action: SignDeleteWorldACLSuccessAction) {
-  const { signature } = action.payload
-  yield put(deleteWorldACLRequest(signature))
+function* handleSignDeleteWorldACLSuccess(
+  action: SignDeleteWorldACLSuccessAction
+) {
+  const { authChain } = action.payload
+  yield put(deleteWorldACLRequest(authChain))
 }
 
 function* handleQuestsSignRequest(action: SignQuestsRequestAction) {
   try {
-    const signedMessage: string = yield call(sign, action)
-    yield put(signQuestsSuccess(signedMessage))
+    const authChain: AuthChain = yield call(sign, action)
+    yield put(signQuestsSuccess(authChain))
   } catch (error) {
     yield put(signQuestsFailure((error as Error).message))
   }
 }
 
 function* handleQuestsSignSuccess(action: SignQuestsSuccessAction) {
-  const { signature } = action.payload
-  yield put(signQuestsFetchRequest(signature))
+  const { authChain } = action.payload
+  yield put(signQuestsFetchRequest(authChain))
 }

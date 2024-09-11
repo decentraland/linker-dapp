@@ -1,4 +1,4 @@
-import { AuthIdentity } from 'dcl-crypto'
+import { AuthIdentity } from '@dcl/crypto'
 import { RootState } from '../../types'
 import { signContentRequest } from '../signature/actions'
 import { INITIAL_STATE } from '../signature/reducer'

@@ -1,4 +1,3 @@
-import { enableWalletRequest } from 'decentraland-dapps/dist/modules/wallet/actions'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 
@@ -8,7 +7,7 @@ import { Info } from '../../modules/server/reducer'
 
 export type Props = {
   sceneOwner?: string
-  wallet: Partial<Wallet>
+  wallet: Partial<Wallet> | null
   transaction?: Transaction
   isConnected: boolean
   isConnecting: boolean
@@ -17,7 +16,6 @@ export type Props = {
   isUpdateAuthorized: boolean
   authorizations: Authorization[]
   isAuthorizationLoading: boolean
-  onConnectWallet: typeof enableWalletRequest
   onFetchInfo: () => void
   info?: Info
   onSignContent: (cid: string) => SignContentRequestAction
@@ -40,5 +38,5 @@ export type MapStateProps = Pick<
 >
 export type MapDispatchProps = Pick<
   Props,
-  'onConnectWallet' | 'onSignContent' | 'onFetchFiles' | 'onFetchInfo'
+  'onSignContent' | 'onFetchFiles' | 'onFetchInfo'
 >

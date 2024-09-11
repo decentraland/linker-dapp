@@ -5,7 +5,7 @@ import { Transaction } from 'decentraland-dapps/dist/modules/transaction/types'
 import { CreateIdentityRequestAction } from '../../modules/signature/actions'
 
 export type Props = {
-  wallet: Partial<Wallet>
+  wallet: Partial<Wallet> | null
   transaction?: Transaction
   isConnected: boolean
   isConnecting: boolean
@@ -15,5 +15,11 @@ export type Props = {
   onRequestIdentity: () => CreateIdentityRequestAction
 }
 
-export type MapStateProps = Pick<Props, 'wallet' | 'isConnected' | 'isConnecting' | 'signed' | 'isSigning'>
-export type MapDispatchProps = Pick<Props, 'onConnectWallet' | 'onRequestIdentity'>
+export type MapStateProps = Pick<
+  Props,
+  'wallet' | 'isConnected' | 'isConnecting' | 'signed' | 'isSigning'
+>
+export type MapDispatchProps = Pick<
+  Props,
+  'onConnectWallet' | 'onRequestIdentity'
+>

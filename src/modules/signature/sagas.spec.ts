@@ -6,8 +6,8 @@
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { createIdentity } from '@dcl/builder-client'
 import { ChainId } from '@dcl/schemas'
-import { AuthIdentity } from 'dcl-crypto'
-import { Provider } from 'decentraland-connect/dist'
+import { Authenticator, AuthIdentity, AuthLinkType } from '@dcl/crypto'
+import { Provider } from 'decentraland-connect'
 import { getConnectedProvider } from 'decentraland-dapps/dist/lib/eth'
 import {
   getAddress,
@@ -30,14 +30,25 @@ import {
   signPutWorldACLSuccess,
 } from './actions'
 import { signatureSaga } from './sagas'
+import { getIdentity } from '../wallet/selectors'
 
 jest.mock('@ethersproject/providers')
 jest.mock('@dcl/builder-client')
 jest.mock('decentraland-dapps/dist/lib/eth')
+jest.mock('@dcl/crypto')
 
 describe('signature sagas', () => {
   const error = 'error'
   const signature = 'signedMessage'
+  const payload = 'payload'
+  const auth = {} as AuthIdentity
+  const authChain = [
+    {
+      type: AuthLinkType.ECDSA_PERSONAL_EPHEMERAL,
+      payload: payload,
+      signature: signature,
+    },
+  ]
   const address = '0xanotherAddress'
   const chainId = ChainId.ETHEREUM_SEPOLIA
 
@@ -60,11 +71,14 @@ describe('signature sagas', () => {
   describe('when handling the sign content request', () => {
     describe('when the request fails', () => {
       beforeEach(() => {
-        mockedGetConnectedProvider.mockRejectedValue(new Error(error))
+        jest.spyOn(Authenticator, 'signPayload').mockImplementationOnce(() => {
+          throw new Error(error)
+        })
       })
 
       it('should dispatch an action signaling the failure of the action', () => {
         return expectSaga(signatureSaga)
+          .provide([[select(getIdentity), auth]])
           .put(signContentFailure(error))
           .dispatch(signContentRequest('cid'))
           .run({ silenceTimeout: true })
@@ -73,20 +87,21 @@ describe('signature sagas', () => {
 
     describe('when the request succeeds', () => {
       beforeEach(() => {
-        mockedGetConnectedProvider.mockResolvedValue(mockedProvider)
+        jest.spyOn(Authenticator, 'signPayload').mockReturnValueOnce(authChain)
       })
 
       it('should dispatch an action signaling the success of the action and execute the postDeploy request', () => {
         return expectSaga(signatureSaga)
           .provide([
+            [select(getIdentity), auth],
             [select(getAddress), address],
             [select(getChainId), chainId],
             [
-              call(postDeploy, { signature, address, chainId }),
+              call(postDeploy, { authChain, address, chainId }),
               Promise.resolve(),
             ],
           ])
-          .put(signContentSuccess(signature))
+          .put(signContentSuccess(authChain))
           .dispatch(signContentRequest('cid'))
           .run({ silenceTimeout: true })
       })
@@ -95,14 +110,16 @@ describe('signature sagas', () => {
         it('should dispatch an action signaling the failure of the action', () => {
           return expectSaga(signatureSaga)
             .provide([
+              [select(getIdentity), auth],
               [select(getAddress), address],
               [select(getChainId), chainId],
               [
-                call(postDeploy, { signature, address, chainId }),
+                call(postDeploy, { authChain, address, chainId }),
                 Promise.reject(new Error(error)),
               ],
             ])
             .put(signContentFailure(error))
+            .put(signContentSuccess(authChain))
             .dispatch(signContentRequest('cid'))
             .run({ silenceTimeout: true })
         })
@@ -179,11 +196,14 @@ describe('signature sagas', () => {
   describe('when handling the sign world ACL put request', () => {
     describe('when the request fails', () => {
       beforeEach(() => {
-        mockedGetConnectedProvider.mockRejectedValue(new Error(error))
+        jest.spyOn(Authenticator, 'signPayload').mockImplementationOnce(() => {
+          throw new Error(error)
+        })
       })
 
       it('should dispatch an action signaling the failure of the action', () => {
         return expectSaga(signatureSaga)
+          .provide([[select(getIdentity), auth]])
           .put(signPutWorldACLFailure(error))
           .dispatch(signPutWorldACLRequest('payload'))
           .run({ silenceTimeout: true })
@@ -192,17 +212,17 @@ describe('signature sagas', () => {
 
     describe('when the request succeeds', () => {
       beforeEach(() => {
-        mockedGetConnectedProvider.mockResolvedValue(mockedProvider)
+        jest.spyOn(Authenticator, 'signPayload').mockReturnValueOnce(authChain)
       })
 
       it('should dispatch an action signaling the success of the action and the update world ACL request', () => {
         return expectSaga(signatureSaga)
-          .put(signPutWorldACLSuccess(signature))
-          .put(putWorldACLRequest(signature))
+          .provide([[select(getIdentity), auth]])
+          .put(signPutWorldACLSuccess(authChain))
+          .put(putWorldACLRequest(authChain))
           .dispatch(signPutWorldACLRequest('payload'))
           .run({ silenceTimeout: true })
       })
     })
   })
-
 })

@@ -1,4 +1,4 @@
-import { AuthIdentity } from 'dcl-crypto'
+import { AuthChain, AuthIdentity, AuthLinkType } from '@dcl/crypto'
 import {
   loadingReducer,
   LoadingState,
@@ -32,14 +32,14 @@ import {
 } from './actions'
 
 export type SignatureState = {
-  data: any
+  data: AuthChain | null
   identity: AuthIdentity | null
   loading: LoadingState
   error: string | null
 }
 
 export const INITIAL_STATE: SignatureState = {
-  data: '',
+  data: null,
   loading: [],
   identity: null,
   error: null,
@@ -73,7 +73,7 @@ export const signatureReducer = (
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        data: action.payload.signature,
+        data: action.payload.authChain,
         error: null,
       }
     case SIGN_CONTENT_FAILURE:
@@ -111,7 +111,7 @@ export const signatureReducer = (
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        data: action.payload.signature,
+        data: action.payload.authChain,
         error: null,
       }
     case SIGN_PUT_WORLD_ACL_FAILURE:

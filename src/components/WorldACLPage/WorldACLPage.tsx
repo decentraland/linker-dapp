@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { getChainName } from '@dcl/schemas'
 import {
-  Navbar,
   Footer,
   Page,
   Header,
@@ -14,10 +13,10 @@ import {
   Blockie,
   Loader,
 } from 'decentraland-ui'
-import LoginModal from 'decentraland-dapps/dist/containers/LoginModal'
 import { Chip } from '../Chip'
-import { Props } from './types'
+import { Navbar } from '../Navbar'
 import ACLStatus from './ACLStatus'
+import { Props } from './types'
 import './style.css'
 
 function Allowed(props: {
@@ -39,17 +38,14 @@ function Allowed(props: {
 }
 
 export default function WorldACLPage(props: Props) {
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const [isPayloadExpired, setIsPayloadExpired] = useState(false)
 
   const {
     isConnected,
     wallet,
-    isConnecting,
     isSigning,
     signed,
     info,
-    onConnectWallet,
     onSignPutContent,
     onSignDeleteContent,
     onFetchInfo,
@@ -69,13 +65,6 @@ export default function WorldACLPage(props: Props) {
     onFetchInfo()
   }, [onFetchInfo])
 
-  // Close modal once the wallet is connected
-  useEffect(() => {
-    if (isConnected && isModalOpen) {
-      setIsModalOpen(false)
-    }
-  }, [isConnected, isModalOpen])
-
   useEffect(() => {
     if (!info) return
 
@@ -90,12 +79,7 @@ export default function WorldACLPage(props: Props) {
 
   return (
     <div className="Page-story-container">
-      <Navbar
-        leftMenu={<></>}
-        isConnected={isConnected}
-        isConnecting={isConnecting}
-        address={wallet?.address}
-      />
+      <Navbar />
       <Page>
         <Container>
           <HeaderMenu>
@@ -109,16 +93,6 @@ export default function WorldACLPage(props: Props) {
           </HeaderMenu>
           <HeaderMenu>
             <HeaderMenu.Left>
-              {!isConnected && (
-                <Button
-                  primary
-                  size="medium"
-                  loading={isConnecting}
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  Connect Wallet
-                </Button>
-              )}
               {!!isConnected && wallet?.chainId && (
                 <div className="address-header">
                   <Badge color={Color.SHADOWS}>
@@ -153,11 +127,7 @@ export default function WorldACLPage(props: Props) {
               <p>
                 You are about to{' '}
                 <span>
-                  <strong>
-                    {info.method === 'put'
-                      ? 'grant'
-                      : 'revoke'}
-                  </strong>
+                  <strong>{info.method === 'put' ? 'grant' : 'revoke'}</strong>
                 </span>{' '}
                 the permissions to deploy to your world to the following{' '}
                 {allowedDifference.length > 1 ? 'addresses' : ' address'}:{' '}
@@ -192,7 +162,11 @@ export default function WorldACLPage(props: Props) {
                 size="medium"
                 loading={isSigning}
                 disabled={isPayloadExpired}
-                onClick={() => info.method === 'put' ? onSignPutContent(info!.payload) : onSignDeleteContent(info!.payload)}
+                onClick={() =>
+                  info.method === 'put'
+                    ? onSignPutContent(info!.payload)
+                    : onSignDeleteContent(info!.payload)
+                }
               >
                 Sign & Submit
               </Button>
@@ -202,12 +176,6 @@ export default function WorldACLPage(props: Props) {
             </div>
           </Container>
         )}
-        {isModalOpen ? <LoginModal
-          name='WorldACLPageLoginModal'
-          onClose={() => setIsModalOpen(false)}
-          onConnect={onConnectWallet}
-          isLoading={isConnecting}
-        /> : null}
       </Page>
       <Footer />
     </div>
