@@ -41,22 +41,6 @@ fs.writeFileSync('./public/package.json', JSON.stringify(publicPackageJson, null
 
 // public url logic
 function getPublicUrls() {
-  const isStatic = !!process.env.GEN_STATIC_LOCAL
-  const isCI = !!process.env.CI
-  const isVercel = isCI && !!process.env.VERCEL
-  const isCDN = !isStatic && isCI && !isVercel
-  console.log('is static', isStatic)
-  console.log('is CI', isCI)
-  console.log('is Vercel', isVercel)
-  console.log('is CDN', isCDN)
-  if (isCDN) {
-    // master/main branch, also releases
-    const cdnUrl = `https://cdn.decentraland.org/${publicPackageJson.name}/${publicPackageJson.version}`
-    console.log(`Using CDN as public url: "${cdnUrl}"`)
-    return {
-      VITE_BASE_URL: cdnUrl
-    }
-  }
   // localhost
   console.log('Using empty pubic url')
   return {
