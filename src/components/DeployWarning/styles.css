@@ -1,0 +1,28 @@
+.DeployWarning {
+  color: #FFCF89;
+  padding: 30px;
+  border-radius: 5px;
+}
+.DeployWarning h3 {
+  color: #FFCF89;
+}
+
+.DeployWarning ul {
+  line-height: 25px;
+}
+
+.DeployWarning.filled {
+  background-color: #EC71223D;
+}
+
+.DeployWarning.outlined {
+  border: 2px solid #FE9C2A;
+}
+
+.DeployWarning i.warning {
+  /* have to reset original icon styles since there are overrides everywhere... */
+  background-color: inherit;
+  color: inherit;
+  position: inherit;
+  margin-right: 10px;
+}

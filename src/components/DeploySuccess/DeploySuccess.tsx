@@ -1,6 +1,9 @@
-import { Badge, Color, Container, HeaderMenu, Table } from 'decentraland-ui'
-import { Props } from './types'
 import { useEffect } from 'react'
+import { Badge, Color, Container, HeaderMenu, Table, Icon } from 'decentraland-ui'
+
+import { DeployWarning } from '../DeployWarning';
+
+import { Props } from './types'
 
 import './style.css'
 
@@ -17,12 +20,13 @@ export default function DeploySuccess({ onFetchCatalyst, catalysts = [], status,
   }, [onFetchCatalyst, deployedToAll, info, apiError])
 
   return (
-    <Container>
+    <Container className="DeploySuccess">
       <HeaderMenu>
         <Badge color={deploySuccess ? '#20913e' : Color.SUNISH}>
           {deploySuccess ? 'Deployed successfully' : 'Deploying...'}
         </Badge>
       </HeaderMenu>
+      <DeployWarning variant="outlined" />
       { !info?.isWorld && <Table basic="very">
         <Table.Header>
           <Table.Row>
