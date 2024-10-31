@@ -15,12 +15,14 @@ import {
   Toast,
   ToastType,
   Loader,
+  Modal,
 } from 'decentraland-ui'
 import { ChainId } from '@dcl/schemas'
 import { redirectToAuthDapp } from '../../modules/wallet/utils'
 import { Navbar } from '../Navbar'
 import Files from '../Files'
 import Map from '../Map'
+import { DeployWarning } from '../DeployWarning';
 import DeploySuccess from '../DeploySuccess/DeploySuccess.container'
 import { Props } from './types'
 
@@ -33,6 +35,7 @@ enum Tab {
 
 export default function LinkScenePage(props: Props) {
   const [tab, setTab] = useState<Tab>(Tab.Map)
+  const [open, setOpen] = useState(true);
   const {
     isConnected,
     wallet,
@@ -62,6 +65,13 @@ export default function LinkScenePage(props: Props) {
 
   return (
     <div className="Page-story-container">
+      <Modal open={open}>
+        <div className="warning-modal">
+          <h2>Warning</h2>
+          <DeployWarning />
+          <Button primary size="medium" onClick={() => setOpen(false)}>CONTINUE</Button>
+        </div>
+      </Modal>
       <Navbar />
       <Page>
         <Container>
