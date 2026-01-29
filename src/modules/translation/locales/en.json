@@ -1,3 +1,124 @@
 {
-  "global": {}
+  "global": {
+    "network": {
+      "sepolia": "Sepolia",
+      "mainnet": "Mainnet"
+    }
+  },
+  "storage_page": {
+    "header": {
+      "title": "Storage Service",
+      "description": "Manage storage in the Decentraland Storage Service",
+      "sign_button": "Sign & Authorize",
+      "connect_button": "Connect Wallet"
+    },
+    "card": {
+      "title": {
+        "env": {
+          "set": "Authorize the updating of an environment variable",
+          "get": "Authorize the reading of an environment variable",
+          "delete": "Authorize the removal of an environment variable",
+          "clear": "Authorize the clearing of an environment variable"
+        },
+        "scene": {
+          "set": "Authorize the updating of a scene storage",
+          "get": "Authorize the reading of a scene storage",
+          "delete": "Authorize the removal of a scene storage",
+          "clear": "Authorize the clearing of a scene storage"
+        },
+        "player": {
+          "set": "Authorize the updating of a player storage",
+          "get": "Authorize the reading of a player storage",
+          "delete": "Authorize the removal of a player storage",
+          "clear": "Authorize the clearing of a player storage"
+        }
+      },
+      "description": {
+        "env": {
+          "set": "the updating of an environment variable",
+          "get": "the reading of an environment variable",
+          "delete": "the removal of an environment variable",
+          "clear": "the clearing of an environment variable"
+        },
+        "scene": {
+          "set": "the updating of a scene variable",
+          "get": "the reading of a scene variable",
+          "delete": "the removal of a scene variable",
+          "clear": "the clearing of a scene variable"
+        },
+        "player": {
+          "set": "the updating of a player variable",
+          "get": "the reading of a player variable",
+          "delete": "the removal of a player variable",
+          "clear": "the clearing of a player variable"
+        }
+      },
+      "description_intro": "You are about to sign a message with your wallet to authenticate yourself and authorize",
+      "description_service": "in the storage service.",
+      "description_signature": "This signature is used",
+      "description_signature_purpose": "only for identification and permission checks",
+      "description_no_transaction": "No transaction will be sent, and no funds will be moved.",
+      "labels": {
+        "action": "Action",
+        "key": "Key",
+        "player_address": "Player Address",
+        "world": "World",
+        "parcel": "Parcel",
+        "target_url": "Storage Service"
+      },
+      "info_action": {
+        "env": {
+          "set": "Update an environment variable",
+          "get": "Read an environment variable",
+          "delete": "Remove an environment variable",
+          "clear": "Clear an environment variable"
+        },
+        "scene": {
+          "set": "Update a scene variable",
+          "get": "Read a scene variable",
+          "delete": "Remove a scene variable",
+          "clear": "Clear a scene variable"
+        },
+        "player": {
+          "set": "Update a player variable",
+          "get": "Read a player variable",
+          "delete": "Remove a player variable",
+          "clear": "Clear a player variable"
+        }
+      },
+      "info_world": "The signed message proves that you control the wallet associated with this world.",
+      "info_parcel": "The signed message proves that you control the wallet associated with this parcel."
+    },
+    "footer": {
+      "info": "This is an off-chain signature used for authentication."
+    },
+    "success": {
+      "env": {
+        "set": "Environment variable updated successfully!",
+        "get": "Environment variable retrieved successfully!",
+        "delete": "Environment variable removed successfully!",
+        "clear": "Environment variable cleared successfully!"
+      },
+      "scene": {
+        "set": "Scene storage updated successfully!",
+        "get": "Scene storage retrieved successfully!",
+        "delete": "Scene storage removed successfully!",
+        "clear": "Scene storage cleared successfully!"
+      },
+      "player": {
+        "set": "Player storage updated successfully!",
+        "get": "Player storage retrieved successfully!",
+        "delete": "Player storage removed successfully!",
+        "clear": "Player storage cleared successfully!"
+      },
+      "operation_complete": "The operation completed successfully.",
+      "close_window": "You can close this window."
+    },
+    "storage_types": {
+      "env": "Environment Variable",
+      "scene": "Scene Storage",
+      "player": "Player Storage",
+      "default": "Storage"
+    }
+  }
 }
