@@ -21,7 +21,7 @@ export type LinkerResponseIdentity = {
 
 export async function closeServer(
   ok: boolean,
-  message: LinkerResponseIdentity
+  message: LinkerResponseIdentity,
 ): Promise<void> {
   await fetch(`/api/close?ok=${ok}&reason=${JSON.stringify(message)}`)
 }
@@ -39,6 +39,35 @@ export async function postDeploy(payload: DeployScene): Promise<void> {
   }
   const error = (await response.json()).message as string
   throw new Error(error)
+}
+
+export type StoragePayload = {
+  address: string
+  authChain: AuthChain
+  chainId: ChainId
+}
+
+export type StorageResponse = {
+  success: boolean
+  error?: string
+}
+
+export async function postStorage(payload: StoragePayload): Promise<void> {
+  const response = await fetch(`/api/storage`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  const result = (await response.json().catch(() => ({}))) as StorageResponse
+
+  if (result.success) {
+    return
+  }
+
+  throw new Error(result.error || 'Storage operation failed')
 }
 
 export async function getFilesRequest(): Promise<void> {
