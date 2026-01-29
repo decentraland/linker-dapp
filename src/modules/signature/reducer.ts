@@ -29,6 +29,12 @@ import {
   SIGN_PUT_WORLD_ACL_FAILURE,
   SIGN_PUT_WORLD_ACL_REQUEST,
   SIGN_PUT_WORLD_ACL_SUCCESS,
+  SIGN_STORAGE_REQUEST,
+  SIGN_STORAGE_FAILURE,
+  SignStorageRequestAction,
+  SignStorageSuccessAction,
+  SignStorageFailureAction,
+  SIGN_STORAGE_SUCCESS,
 } from './actions'
 
 export type SignatureState = {
@@ -58,18 +64,23 @@ export type SignatureReducerAction =
   | SignDeleteWorldACLRequestAction
   | SignDeleteWorldACLSuccessAction
   | SignDeleteWorldACLFailureAction
+  | SignStorageRequestAction
+  | SignStorageSuccessAction
+  | SignStorageFailureAction
 
 export const signatureReducer = (
   state = INITIAL_STATE,
-  action: SignatureReducerAction
+  action: SignatureReducerAction,
 ): SignatureState => {
   switch (action.type) {
     case SIGN_CONTENT_REQUEST:
+    case SIGN_STORAGE_REQUEST:
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
       }
     case SIGN_CONTENT_SUCCESS:
+    case SIGN_STORAGE_SUCCESS:
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
@@ -77,6 +88,7 @@ export const signatureReducer = (
         error: null,
       }
     case SIGN_CONTENT_FAILURE:
+    case SIGN_STORAGE_FAILURE:
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
