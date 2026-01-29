@@ -27,6 +27,8 @@ import {
   DeploySuccessAction,
 } from './actions'
 
+import { StorageType, StorageAction } from './types'
+
 export type Info = {
   rootCID: string
   debug: boolean
@@ -39,6 +41,14 @@ export type Info = {
   isPortableExperience: boolean
   isWorld: boolean
   skipValidations?: boolean
+  // Storage fields
+  storageType?: StorageType
+  key?: string
+  value?: string
+  address?: string
+  world?: string
+  action?: StorageAction
+  targetUrl?: string
 }
 
 export type FileSize = {
@@ -70,7 +80,7 @@ export const INITIAL_STATE: ApiState = {
   loading: [],
   error: null,
   catalyst: undefined,
-  deploySuccess: false
+  deploySuccess: false,
 }
 
 export type ApiReducerAction =
@@ -87,13 +97,13 @@ export type ApiReducerAction =
 
 export const apiReducer = (
   state = INITIAL_STATE,
-  action: ApiReducerAction
+  action: ApiReducerAction,
 ): ApiState => {
   switch (action.type) {
     case DEPLOY_SUCCESS: {
       return {
         ...state,
-        deploySuccess: true
+        deploySuccess: true,
       }
     }
     case FETCH_FILES_REQUEST:
@@ -134,7 +144,7 @@ export const apiReducer = (
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        error: action.payload.error
+        error: action.payload.error,
       }
     case FETCH_INFO_REQUEST:
       return {
