@@ -168,7 +168,7 @@
 
   .success-card {
     background: var(--background-secondary, #242129);
-    border: 1px solid var(--success, #22c55e);
+    border: 1px solid var(--border, #3d3a45);
     border-radius: 12px;
     padding: 48px 24px;
     max-width: 450px;
