@@ -1,0 +1,213 @@
+.storage-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .description {
+    color: var(--text-secondary, #676370);
+    margin-top: 8px !important;
+  }
+
+  .address-header {
+    margin-right: 12px;
+  }
+
+  .toast-full-width {
+    width: 100%;
+    max-width: 600px;
+    margin: 16px auto;
+  }
+
+  .storage-card-container {
+    margin-top: 32px;
+  }
+
+  .storage-card {
+    background: var(--background-secondary, #242129);
+    border: 1px solid var(--border, #3d3a45);
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 550px;
+    margin: 0 auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .storage-header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .storage-title {
+    font-size: 24px;
+    text-align: center;
+  }
+
+  .storage-description {
+    font-size: 14px;
+    margin-bottom: 24px;
+    p {
+      color: var(--text-secondary, #9ca3af);
+      span {
+        color: var(--text);
+      }
+    }
+  }
+
+  .action-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 24px;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &.get {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+    }
+
+    &.set {
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      color: white;
+    }
+
+    &.delete {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+    }
+
+    &.clear {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      color: white;
+    }
+  }
+
+  .storage-message {
+    text-align: center;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: var(--background-tertiary, #1a1720);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary, #ff2d55);
+  }
+
+  .signing-message {
+    color: var(--text-primary, #ffffff);
+    font-size: 15px;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .storage-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .detail-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--background-tertiary, #1a1720);
+    border-radius: 8px;
+    gap: 32px;
+
+    .label {
+      color: var(--text-secondary, #9ca3af);
+      font-size: 14px;
+      font-weight: 500;
+      min-width: 112px;
+    }
+
+    .value {
+      color: var(--text-primary, #ffffff);
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &.key-value {
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+        color: #a78bfa;
+        background: rgba(167, 139, 250, 0.1);
+        padding: 4px 8px;
+        border-radius: 4px;
+      }
+
+      &.address-value {
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+        color: #60a5fa;
+        background: rgba(96, 165, 250, 0.1);
+        padding: 4px 8px;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .storage-footer {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border, #3d3a45);
+  }
+
+  .info-text {
+    color: var(--text-secondary, #9ca3af);
+    font-size: 13px;
+    text-align: center;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .success-container {
+    margin-top: 48px;
+  }
+
+  .success-card {
+    background: var(--background-secondary, #242129);
+    border: 1px solid var(--border, #3d3a45);
+    border-radius: 12px;
+    padding: 48px 24px;
+    max-width: 450px;
+    margin: 0 auto;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    .ui.header {
+      color: var(--text-primary, #ffffff) !important;
+      margin-bottom: 8px !important;
+    }
+
+    p {
+      color: var(--text-secondary, #9ca3af);
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+
+  .success-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    animation: scaleIn 0.5s ease-out;
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  .capitalize {
+    text-transform: capitalize;
+  }
+
+  .uppercase {
+    text-transform: uppercase;
+  }
+}

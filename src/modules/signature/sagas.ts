@@ -9,7 +9,7 @@ import { Provider } from 'decentraland-connect'
 import { AuthChain, Authenticator, AuthIdentity } from '@dcl/crypto'
 import { createIdentity } from '@dcl/builder-client'
 import { ChainId } from '@dcl/schemas'
-import { closeServer, postDeploy } from '../server/utils'
+import { closeServer, postDeploy, postStorage, postLogs } from '../server/utils'
 import { deploySuccess, fetchCatalystRequest } from '../server/actions'
 import {
   SIGN_CONTENT_REQUEST,
@@ -40,6 +40,18 @@ import {
   SignPutWorldACLSuccessAction,
   signPutWorldACLSuccess,
   signPutWorldACLFailure,
+  SIGN_STORAGE_REQUEST,
+  SIGN_STORAGE_SUCCESS,
+  SignStorageRequestAction,
+  signStorageSuccess,
+  signStorageFailure,
+  SignStorageSuccessAction,
+  SIGN_LOGS_REQUEST,
+  SIGN_LOGS_SUCCESS,
+  SignLogsRequestAction,
+  signLogsSuccess,
+  signLogsFailure,
+  SignLogsSuccessAction,
 } from './actions'
 import { putWorldACLRequest, deleteWorldACLRequest } from '../acl/actions'
 import { signQuestsFetchRequest } from '../quests/action'
@@ -58,11 +70,17 @@ export function* signatureSaga() {
   yield takeLatest(SIGN_DELETE_WORLD_ACL_REQUEST, handleSignWorldACLRequest)
   yield takeEvery(
     SIGN_DELETE_WORLD_ACL_SUCCESS,
-    handleSignDeleteWorldACLSuccess
+    handleSignDeleteWorldACLSuccess,
   )
 
   yield takeLatest(SIGN_QUESTS_REQUEST, handleQuestsSignRequest)
   yield takeEvery(SIGN_QUESTS_SUCCESS, handleQuestsSignSuccess)
+
+  yield takeLatest(SIGN_STORAGE_REQUEST, handleSignStorageRequest)
+  yield takeEvery(SIGN_STORAGE_SUCCESS, handleSignStorageSuccess)
+
+  yield takeLatest(SIGN_LOGS_REQUEST, handleSignLogsRequest)
+  yield takeEvery(SIGN_LOGS_SUCCESS, handleSignLogsSuccess)
 }
 
 function* sign(
@@ -71,6 +89,8 @@ function* sign(
     | SignPutWorldACLRequestAction
     | SignDeleteWorldACLRequestAction
     | SignQuestsRequestAction
+    | SignStorageRequestAction
+    | SignLogsRequestAction,
 ) {
   const identity: AuthIdentity | undefined = yield select(getIdentity)
   if (!identity) {
@@ -83,7 +103,6 @@ function* sign(
 function* handleSignContentRequest(action: SignContentRequestAction) {
   try {
     const authChain: AuthChain = yield call(sign, action)
-    debugger
     yield put(signContentSuccess(authChain))
   } catch (error) {
     yield put(signContentFailure((error as Error).message))
@@ -109,7 +128,7 @@ function* handleCreateIdentityRequest(_action: CreateIdentityRequestAction) {
     const web3provider = new Web3Provider(provider)
     const signer = web3provider.getSigner()
     const identity: AuthIdentity = yield call(() =>
-      createIdentity(signer, 1000)
+      createIdentity(signer, 1000),
     )
     yield put(createIdentitySuccess(identity))
     yield put(fetchCatalystRequest())
@@ -134,7 +153,7 @@ function* handleCreateIdentitySuccess(action: CreateIdentitySuccessAction) {
 }
 
 function* handleSignWorldACLRequest(
-  action: SignPutWorldACLRequestAction | SignDeleteWorldACLRequestAction
+  action: SignPutWorldACLRequestAction | SignDeleteWorldACLRequestAction,
 ) {
   try {
     const authChain: AuthChain = yield call(sign, action)
@@ -161,7 +180,7 @@ function* handleSignPutWorldACLSuccess(action: SignPutWorldACLSuccessAction) {
 }
 
 function* handleSignDeleteWorldACLSuccess(
-  action: SignDeleteWorldACLSuccessAction
+  action: SignDeleteWorldACLSuccessAction,
 ) {
   const { authChain } = action.payload
   yield put(deleteWorldACLRequest(authChain))
@@ -179,4 +198,46 @@ function* handleQuestsSignRequest(action: SignQuestsRequestAction) {
 function* handleQuestsSignSuccess(action: SignQuestsSuccessAction) {
   const { authChain } = action.payload
   yield put(signQuestsFetchRequest(authChain))
+}
+
+function* handleSignStorageRequest(action: SignStorageRequestAction) {
+  try {
+    const authChain: AuthChain = yield call(sign, action)
+    yield put(signStorageSuccess(authChain))
+  } catch (error) {
+    yield put(signStorageFailure((error as Error).message))
+  }
+}
+
+function* handleSignStorageSuccess(action: SignStorageSuccessAction) {
+  const address: string = yield select(getAddress)
+  const chainId: ChainId = yield select(getChainId)
+  const { authChain } = action.payload
+
+  try {
+    yield call(postStorage, { authChain, address, chainId })
+  } catch (error) {
+    yield put(signStorageFailure((error as Error).message))
+  }
+}
+
+function* handleSignLogsRequest(action: SignLogsRequestAction) {
+  try {
+    const authChain: AuthChain = yield call(sign, action)
+    yield put(signLogsSuccess(authChain))
+  } catch (error) {
+    yield put(signLogsFailure((error as Error).message))
+  }
+}
+
+function* handleSignLogsSuccess(action: SignLogsSuccessAction) {
+  const address: string = yield select(getAddress)
+  const chainId: ChainId = yield select(getChainId)
+  const { authChain } = action.payload
+
+  try {
+    yield call(postLogs, { authChain, address, chainId })
+  } catch (error) {
+    yield put(signLogsFailure((error as Error).message))
+  }
 }
