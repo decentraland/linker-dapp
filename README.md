@@ -1,4 +1,4 @@
-# Linker DApp UI
+# Linker dApp UI
 
 This UI bridges the Decentraland CLI and blockchain, enabling users to deploy scenes to LAND parcels or Worlds, manage World access control lists (ACL), perform storage operations, create quests, view server logs, and create ephemeral identities for signing deployments.
 
@@ -27,7 +27,7 @@ This UI bridges the Decentraland CLI and blockchain, enabling users to deploy sc
 
 This service interacts with the following services:
 
-- **[@dcl/sdk-commands](https://github.com/decentraland/js-sdk-toolchain/tree/main/packages/%40dcl/sdk-commands)**: Serves the local API server that the Linker DApp communicates with
+- **[@dcl/sdk-commands](https://github.com/decentraland/js-sdk-toolchain/tree/main/packages/%40dcl/sdk-commands)**: Serves the local API server that the Linker dApp communicates with
 - **LAND Registry Contract**: Verifies parcel ownership and authorization for deployments
 - **Estate Registry Contract**: Verifies estate ownership and authorization for deployments
 - **Decentraland Auth Service**: Handles wallet authentication via `/auth` proxy
@@ -77,7 +77,7 @@ npm run start
 
 ## Local Development
 
-**Architecture Note:** In production, the Linker DApp is served by the sdk-commands Express server, which handles both the static files and `/api` endpoints. For local development with hot-reload, we run Vite's dev server separately and proxy API requests to a running sdk-commands instance.
+**Architecture Note:** In production, the Linker dApp is served by the sdk-commands Express server, which handles both the static files and `/api` endpoints. For local development with hot-reload, we run Vite's dev server separately and proxy API requests to a running sdk-commands instance.
 
 **Steps:**
 
