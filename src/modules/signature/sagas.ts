@@ -9,7 +9,7 @@ import { Provider } from 'decentraland-connect'
 import { AuthChain, Authenticator, AuthIdentity } from '@dcl/crypto'
 import { createIdentity } from '@dcl/builder-client'
 import { ChainId } from '@dcl/schemas'
-import { closeServer, postDeploy, postStorage } from '../server/utils'
+import { closeServer, postDeploy, postStorage, postLogs } from '../server/utils'
 import { deploySuccess, fetchCatalystRequest } from '../server/actions'
 import {
   SIGN_CONTENT_REQUEST,
@@ -46,6 +46,12 @@ import {
   signStorageSuccess,
   signStorageFailure,
   SignStorageSuccessAction,
+  SIGN_LOGS_REQUEST,
+  SIGN_LOGS_SUCCESS,
+  SignLogsRequestAction,
+  signLogsSuccess,
+  signLogsFailure,
+  SignLogsSuccessAction,
 } from './actions'
 import { putWorldACLRequest, deleteWorldACLRequest } from '../acl/actions'
 import { signQuestsFetchRequest } from '../quests/action'
@@ -72,6 +78,9 @@ export function* signatureSaga() {
 
   yield takeLatest(SIGN_STORAGE_REQUEST, handleSignStorageRequest)
   yield takeEvery(SIGN_STORAGE_SUCCESS, handleSignStorageSuccess)
+
+  yield takeLatest(SIGN_LOGS_REQUEST, handleSignLogsRequest)
+  yield takeEvery(SIGN_LOGS_SUCCESS, handleSignLogsSuccess)
 }
 
 function* sign(
@@ -80,7 +89,8 @@ function* sign(
     | SignPutWorldACLRequestAction
     | SignDeleteWorldACLRequestAction
     | SignQuestsRequestAction
-    | SignStorageRequestAction,
+    | SignStorageRequestAction
+    | SignLogsRequestAction,
 ) {
   const identity: AuthIdentity | undefined = yield select(getIdentity)
   if (!identity) {
@@ -208,5 +218,26 @@ function* handleSignStorageSuccess(action: SignStorageSuccessAction) {
     yield call(postStorage, { authChain, address, chainId })
   } catch (error) {
     yield put(signStorageFailure((error as Error).message))
+  }
+}
+
+function* handleSignLogsRequest(action: SignLogsRequestAction) {
+  try {
+    const authChain: AuthChain = yield call(sign, action)
+    yield put(signLogsSuccess(authChain))
+  } catch (error) {
+    yield put(signLogsFailure((error as Error).message))
+  }
+}
+
+function* handleSignLogsSuccess(action: SignLogsSuccessAction) {
+  const address: string = yield select(getAddress)
+  const chainId: ChainId = yield select(getChainId)
+  const { authChain } = action.payload
+
+  try {
+    yield call(postLogs, { authChain, address, chainId })
+  } catch (error) {
+    yield put(signLogsFailure((error as Error).message))
   }
 }
