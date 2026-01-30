@@ -1,5 +1,5 @@
-import { AnyAction, Dispatch } from 'redux'
-import { connect } from 'react-redux'
+import { useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import {
   getData as getWallet,
   isConnected,
@@ -15,23 +15,40 @@ import { fetchInfoRequest } from '../../modules/server/actions'
 import { getInfo } from '../../modules/server/selectors'
 import { RootState } from '../../types'
 import StoragePage from './StoragePage'
-import { MapStateProps, MapDispatchProps } from './types'
 
-const mapState = (state: RootState): MapStateProps => {
-  return {
-    wallet: getWallet(state),
-    isConnected: isConnected(state),
-    isConnecting: isConnecting(state),
-    signed: !!getSignature(state),
-    isSigning: isSigningTx(state),
-    info: getInfo(state),
-    error: state.signature.error,
-  }
+const StoragePageContainer: React.FC = () => {
+  const dispatch = useDispatch()
+
+  const wallet = useSelector(getWallet)
+  const isConnectedValue = useSelector(isConnected)
+  const isConnectingValue = useSelector(isConnecting)
+  const signed = useSelector((state: RootState) => !!getSignature(state))
+  const isSigning = useSelector(isSigningTx)
+  const info = useSelector(getInfo)
+  const error = useSelector((state: RootState) => state.signature.error)
+
+  const handleSignContent = useCallback(
+    (cid: string) => dispatch(signStorageRequest(cid)),
+    [dispatch],
+  )
+  const handleFetchInfo = useCallback(
+    () => dispatch(fetchInfoRequest()),
+    [dispatch],
+  )
+
+  return (
+    <StoragePage
+      wallet={wallet}
+      isConnected={isConnectedValue}
+      isConnecting={isConnectingValue}
+      signed={signed}
+      isSigning={isSigning}
+      info={info}
+      error={error}
+      onSignContent={handleSignContent}
+      onFetchInfo={handleFetchInfo}
+    />
+  )
 }
 
-const mapDispatch = (dispatch: Dispatch<AnyAction>): MapDispatchProps => ({
-  onSignContent: (cid: string) => dispatch(signStorageRequest(cid)),
-  onFetchInfo: () => dispatch(fetchInfoRequest()),
-})
-
-export default connect(mapState, mapDispatch)(StoragePage)
+export default StoragePageContainer
