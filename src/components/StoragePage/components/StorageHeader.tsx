@@ -89,7 +89,7 @@ export const StorageHeader = ({
 
   const buttonLabel = isConnected
     ? t('storage_page.header.sign_button')
-    : t('storage_page.header.connect_button')
+    : t('global.connect_button')
 
   return (
     <Container>

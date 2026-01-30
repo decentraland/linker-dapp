@@ -14,7 +14,6 @@ export const SuccessCard = ({ action, storageType }: SuccessCardProps) => {
   return (
     <Container className="success-container">
       <div className="success-card">
-        <div className="success-icon">✅</div>
         <Header size="medium">
           {t(`storage_page.success.${type}.${action}`)}
         </Header>
