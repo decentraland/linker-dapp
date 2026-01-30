@@ -1,18 +1,8 @@
-import {
-  Container,
-  Header,
-  HeaderMenu,
-  Badge,
-  Color,
-  Address,
-  Blockie,
-  Button,
-} from 'decentraland-ui'
+import { Badge, Color } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { ChainId } from '@dcl/schemas'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
-import { redirectToAuthDapp } from '../../../modules/wallet/utils'
 import { StorageType } from '../../../modules/server/types'
+import { SignatureHeader } from '../../SignatureHeader'
 
 type StorageHeaderProps = {
   wallet: Partial<Wallet> | null
@@ -49,22 +39,6 @@ const StorageTypeBadge = ({
   </div>
 )
 
-const NetworkBadge = ({ isTestNet }: { isTestNet: boolean }) => (
-  <div className="address-header">
-    <Badge color={Color.SHADOWS}>
-      {isTestNet ? t('global.network.sepolia') : t('global.network.mainnet')}
-    </Badge>
-  </div>
-)
-
-const WalletBadge = ({ address }: { address: string }) => (
-  <div className="address-header">
-    <Blockie scale={3} seed={address}>
-      <Address tooltip strong value={address} />
-    </Blockie>
-  </div>
-)
-
 export const StorageHeader = ({
   wallet,
   isConnected,
@@ -77,54 +51,26 @@ export const StorageHeader = ({
   rootCID,
   onSignContent,
 }: StorageHeaderProps) => {
-  const isTestNet = wallet?.chainId !== ChainId.ETHEREUM_MAINNET
-
-  const handleSignClick = () => {
-    if (isConnected && rootCID) {
-      onSignContent(rootCID)
-    } else {
-      redirectToAuthDapp()
-    }
-  }
-
-  const buttonLabel = isConnected
-    ? t('storage_page.header.sign_button')
-    : t('global.connect_button')
+  const badges = (
+    <>
+      <LocationBadge world={world} baseParcel={baseParcel} />
+      {storageType && <StorageTypeBadge storageType={storageType} />}
+    </>
+  )
 
   return (
-    <Container>
-      <HeaderMenu>
-        <HeaderMenu.Left>
-          <Container textAlign="center">
-            <Header size="large">{t('storage_page.header.title')}</Header>
-            <Header size="medium" className="description">
-              {t('storage_page.header.description')}
-            </Header>
-          </Container>
-        </HeaderMenu.Left>
-      </HeaderMenu>
-
-      <HeaderMenu>
-        <HeaderMenu.Left>
-          <LocationBadge world={world} baseParcel={baseParcel} />
-          {storageType && <StorageTypeBadge storageType={storageType} />}
-          {isConnected && <NetworkBadge isTestNet={isTestNet} />}
-          {wallet?.address && <WalletBadge address={wallet.address} />}
-        </HeaderMenu.Left>
-
-        {!signed && (
-          <HeaderMenu.Right>
-            <Button
-              primary
-              size="medium"
-              loading={isConnecting || isSigning}
-              onClick={handleSignClick}
-            >
-              {buttonLabel}
-            </Button>
-          </HeaderMenu.Right>
-        )}
-      </HeaderMenu>
-    </Container>
+    <SignatureHeader
+      titleKey="storage_page.header.title"
+      descriptionKey="storage_page.header.description"
+      signButtonKey="storage_page.header.sign_button"
+      badges={badges}
+      wallet={wallet}
+      isConnected={isConnected}
+      isConnecting={isConnecting}
+      isSigning={isSigning}
+      signed={signed}
+      rootCID={rootCID}
+      onSignContent={onSignContent}
+    />
   )
 }

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { Footer, Page, Loader } from 'decentraland-ui'
-import { Navbar } from '../Navbar'
+import { Loader } from 'decentraland-ui'
+import { PageLayout } from '../PageLayout'
 import { ErrorToast } from '../ErrorToast'
 import { Props } from './types'
 import { LogsHeader, LogsCard, SuccessCard } from './components'
@@ -23,31 +23,27 @@ const ServerLogsPage = ({
   }, [onFetchInfo])
 
   return (
-    <div className="Page-story-container serverlogs-page">
-      <Navbar />
-      <Page>
-        <LogsHeader
-          wallet={wallet}
-          isConnected={isConnected}
-          isConnecting={isConnecting}
-          isSigning={isSigning}
-          signed={signed}
-          world={info?.world}
-          targetUrl={info?.targetUrl}
-          rootCID={info?.rootCID}
-          onSignContent={onSignContent}
-        />
+    <PageLayout className="serverlogs-page">
+      <LogsHeader
+        wallet={wallet}
+        isConnected={isConnected}
+        isConnecting={isConnecting}
+        isSigning={isSigning}
+        signed={signed}
+        world={info?.world}
+        targetUrl={info?.targetUrl}
+        rootCID={info?.rootCID}
+        onSignContent={onSignContent}
+      />
 
-        <ErrorToast error={error ?? null} />
+      <ErrorToast error={error ?? null} />
 
-        {!info && <Loader />}
+      {!info && <Loader />}
 
-        {info && !signed && <LogsCard info={info} />}
+      {info && !signed && <LogsCard info={info} />}
 
-        {signed && !error && <SuccessCard />}
-      </Page>
-      <Footer />
-    </div>
+      {signed && !error && <SuccessCard />}
+    </PageLayout>
   )
 }
 
