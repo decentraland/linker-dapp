@@ -1,6 +1,5 @@
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { Info } from '../../modules/server/reducer'
-import { SignStorageRequestAction } from '../../modules/signature/actions'
 
 export type Props = {
   wallet: Partial<Wallet> | null
@@ -11,5 +10,5 @@ export type Props = {
   info?: Info
   error?: string | null
   onFetchInfo: () => void
-  onSignContent: (cid: string) => SignStorageRequestAction
+  onSignContent: (cid: string) => void
 }
