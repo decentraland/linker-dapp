@@ -1,10 +1,9 @@
 import { Container, Header } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { StorageOnlyAction } from '../utils'
-import { StorageType } from '../../../modules/server/types'
+import { StorageAction, StorageType } from '../../../modules/server/types'
 
 type SuccessCardProps = {
-  action: StorageOnlyAction
+  action: StorageAction
   storageType?: StorageType
 }
 

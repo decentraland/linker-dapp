@@ -1,11 +1,12 @@
 import { Container } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Info } from '../../../modules/server/reducer'
-import { StorageOnlyAction, formatAddress, formatTargetUrl } from '../utils'
+import { StorageAction } from '../../../modules/server/types'
+import { formatAddress, formatTargetUrl } from '../utils'
 
 type CardDetailsProps = {
   info: Info
-  action: StorageOnlyAction
+  action: StorageAction
   storageType: string
   isClearAction: boolean
   isPlayerType: boolean
