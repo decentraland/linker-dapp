@@ -1,6 +1,6 @@
-import { Badge, Color, Icon } from 'decentraland-ui'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { SignatureHeader } from '../../SignatureHeader'
+import { LocationBadge } from '../../Badges'
 
 type LogsHeaderProps = {
   wallet: Partial<Wallet> | null
@@ -14,14 +14,6 @@ type LogsHeaderProps = {
   onSignContent: (cid: string) => void
 }
 
-const WorldBadge = ({ world }: { world: string }) => (
-  <div className="address-header">
-    <Badge color={Color.SUMMER_RED}>
-      <Icon name="globe" /> {world}
-    </Badge>
-  </div>
-)
-
 export const LogsHeader = ({
   wallet,
   isConnected,
@@ -32,7 +24,7 @@ export const LogsHeader = ({
   rootCID,
   onSignContent,
 }: LogsHeaderProps) => {
-  const badges = world ? <WorldBadge world={world} /> : null
+  const badges = world ? <LocationBadge world={world} /> : null
 
   return (
     <SignatureHeader

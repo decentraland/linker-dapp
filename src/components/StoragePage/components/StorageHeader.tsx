@@ -3,6 +3,7 @@ import { t } from 'decentraland-dapps/dist/modules/translation/utils'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { StorageType } from '../../../modules/server/types'
 import { SignatureHeader } from '../../SignatureHeader'
+import { LocationBadge } from '../../Badges'
 
 type StorageHeaderProps = {
   wallet: Partial<Wallet> | null
@@ -17,17 +18,6 @@ type StorageHeaderProps = {
   rootCID?: string
   onSignContent: (cid: string) => void
 }
-
-const LocationBadge = ({
-  world,
-  baseParcel,
-}: Pick<StorageHeaderProps, 'world' | 'baseParcel'>) => (
-  <div className="address-header">
-    <Badge color={Color.SUMMER_RED}>
-      {world || `${baseParcel.x}, ${baseParcel.y}`}
-    </Badge>
-  </div>
-)
 
 const StorageTypeBadge = ({
   storageType,
