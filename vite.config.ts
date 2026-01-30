@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => {
   }
 
   const envVariables = loadEnv(mode, process.cwd())
+  const apiProxyTarget = envVariables.VITE_API_PROXY_TARGET
 
   return {
     plugins: [react()],
@@ -32,6 +33,15 @@ export default defineConfig(({ mode }) => {
           secure: false,
           ws: true,
         },
+        ...(apiProxyTarget && {
+          '/api': {
+            target: apiProxyTarget,
+            followRedirects: true,
+            changeOrigin: true,
+            secure: false,
+            ws: true,
+          },
+        }),
       },
     },
     optimizeDeps: {
