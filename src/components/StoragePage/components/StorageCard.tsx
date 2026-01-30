@@ -67,7 +67,11 @@ const CardDetails = ({
     </DetailRow>
 
     <DetailRow label={t('storage_page.card.labels.action')}>
-      <span>{t(`storage_page.card.info_action.${storageType}.${action}`)}</span>
+      <span>
+        {t(`storage_page.card.info_action.${storageType}.${action}`, {
+          count: isPlayerType && info.address ? 1 : 0,
+        })}
+      </span>
     </DetailRow>
 
     {!isClearAction && info.key && (
