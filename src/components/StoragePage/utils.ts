@@ -1,14 +1,14 @@
 import { StorageAction } from '../../modules/server/types'
 
-export type StorageOnlyAction = Exclude<StorageAction, 'view-logs'>
-
 export const formatAddress = (address: string): string => {
   if (address.length <= 10) return address
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
-export const parseAction = (action?: StorageAction): StorageOnlyAction => {
-  if (!action || action === 'view-logs') return 'set'
+export const parseAction = (
+  action?: StorageAction | undefined,
+): StorageAction => {
+  if (!action) return 'set'
   return action
 }
 
