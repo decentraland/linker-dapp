@@ -2,7 +2,7 @@
 
 **Service Purpose:**
 
-The Linker DApp is a web application that bridges the Decentraland CLI and blockchain, enabling users to deploy scenes to LAND parcels or Worlds, manage World access control lists (ACL), perform storage operations, create quests, view server logs, and create ephemeral identities for signing deployments.
+The Linker dApp is a web application that bridges the Decentraland CLI and blockchain, enabling users to deploy scenes to LAND parcels or Worlds, manage World access control lists (ACL), perform storage operations, create quests, view server logs, and create ephemeral identities for signing deployments.
 
 **Key Capabilities:**
 
