@@ -3,14 +3,14 @@
     "network": {
       "sepolia": "Sepolia",
       "mainnet": "Mainnet"
-    }
+    },
+    "connect_button": "Connect Wallet"
   },
   "storage_page": {
     "header": {
       "title": "Storage Service",
       "description": "Manage storage in the Decentraland Storage Service",
-      "sign_button": "Sign & Authorize",
-      "connect_button": "Connect Wallet"
+      "sign_button": "Sign & Authorize"
     },
     "card": {
       "title": {
@@ -119,6 +119,42 @@
       "scene": "Scene Storage",
       "player": "Player Storage",
       "default": "Storage"
+    }
+  },
+  "server_logs_page": {
+    "header": {
+      "title": "Server Logs Authentication",
+      "description": "Sign to view real-time logs from your server-side scene",
+      "sign_button": "Sign & View Logs"
+    },
+    "card": {
+      "title": "Authorize log streaming",
+      "description_intro": "You are about to sign a message with your wallet to authenticate yourself and authorize",
+      "description_action": "viewing real-time logs",
+      "description_service": "from the multiplayer server.",
+      "description_signature": "This signature is used",
+      "description_signature_purpose": "only for identification and permission checks",
+      "description_no_transaction": "No transaction will be sent, and no funds will be moved.",
+      "labels": {
+        "action": "Action",
+        "world": "World",
+        "server": "Server"
+      },
+      "info_action": "View server-side scene logs",
+      "server_value": "Multiplayer Server",
+      "info_message": "The signed message proves that you control the wallet associated with this world."
+    },
+    "footer": {
+      "info": "After signing, logs will stream to your terminal in real-time.",
+      "hint": "Press CTRL+C in the terminal to stop streaming."
+    },
+    "success": {
+      "title": "Authentication Successful!",
+      "message": "Logs are now streaming to your terminal.",
+      "hint": "You can close this window and return to your terminal."
+    },
+    "error": {
+      "title": "Authentication Failed"
     }
   }
 }
