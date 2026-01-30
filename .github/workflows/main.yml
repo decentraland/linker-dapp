@@ -14,22 +14,22 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/checkout@master
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v6
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v6
         with:
-          node-version: 20.x
+          node-version: 24.x
           cache: npm
 
       - name: set package.json version
-        uses: menduz/oddish-action@master
+        uses: decentraland/oddish-action@master
         with:
           deterministic-snapshot: true
           only-update-versions: true
 
       - id: install
         name: install
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: build
         run: VITE_REACT_APP_DCL_DEFAULT_ENV=prod NODE_ENV=prod npm run build
