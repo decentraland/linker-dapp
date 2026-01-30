@@ -1,1 +1,3 @@
-export { default } from './ServerLogsPage.container'
+import ServerLogsPage from './ServerLogsPage.container'
+
+export default ServerLogsPage

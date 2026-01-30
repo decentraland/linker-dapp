@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
 import { Footer, Page, Loader } from 'decentraland-ui'
 import { Navbar } from '../Navbar'
+import { ErrorToast } from '../ErrorToast'
 import { Props } from './types'
-import { LogsHeader, LogsCard, SuccessCard, ErrorToast } from './components'
+import { LogsHeader, LogsCard, SuccessCard } from './components'
 
 import './style.css'
 

@@ -1,14 +1,10 @@
 import { useEffect } from 'react'
 import { Footer, Page, Loader } from 'decentraland-ui'
 import { Navbar } from '../Navbar'
+import { ErrorToast } from '../ErrorToast'
 import { Props } from './types'
 import { parseAction } from './utils'
-import {
-  StorageHeader,
-  StorageCard,
-  SuccessCard,
-  ErrorToast,
-} from './components'
+import { StorageHeader, StorageCard, SuccessCard } from './components'
 
 import './style.css'
 

@@ -26,6 +26,30 @@ type LogsHeaderProps = {
   onSignContent: (cid: string) => void
 }
 
+const WorldBadge = ({ world }: { world: string }) => (
+  <div className="address-header">
+    <Badge color={Color.SUMMER_RED}>
+      <Icon name="globe" /> {world}
+    </Badge>
+  </div>
+)
+
+const NetworkBadge = ({ isTestNet }: { isTestNet: boolean }) => (
+  <div className="address-header">
+    <Badge color={Color.SHADOWS}>
+      {isTestNet ? t('global.network.sepolia') : t('global.network.mainnet')}
+    </Badge>
+  </div>
+)
+
+const WalletBadge = ({ address }: { address: string }) => (
+  <div className="address-header">
+    <Blockie scale={3} seed={address}>
+      <Address tooltip strong value={address} />
+    </Blockie>
+  </div>
+)
+
 export const LogsHeader = ({
   wallet,
   isConnected,
@@ -86,60 +110,3 @@ export const LogsHeader = ({
     </Container>
   )
 }
-
-type WorldBadgeProps = {
-  world: string
-}
-
-const WorldBadge = ({ world }: WorldBadgeProps) => (
-  <div className="address-header">
-    <Badge color={Color.SUMMER_RED}>
-      <Icon name="globe" /> {world}
-    </Badge>
-  </div>
-)
-
-type TargetUrlBadgeProps = {
-  targetUrl: string
-}
-
-const formatTargetUrl = (url: string): string => {
-  try {
-    const parsed = new URL(url)
-    return parsed.host
-  } catch {
-    return url.length > 30 ? `${url.slice(0, 27)}...` : url
-  }
-}
-
-const TargetUrlBadge = ({ targetUrl }: TargetUrlBadgeProps) => (
-  <div className="address-header">
-    <Badge color={Color.SUNISH}>
-      <Icon name="server" /> {formatTargetUrl(targetUrl)}
-    </Badge>
-  </div>
-)
-
-type NetworkBadgeProps = {
-  isTestNet: boolean
-}
-
-const NetworkBadge = ({ isTestNet }: NetworkBadgeProps) => (
-  <div className="address-header">
-    <Badge color={Color.SHADOWS}>
-      {isTestNet ? t('global.network.sepolia') : t('global.network.mainnet')}
-    </Badge>
-  </div>
-)
-
-type WalletBadgeProps = {
-  address: string
-}
-
-const WalletBadge = ({ address }: WalletBadgeProps) => (
-  <div className="address-header">
-    <Blockie scale={3} seed={address}>
-      <Address tooltip strong value={address} />
-    </Blockie>
-  </div>
-)

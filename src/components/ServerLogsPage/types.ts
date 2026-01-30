@@ -13,16 +13,3 @@ export type Props = {
   onSignContent: (cid: string) => SignLogsRequestAction
   onFetchInfo: () => void
 }
-
-export type MapStateProps = Pick<
-  Props,
-  | 'wallet'
-  | 'isConnected'
-  | 'isConnecting'
-  | 'signed'
-  | 'isSigning'
-  | 'info'
-  | 'error'
->
-
-export type MapDispatchProps = Pick<Props, 'onSignContent' | 'onFetchInfo'>
