@@ -13,15 +13,6 @@ type CardDetailsProps = {
   y: number
 }
 
-const CardTitle = ({
-  storageType,
-  action,
-}: Pick<CardDetailsProps, 'storageType' | 'action'>) => (
-  <h2 className="storage-title">
-    {t(`storage_page.card.title.${storageType}.${action}`)}
-  </h2>
-)
-
 const CardDescription = ({
   action,
   storageType,
@@ -104,12 +95,6 @@ const CardDetails = ({
   </div>
 )
 
-const CardFooter = () => (
-  <div className="storage-footer">
-    <p className="info-text">{t('storage_page.footer.info')}</p>
-  </div>
-)
-
 export const StorageCard = ({
   info,
   action,
@@ -122,7 +107,9 @@ export const StorageCard = ({
   return (
     <Container className="storage-card-container">
       <div className="storage-card">
-        <CardTitle storageType={storageType} action={action} />
+        <h2 className="storage-title">
+          {t(`storage_page.card.title.${storageType}.${action}`)}
+        </h2>
         <CardDescription action={action} storageType={storageType} />
         <CardDetails
           info={info}
@@ -133,7 +120,9 @@ export const StorageCard = ({
           x={x}
           y={y}
         />
-        <CardFooter />
+        <div className="storage-footer">
+          <p className="info-text">{t('storage_page.footer.info')}</p>
+        </div>
       </div>
     </Container>
   )
