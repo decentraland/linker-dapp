@@ -71,19 +71,19 @@
           "set": "Update an environment variable",
           "get": "Read an environment variable",
           "delete": "Remove an environment variable",
-          "clear": "Clear an environment variable"
+          "clear": "Clear environment variables"
         },
         "scene": {
           "set": "Update a scene variable",
           "get": "Read a scene variable",
           "delete": "Remove a scene variable",
-          "clear": "Clear a scene variable"
+          "clear": "Clear scene variables"
         },
         "player": {
           "set": "Update a player variable",
           "get": "Read a player variable",
           "delete": "Remove a player variable",
-          "clear": "Clear a player variable"
+          "clear": "Clear {count, plural, one {a player variable} other {players variables}}"
         }
       },
       "info_world": "The signed message proves that you control the wallet associated with this world.",
