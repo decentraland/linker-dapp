@@ -38,7 +38,7 @@ jobs:
         run: npm run test
 
       - name: publish npm package
-        uses: menduz/oddish-action@master
+        uses: decentraland/oddish-action@master
         with:
           registry-url: 'https://registry.npmjs.org'
           ## use action runId instead of current date to generate snapshot numbers
