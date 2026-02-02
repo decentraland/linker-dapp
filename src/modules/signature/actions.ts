@@ -92,3 +92,35 @@ export const signQuestsFailure = (error: string) =>
 export type SignQuestsRequestAction = ReturnType<typeof signQuestsRequest>
 export type SignQuestsSuccessAction = ReturnType<typeof signQuestsSuccess>
 export type SignQuestsFailureAction = ReturnType<typeof signQuestsFailure>
+
+// Storage signing actions
+export const SIGN_STORAGE_REQUEST = '[Request] Sign Storage'
+export const SIGN_STORAGE_SUCCESS = '[Success] Sign Storage'
+export const SIGN_STORAGE_FAILURE = '[Failure] Sign Storage'
+
+export const signStorageRequest = (payload: string) =>
+  action(SIGN_STORAGE_REQUEST, payload)
+export const signStorageSuccess = (authChain: AuthChain) =>
+  action(SIGN_STORAGE_SUCCESS, { authChain })
+export const signStorageFailure = (error: string) =>
+  action(SIGN_STORAGE_FAILURE, { error })
+
+export type SignStorageRequestAction = ReturnType<typeof signStorageRequest>
+export type SignStorageSuccessAction = ReturnType<typeof signStorageSuccess>
+export type SignStorageFailureAction = ReturnType<typeof signStorageFailure>
+
+// Server logs signing actions
+export const SIGN_LOGS_REQUEST = '[Request] Sign Logs'
+export const SIGN_LOGS_SUCCESS = '[Success] Sign Logs'
+export const SIGN_LOGS_FAILURE = '[Failure] Sign Logs'
+
+export const signLogsRequest = (payload: string) =>
+  action(SIGN_LOGS_REQUEST, payload)
+export const signLogsSuccess = (authChain: AuthChain) =>
+  action(SIGN_LOGS_SUCCESS, { authChain })
+export const signLogsFailure = (error: string) =>
+  action(SIGN_LOGS_FAILURE, { error })
+
+export type SignLogsRequestAction = ReturnType<typeof signLogsRequest>
+export type SignLogsSuccessAction = ReturnType<typeof signLogsSuccess>
+export type SignLogsFailureAction = ReturnType<typeof signLogsFailure>
