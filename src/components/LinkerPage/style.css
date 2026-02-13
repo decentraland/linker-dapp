@@ -26,11 +26,12 @@
   padding-top: 24px;
 }
 
-.address-header {
-  margin-right: 16px;
+div.url {
+  display: flex;
+  margin-right: 0;
 }
 
-div.url > div.dcl.badge {
+div.url div.dcl.badge {
   cursor: pointer;
 }
 

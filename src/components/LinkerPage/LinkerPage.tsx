@@ -22,7 +22,8 @@ import { redirectToAuthDapp } from '../../modules/wallet/utils'
 import { Navbar } from '../Navbar'
 import Files from '../Files'
 import Map from '../Map'
-import { DeployWarning } from '../DeployWarning';
+import { LocationBadge } from '../Badges'
+import { DeployWarning } from '../DeployWarning'
 import DeploySuccess from '../DeploySuccess/DeploySuccess.container'
 import { Props } from './types'
 
@@ -35,7 +36,7 @@ enum Tab {
 
 export default function LinkScenePage(props: Props) {
   const [tab, setTab] = useState<Tab>(Tab.Map)
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(true)
   const {
     isConnected,
     wallet,
@@ -56,7 +57,8 @@ export default function LinkScenePage(props: Props) {
   const isTestNet = wallet?.chainId !== ChainId.ETHEREUM_MAINNET
   const networkName = isTestNet && `&NETWORK=sepolia`
   const networkDomain = isTestNet ? 'zone' : 'org'
-  const deployUrl = `https://play.decentraland.${networkDomain}/?position=${x},${y}${networkName}`
+  const realm = info?.world ? `&realm=${info.world}` : ''
+  const deployUrl = `https://play.decentraland.${networkDomain}/?position=${x},${y}${networkName}${realm}`
 
   useEffect(() => {
     onFetchInfo()
@@ -69,7 +71,9 @@ export default function LinkScenePage(props: Props) {
         <div className="warning-modal">
           <h2>Warning</h2>
           <DeployWarning />
-          <Button primary size="medium" onClick={() => setOpen(false)}>CONTINUE</Button>
+          <Button primary size="medium" onClick={() => setOpen(false)}>
+            CONTINUE
+          </Button>
         </div>
       </Modal>
       <Navbar />
@@ -97,10 +101,8 @@ export default function LinkScenePage(props: Props) {
                   deployUrl && window.open(deployUrl!, '_blank')?.focus()
                 }
               >
-                <Badge color={Color.SUMMER_RED}>
-                  <Icon name="point" />
-                  {x}, {y}
-                </Badge>
+                {info?.world && <LocationBadge world={info.world} />}
+                <LocationBadge baseParcel={{ x, y }} />
               </div>
               {!!isConnected && (
                 <div className="address-header">
@@ -143,7 +145,11 @@ export default function LinkScenePage(props: Props) {
         {!!(authorizations?.length && !isUpdateAuthorized) && (
           <Toast
             type={ToastType.ERROR}
-            title="Check LAND permissions"
+            title={
+              info?.isWorld
+                ? 'Check World permissions'
+                : 'Check LAND permissions'
+            }
             body="You dont have permissions to update some of the coords"
           />
         )}
