@@ -7,7 +7,7 @@ type LogsCardProps = {
 }
 
 export const LogsCard = ({ info }: LogsCardProps) => {
-  const worldName = info.world ? `${info.world}.dcl.eth` : 'Unknown World'
+  const worldName = info.world || 'Unknown World'
 
   return (
     <Container className="serverlogs-card-container">
