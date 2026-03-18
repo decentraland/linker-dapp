@@ -49,6 +49,7 @@ export type Info = {
   world?: string
   action?: StorageAction
   targetUrl?: string
+  deleteScenesFromWorldPayload?: string
 }
 
 export type FileSize = {

@@ -13,6 +13,7 @@ export type InfoResponse = {
   skipValidations: boolean
   isPortableExperience: boolean
   isWorld: boolean
+  deleteScenesFromWorldPayload?: string
   // Storage fields
   storageType?: StorageType
   key?: string

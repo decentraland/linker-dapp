@@ -56,6 +56,7 @@ import {
 import { putWorldACLRequest, deleteWorldACLRequest } from '../acl/actions'
 import { signQuestsFetchRequest } from '../quests/action'
 import { getIdentity } from '../wallet/selectors'
+import { getDeleteScenesFromWorldPayload } from '../server/selectors'
 
 export function* signatureSaga() {
   yield takeLatest(SIGN_CONTENT_REQUEST, handleSignContentRequest)
@@ -112,10 +113,19 @@ function* handleSignContentRequest(action: SignContentRequestAction) {
 function* handleSignContentSuccess(action: SignContentSuccessAction) {
   const address: string = yield select(getAddress)
   const chainId: ChainId = yield select(getChainId)
+  const deleteScenesFromWorldPayload: string = yield select(getDeleteScenesFromWorldPayload)
   const { authChain } = action.payload
-
   try {
-    yield call(postDeploy, { authChain, address, chainId })
+    let deleteSignature: string | undefined
+    if (deleteScenesFromWorldPayload) {
+      const identity: AuthIdentity | undefined = yield select(getIdentity)
+      if (identity) {
+        const deleteAuthChain: AuthChain = Authenticator.signPayload(identity, deleteScenesFromWorldPayload)
+        deleteSignature = JSON.stringify(deleteAuthChain)
+      }
+    }
+
+    yield call(postDeploy, { authChain, address, chainId, deleteSignature })
     yield put(deploySuccess())
   } catch (error) {
     yield put(signContentFailure((error as Error).message))

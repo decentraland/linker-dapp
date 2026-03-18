@@ -7,6 +7,7 @@ export type DeployScene =
       address: string
       authChain: AuthChain
       chainId: ChainId
+      deleteSignature?: string
     }
   | Record<string, never>
 
