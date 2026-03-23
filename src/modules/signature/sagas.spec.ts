@@ -18,6 +18,7 @@ import { call, select } from 'redux-saga/effects'
 import { putWorldACLRequest, deleteWorldACLRequest } from '../acl/actions'
 import { closeServer, postDeploy } from '../server/utils'
 import { fetchCatalystRequest } from '../server/actions'
+import { getDeleteScenesFromWorldPayload } from '../server/selectors'
 import {
   createIdentityFailure,
   createIdentityRequest,
@@ -96,8 +97,9 @@ describe('signature sagas', () => {
             [select(getIdentity), auth],
             [select(getAddress), address],
             [select(getChainId), chainId],
+            [select(getDeleteScenesFromWorldPayload), undefined],
             [
-              call(postDeploy, { authChain, address, chainId }),
+              call(postDeploy, { authChain, address, chainId, deleteSignature: undefined }),
               Promise.resolve(),
             ],
           ])
@@ -113,8 +115,9 @@ describe('signature sagas', () => {
               [select(getIdentity), auth],
               [select(getAddress), address],
               [select(getChainId), chainId],
+              [select(getDeleteScenesFromWorldPayload), undefined],
               [
-                call(postDeploy, { authChain, address, chainId }),
+                call(postDeploy, { authChain, address, chainId, deleteSignature: undefined }),
                 Promise.reject(new Error(error)),
               ],
             ])
