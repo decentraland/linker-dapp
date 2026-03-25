@@ -51,9 +51,12 @@ export default function LinkScenePage(props: Props) {
     signed,
     info,
     deployError,
+    worldWidePermission,
   } = props
 
   const { x, y } = info?.baseParcel || { x: 0, y: 0 }
+  const needsWorldWide = info?.isWorld && !info?.multiScene
+  const missingWorldWidePermission = needsWorldWide && worldWidePermission === false
   const isTestNet = wallet?.chainId !== ChainId.ETHEREUM_MAINNET
   const networkName = isTestNet && `&NETWORK=sepolia`
   const networkDomain = isTestNet ? 'zone' : 'org'
@@ -129,7 +132,7 @@ export default function LinkScenePage(props: Props) {
                     isSigning ||
                     (isConnected && isAuthorizationLoading)
                   }
-                  disabled={isConnected && !isUpdateAuthorized}
+                  disabled={isConnected && (!isUpdateAuthorized || missingWorldWidePermission)}
                   onClick={
                     isConnected
                       ? () => onSignContent(info!.rootCID)
@@ -142,7 +145,14 @@ export default function LinkScenePage(props: Props) {
             )}
           </HeaderMenu>
         </Container>
-        {!open && !!(authorizations?.length && !isUpdateAuthorized) && (
+        {!open && missingWorldWidePermission && (
+          <Toast
+            type={ToastType.ERROR}
+            title="World-wide permission required"
+            body="Non-multi-scene deployments require world-wide deployment permission. Contact the world owner or use --multi-scene."
+          />
+        )}
+        {!open && !missingWorldWidePermission && !!(authorizations?.length && !isUpdateAuthorized) && (
           <Toast
             type={ToastType.ERROR}
             title={

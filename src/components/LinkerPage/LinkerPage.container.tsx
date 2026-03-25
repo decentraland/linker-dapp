@@ -13,6 +13,7 @@ import {
   getData as getAuthorizations,
   isUpdateAuthorized,
   isLoading as isAuthorizationLoading,
+  getWorldWidePermission,
 } from '../../modules/authorization/selectors'
 import { signContentRequest } from '../../modules/signature/actions'
 import { RootState } from '../../types'
@@ -37,6 +38,7 @@ const mapState = (state: RootState): MapStateProps => {
     isSigning: isSigningTx(state),
     info: getInfo(state),
     deployError: state.signature.error,
+    worldWidePermission: getWorldWidePermission(state),
   }
 }
 

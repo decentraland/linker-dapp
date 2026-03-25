@@ -7,8 +7,8 @@ export const FETCH_AUTHORIZATIONS_FAILURE = '[Failure] Fetch LAND Authorizations
 
 export const fetchAuthorizationsRequest = (owner: string) => action(FETCH_AUTHORIZATIONS_REQUEST, { owner })
 
-export const fetchAuthorizationsSuccess = (authorizations: Authorization[]) =>
-  action(FETCH_AUTHORIZATIONS_SUCCESS, { authorizations })
+export const fetchAuthorizationsSuccess = (authorizations: Authorization[], worldWidePermission?: boolean) =>
+  action(FETCH_AUTHORIZATIONS_SUCCESS, { authorizations, worldWidePermission })
 
 export const fetchAuthorizationsFailure = (error: string) => action(FETCH_AUTHORIZATIONS_FAILURE, { error })
 

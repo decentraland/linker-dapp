@@ -31,8 +31,8 @@ function* handleFetchAuthorizationsRequest() {
       const address: string = yield select(getAddress)
       const response: Response = yield call(fetch, `/api/world-parcel-permissions/${address}`)
       if (response.ok) {
-        const authorizations: Authorization[] = yield call([response, response.json])
-        yield put(fetchAuthorizationsSuccess(authorizations))
+        const data: { authorizations: Authorization[]; worldWidePermission: boolean } = yield call([response, response.json])
+        yield put(fetchAuthorizationsSuccess(data.authorizations, data.worldWidePermission))
       } else {
         yield put(
           fetchAuthorizationsSuccess(
