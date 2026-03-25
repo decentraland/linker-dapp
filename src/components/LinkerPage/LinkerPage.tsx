@@ -142,7 +142,7 @@ export default function LinkScenePage(props: Props) {
             )}
           </HeaderMenu>
         </Container>
-        {!!(authorizations?.length && !isUpdateAuthorized) && (
+        {!open && !!(authorizations?.length && !isUpdateAuthorized) && (
           <Toast
             type={ToastType.ERROR}
             title={

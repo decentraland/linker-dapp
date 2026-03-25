@@ -26,7 +26,28 @@ function* handleFetchAuthorizationsRequest() {
     info = yield select(getInfo)
   }
 
-  if (info.skipValidations) {
+  if (info.isWorld) {
+    try {
+      const address: string = yield select(getAddress)
+      const response: Response = yield call(fetch, `/api/world-parcel-permissions/${address}`)
+      if (response.ok) {
+        const authorizations: Authorization[] = yield call([response, response.json])
+        yield put(fetchAuthorizationsSuccess(authorizations))
+      } else {
+        yield put(
+          fetchAuthorizationsSuccess(
+            info.parcels.map(({ x, y }) => ({
+              x,
+              y,
+              isUpdateAuthorized: true,
+            }))
+          )
+        )
+      }
+    } catch (error) {
+      yield put(fetchAuthorizationsFailure((error as Error).message))
+    }
+  } else if (info.skipValidations) {
     try {
       const { parcels } = info
       yield put(
