@@ -21,6 +21,7 @@ export type Props = {
   onSignContent: (cid: string) => SignContentRequestAction
   onFetchFiles: () => void
   deployError?: string | null
+  worldWidePermission?: boolean
 }
 
 export type MapStateProps = Pick<
@@ -35,6 +36,7 @@ export type MapStateProps = Pick<
   | 'isSigning'
   | 'info'
   | 'deployError'
+  | 'worldWidePermission'
 >
 export type MapDispatchProps = Pick<
   Props,

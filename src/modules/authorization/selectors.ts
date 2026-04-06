@@ -18,3 +18,5 @@ export const isUpdateAuthorized = createSelector(getData, authorizations => {
 
   return authorizations.every((a: Authorization) => a.isUpdateAuthorized)
 })
+
+export const getWorldWidePermission = createSelector(getState, state => state.worldWidePermission)

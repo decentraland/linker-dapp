@@ -38,6 +38,7 @@ div.url div.dcl.badge {
 .dcl.toast.warn,
 .dcl.toast.error {
   margin-left: 0;
+  max-width: 100%;
 }
 
 .dcl.toast.error {

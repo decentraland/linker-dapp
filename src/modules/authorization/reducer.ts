@@ -16,12 +16,14 @@ export type AuthorizationState = {
   data: any
   loading: LoadingState
   error: string | null
+  worldWidePermission?: boolean
 }
 
 export const INITIAL_STATE: AuthorizationState = {
   data: [],
   loading: [],
   error: null,
+  worldWidePermission: undefined,
 }
 
 export type AuthorizationReducerAction =
@@ -44,6 +46,7 @@ export const authorizationReducer = (
         loading: loadingReducer(state.loading, action),
         data: action.payload.authorizations,
         error: null,
+        worldWidePermission: action.payload.worldWidePermission,
       }
     case FETCH_AUTHORIZATIONS_FAILURE:
       return {
