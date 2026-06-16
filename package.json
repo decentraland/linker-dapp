@@ -73,5 +73,9 @@
     "typescript": "^5.5.4",
     "vite": "^5.4.3"
   },
-  "homepage": ""
+  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/decentraland/linker-dapp.git"
+  }
 }
