@@ -3,9 +3,15 @@
   overflow-y: scroll;
 }
 .permission-not-granted {
-  color: brown
+  color: brown;
 }
 
 .map-canvas > div {
-  height: unset !important
+  height: 300px !important;
+}
+
+.map-table-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
 }
