@@ -4,7 +4,6 @@ import {
   Footer,
   Page,
   Header,
-  Icon,
   Button,
   Container,
   HeaderMenu,
@@ -196,6 +195,7 @@ export default function LinkScenePage(props: Props) {
             authorizations={authorizations}
             parcels={info!.parcels}
             baseParcel={info!.baseParcel}
+            showAtlas={!info.isWorld} // Linker dapp doesn't have access to a world layout, so we only show the atlas for genesis city.
           />
         )}
       </Page>

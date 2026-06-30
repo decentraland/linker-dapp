@@ -6,6 +6,7 @@ export type Props = {
   authorizations: Authorization[]
   parcels: Coord[]
   baseParcel: Coord
+  showAtlas?: boolean
 }
 export type MapStateProps = Props
 export type MapDispatchProps = Props
