@@ -22,7 +22,7 @@ jobs:
           cache: npm
 
       - name: set package.json version
-        uses: decentraland/oddish-action@master
+        uses: decentraland/oddish-action@0074f2d535c43b5c83f136525304a6277166d77f # @master
         with:
           deterministic-snapshot: true
           only-update-versions: true
@@ -38,7 +38,7 @@ jobs:
         run: npm run test
 
       - name: publish npm package
-        uses: decentraland/oddish-action@master
+        uses: decentraland/oddish-action@0074f2d535c43b5c83f136525304a6277166d77f # @master
         with:
           registry-url: 'https://registry.npmjs.org'
           ## use action runId instead of current date to generate snapshot numbers
@@ -52,5 +52,3 @@ jobs:
           # 104 == https://dcl.tools/pipelines/static-sites-pipeline
           # gitlab-pipeline-url: "https://dcl.tools/api/v4/projects/104/trigger/pipeline"
           # gitlab-token: ${{ secrets.GITLAB_TOKEN }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
