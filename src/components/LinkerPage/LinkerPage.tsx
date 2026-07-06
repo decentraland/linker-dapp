@@ -16,8 +16,9 @@ import {
   Loader,
   Modal,
 } from 'decentraland-ui'
-import { ChainId } from '@dcl/schemas'
+import { Env } from '@dcl/ui-env'
 import { redirectToAuthDapp } from '../../modules/wallet/utils'
+import { config } from '../../config'
 import { Navbar } from '../Navbar'
 import Files from '../Files'
 import Map from '../Map'
@@ -56,7 +57,7 @@ export default function LinkScenePage(props: Props) {
   const { x, y } = info?.baseParcel || { x: 0, y: 0 }
   const needsWorldWide = info?.isWorld && !info?.multiScene
   const missingWorldWidePermission = needsWorldWide && worldWidePermission === false
-  const isTestNet = wallet?.chainId !== ChainId.ETHEREUM_MAINNET
+  const isTestNet = !config.is(Env.PRODUCTION)
   const networkName = isTestNet && `&NETWORK=sepolia`
   const networkDomain = isTestNet ? 'zone' : 'org'
   const realm = info?.world ? `&realm=${info.world}` : ''

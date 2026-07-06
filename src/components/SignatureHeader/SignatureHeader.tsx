@@ -1,8 +1,9 @@
 import { Container, Header, HeaderMenu, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { ChainId } from '@dcl/schemas'
+import { Env } from '@dcl/ui-env'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { redirectToAuthDapp } from '../../modules/wallet/utils'
+import { config } from '../../config'
 import { NetworkBadge, WalletBadge } from '../Badges'
 
 type SignatureHeaderProps = {
@@ -32,7 +33,7 @@ export const SignatureHeader = ({
   rootCID,
   onSignContent,
 }: SignatureHeaderProps) => {
-  const isTestNet = wallet?.chainId !== ChainId.ETHEREUM_MAINNET
+  const isTestNet = !config.is(Env.PRODUCTION)
 
   const handleSignClick = () => {
     if (isConnected && rootCID) {
