@@ -21,6 +21,7 @@ export const LogsHeader = ({
   isSigning,
   signed,
   world,
+  targetUrl,
   rootCID,
   onSignContent,
 }: LogsHeaderProps) => {
@@ -38,6 +39,7 @@ export const LogsHeader = ({
       isSigning={isSigning}
       signed={signed}
       rootCID={rootCID}
+      targetContent={targetUrl}
       onSignContent={onSignContent}
     />
   )

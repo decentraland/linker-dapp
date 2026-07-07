@@ -38,6 +38,7 @@ export const StorageHeader = ({
   world,
   baseParcel,
   storageType,
+  targetUrl,
   rootCID,
   onSignContent,
 }: StorageHeaderProps) => {
@@ -60,6 +61,7 @@ export const StorageHeader = ({
       isSigning={isSigning}
       signed={signed}
       rootCID={rootCID}
+      targetContent={targetUrl}
       onSignContent={onSignContent}
     />
   )

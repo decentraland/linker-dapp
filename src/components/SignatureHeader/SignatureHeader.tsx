@@ -1,9 +1,7 @@
 import { Container, Header, HeaderMenu, Button } from 'decentraland-ui'
 import { t } from 'decentraland-dapps/dist/modules/translation/utils'
-import { Env } from '@dcl/ui-env'
 import { Wallet } from 'decentraland-dapps/dist/modules/wallet/types'
 import { redirectToAuthDapp } from '../../modules/wallet/utils'
-import { config } from '../../config'
 import { NetworkBadge, WalletBadge } from '../Badges'
 
 type SignatureHeaderProps = {
@@ -17,6 +15,7 @@ type SignatureHeaderProps = {
   isSigning: boolean
   signed: boolean
   rootCID?: string
+  targetContent?: string
   onSignContent: (cid: string) => void
 }
 
@@ -31,9 +30,10 @@ export const SignatureHeader = ({
   isSigning,
   signed,
   rootCID,
+  targetContent,
   onSignContent,
 }: SignatureHeaderProps) => {
-  const isTestNet = !config.is(Env.PRODUCTION)
+  const isTestNet = targetContent?.includes('.zone') ?? false
 
   const handleSignClick = () => {
     if (isConnected && rootCID) {
