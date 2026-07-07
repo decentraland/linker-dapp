@@ -10,6 +10,7 @@ type LogsHeaderProps = {
   signed: boolean
   world?: string
   targetUrl?: string
+  target?: string
   rootCID?: string
   onSignContent: (cid: string) => void
 }
@@ -22,6 +23,7 @@ export const LogsHeader = ({
   signed,
   world,
   targetUrl,
+  target,
   rootCID,
   onSignContent,
 }: LogsHeaderProps) => {
@@ -39,6 +41,7 @@ export const LogsHeader = ({
       isSigning={isSigning}
       signed={signed}
       rootCID={rootCID}
+      target={target}
       targetContent={targetUrl}
       onSignContent={onSignContent}
     />

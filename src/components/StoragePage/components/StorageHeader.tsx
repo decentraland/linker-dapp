@@ -15,6 +15,7 @@ type StorageHeaderProps = {
   baseParcel: { x: number; y: number }
   storageType?: StorageType
   targetUrl?: string
+  target?: string
   rootCID?: string
   onSignContent: (cid: string) => void
 }
@@ -39,6 +40,7 @@ export const StorageHeader = ({
   baseParcel,
   storageType,
   targetUrl,
+  target,
   rootCID,
   onSignContent,
 }: StorageHeaderProps) => {
@@ -61,6 +63,7 @@ export const StorageHeader = ({
       isSigning={isSigning}
       signed={signed}
       rootCID={rootCID}
+      target={target}
       targetContent={targetUrl}
       onSignContent={onSignContent}
     />

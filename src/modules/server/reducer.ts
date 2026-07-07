@@ -49,6 +49,7 @@ export type Info = {
   world?: string
   action?: StorageAction
   targetUrl?: string
+  target?: string
   targetContent?: string
   multiScene?: boolean
   deleteScenesFromWorldPayload?: string

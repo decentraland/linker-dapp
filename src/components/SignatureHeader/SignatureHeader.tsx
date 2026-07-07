@@ -15,6 +15,7 @@ type SignatureHeaderProps = {
   isSigning: boolean
   signed: boolean
   rootCID?: string
+  target?: string
   targetContent?: string
   onSignContent: (cid: string) => void
 }
@@ -30,10 +31,11 @@ export const SignatureHeader = ({
   isSigning,
   signed,
   rootCID,
+  target,
   targetContent,
   onSignContent,
 }: SignatureHeaderProps) => {
-  const isTestNet = targetContent?.includes('.zone') ?? false
+  const isTestNet = (targetContent?.includes('.zone') || target?.includes('.zone')) ?? false
 
   const handleSignClick = () => {
     if (isConnected && rootCID) {

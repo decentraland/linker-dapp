@@ -55,7 +55,7 @@ export default function LinkScenePage(props: Props) {
   const { x, y } = info?.baseParcel || { x: 0, y: 0 }
   const needsWorldWide = info?.isWorld && !info?.multiScene
   const missingWorldWidePermission = needsWorldWide && worldWidePermission === false
-  const isTestNet = info?.targetContent?.includes('.zone') ?? false
+  const isTestNet = (info?.targetContent?.includes('.zone') || info?.target?.includes('.zone')) ?? false
   const networkName = isTestNet && `&NETWORK=sepolia`
   const networkDomain = isTestNet ? 'zone' : 'org'
   const realm = info?.world ? `&realm=${info.world}` : ''

@@ -32,6 +32,7 @@ const ServerLogsPage = ({
         signed={signed}
         world={info?.world}
         targetUrl={info?.targetUrl}
+        target={info?.target}
         rootCID={info?.rootCID}
         onSignContent={onSignContent}
       />
