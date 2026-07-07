@@ -22,5 +22,7 @@ export type InfoResponse = {
   world?: string
   action?: StorageAction
   targetUrl?: string
+  target?: string
+  targetContent?: string
   multiScene?: boolean
 }
