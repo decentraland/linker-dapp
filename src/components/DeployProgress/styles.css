@@ -37,3 +37,11 @@
   width: 100%;
   color: var(--error, #ff2d55);
 }
+
+/* Semantic UI's progress labels are dark, and the dark theme doesn't override them */
+.DeployProgress-bar .ui.progress > .label,
+.DeployProgress-bar .ui.progress.success > .label,
+.DeployProgress-bar .ui.progress.warning > .label,
+.DeployProgress-bar .ui.progress.error > .label {
+  color: var(--text);
+}
