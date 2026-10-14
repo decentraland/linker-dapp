@@ -1,7 +1,7 @@
 import { expectSaga } from 'redux-saga-test-plan'
+import { throwError } from 'redux-saga-test-plan/providers'
 import { channel, Channel } from 'redux-saga'
-import { call, select } from 'redux-saga/effects'
-import { getAddress } from 'decentraland-dapps/dist/modules/wallet/selectors'
+import { call, cancel, fork, take } from 'redux-saga/effects'
 import {
   fetchCatalystFailure,
   fetchCatalystRequest,
@@ -16,14 +16,17 @@ import {
   cancelDeploySuccess,
   cancelDeployFailure,
   updateDeployState,
+  deployOutcomeUnknown,
 } from './actions'
 import { CatalystResponse, FileSize } from './reducer'
 import {
   apiSaga,
   createDeployStateChannel,
-  DEPLOY_STATE_POLLING_INTERVAL,
+  DEPLOY_CONNECTION_LOST_MESSAGE,
+  DEPLOY_STATE_UNAVAILABLE_MESSAGE,
   followDeploy,
 } from './sagas'
+import { getDeployToken } from './deployToken'
 import { DeployState, InfoResponse } from './types'
 import {
   deleteDeploy,
@@ -108,29 +111,74 @@ describe('server sagas', () => {
   })
 
   describe('when handling the cancel deploy request', () => {
-    describe('when the request fails', () => {
-      it('should dispatch an action signaling the failure of the action', () => {
+    let token: string | null
+
+    describe('and the page has no deploy token', () => {
+      beforeEach(() => {
+        token = null
+      })
+
+      it('should dispatch an action signaling the failure without asking the CLI', () => {
         return expectSaga(apiSaga)
-          .provide([[call(deleteDeploy), Promise.reject(new Error(error))]])
-          .put(cancelDeployFailure(error))
+          .provide([
+            [call(getDeployToken), token],
+            {
+              call(effect, next) {
+                if (effect.fn === deleteDeploy) {
+                  throw new Error('should not ask the CLI')
+                }
+                return next()
+              },
+            },
+          ])
+          .put(cancelDeployFailure("This page can't cancel the deployment"))
           .dispatch(cancelDeployRequest())
           .run({ silenceTimeout: true })
       })
     })
 
-    describe('when the request succeeds', () => {
-      let state: DeployState
-
+    describe('and the page has a deploy token', () => {
       beforeEach(() => {
-        state = { phase: 'uploading', upload: null, result: null, error: null }
+        token = 'a-deploy-token'
       })
 
-      it('should dispatch an action signaling the success of the action with the returned state', () => {
-        return expectSaga(apiSaga)
-          .provide([[call(deleteDeploy), state]])
-          .put(cancelDeploySuccess(state))
-          .dispatch(cancelDeployRequest())
-          .run({ silenceTimeout: true })
+      describe('and the request fails', () => {
+        it('should dispatch an action signaling the failure of the action', () => {
+          return expectSaga(apiSaga)
+            .provide([
+              [call(getDeployToken), token],
+              [call(deleteDeploy, token!), throwError(new Error(error))],
+            ])
+            .put(cancelDeployFailure(error))
+            .dispatch(cancelDeployRequest())
+            .run({ silenceTimeout: true })
+        })
+      })
+
+      describe('and the request succeeds', () => {
+        let state: DeployState
+
+        beforeEach(() => {
+          state = {
+            phase: 'uploading',
+            upload: null,
+            result: null,
+            error: null,
+            cancelRequested: true,
+          }
+        })
+
+        it('should store the returned deployment state and signal the success of the action', () => {
+          return expectSaga(apiSaga)
+            .provide([
+              [call(getDeployToken), token],
+              [call(deleteDeploy, token!), state],
+            ])
+            .put(updateDeployState(state))
+            .put(cancelDeploySuccess())
+            .dispatch(cancelDeployRequest())
+            .run({ silenceTimeout: true })
+        })
       })
     })
   })
@@ -185,9 +233,11 @@ describe('server sagas', () => {
 
     describe('and the events stream reports the deployment until it ends', () => {
       let stateChannel: Channel<object>
+      let closeSpy: jest.SpyInstance
 
       beforeEach(() => {
         stateChannel = channel()
+        closeSpy = jest.spyOn(stateChannel, 'close')
         stateChannel.put({ state: uploadingState })
         stateChannel.put({ state: deployedState })
       })
@@ -201,16 +251,75 @@ describe('server sagas', () => {
           .returns(deployedState)
           .run()
       })
+
+      describe('and the final state is received', () => {
+        beforeEach(async () => {
+          await expectSaga(followDeploy, initialState)
+            .provide([[call(createDeployStateChannel), stateChannel]])
+            .run()
+        })
+
+        it('should close the events stream', () => {
+          expect(closeSpy).toHaveBeenCalled()
+        })
+      })
+    })
+
+    describe('and following is cancelled while the events stream is open', () => {
+      let stateChannel: Channel<object>
+      let closeSpy: jest.SpyInstance
+
+      beforeEach(async () => {
+        stateChannel = channel()
+        closeSpy = jest.spyOn(stateChannel, 'close')
+        stateChannel.put({ state: uploadingState })
+        function* followAndStop() {
+          const task: unknown = yield fork(followDeploy, initialState)
+          yield take('STOP')
+          yield cancel(task as never)
+        }
+        await expectSaga(followAndStop)
+          .provide([[call(createDeployStateChannel), stateChannel]])
+          .dispatch({ type: 'STOP' })
+          .run()
+      })
+
+      it('should close the events stream', () => {
+        expect(closeSpy).toHaveBeenCalled()
+      })
     })
 
     describe('and the events stream fails', () => {
       let stateChannel: Channel<object>
-      let polledStates: (DeployState | undefined)[]
+      let polledStates: (DeployState | undefined | Error)[]
+      let delays: number[]
 
       beforeEach(() => {
         stateChannel = channel()
         stateChannel.put({ error: true })
+        delays = []
       })
+
+      const runFollowDeploy = () =>
+        expectSaga(followDeploy, initialState).provide([
+          [call(createDeployStateChannel), stateChannel],
+          {
+            call(effect, next) {
+              if (effect.fn === getDeployStateRequest) {
+                const polled = polledStates.shift()
+                if (polled instanceof Error) {
+                  throw polled
+                }
+                return polled
+              }
+              if (typeof effect.args[0] === 'number') {
+                delays.push(effect.args[0])
+                return undefined
+              }
+              return next()
+            },
+          },
+        ])
 
       describe('and polling the state reports the deployment until it ends', () => {
         beforeEach(() => {
@@ -218,25 +327,68 @@ describe('server sagas', () => {
         })
 
         it('should poll the state, store every state received and return the final one', () => {
-          return expectSaga(followDeploy, initialState)
-            .provide([
-              [call(createDeployStateChannel), stateChannel],
-              {
-                call(effect, next) {
-                  if (effect.fn === getDeployStateRequest) {
-                    return polledStates.shift()
-                  }
-                  if (effect.args[0] === DEPLOY_STATE_POLLING_INTERVAL) {
-                    return undefined
-                  }
-                  return next()
-                },
-              },
-            ])
+          return runFollowDeploy()
             .put(updateDeployState(uploadingState))
             .put(updateDeployState(deployedState))
             .returns(deployedState)
             .run()
+        })
+      })
+
+      describe('and some polls fail before the deployment ends', () => {
+        beforeEach(() => {
+          polledStates = [
+            new Error('Failed to fetch'),
+            new Error('Failed to fetch'),
+            uploadingState,
+            new Error('Failed to fetch'),
+            deployedState,
+          ]
+        })
+
+        it('should retry the failed polls and return the final state', () => {
+          return runFollowDeploy()
+            .put(updateDeployState(uploadingState))
+            .put(updateDeployState(deployedState))
+            .not.put(deployOutcomeUnknown(DEPLOY_CONNECTION_LOST_MESSAGE))
+            .returns(deployedState)
+            .run()
+        })
+
+        describe('and the deployment is followed', () => {
+          beforeEach(async () => {
+            await runFollowDeploy().run()
+          })
+
+          it('should back off between consecutive failures and restart the backoff after a successful poll', () => {
+            expect(delays).toEqual([1000, 2000, 1000, 1000])
+          })
+        })
+      })
+
+      describe('and every poll fails', () => {
+        beforeEach(() => {
+          polledStates = Array.from(
+            { length: 10 },
+            () => new Error('Failed to fetch'),
+          )
+        })
+
+        it('should signal that the connection to the CLI was lost and return undefined', () => {
+          return runFollowDeploy()
+            .put(deployOutcomeUnknown(DEPLOY_CONNECTION_LOST_MESSAGE))
+            .returns(undefined)
+            .run()
+        })
+
+        describe('and the deployment is followed', () => {
+          beforeEach(async () => {
+            await runFollowDeploy().run()
+          })
+
+          it('should give up after five consecutive failures, backing off up to 8 seconds', () => {
+            expect(delays).toEqual([1000, 2000, 4000, 8000])
+          })
         })
       })
 
@@ -245,13 +397,10 @@ describe('server sagas', () => {
           polledStates = [undefined]
         })
 
-        it('should clear the stored deployment state and return undefined', () => {
-          return expectSaga(followDeploy, initialState)
-            .provide([
-              [call(createDeployStateChannel), stateChannel],
-              [call(getDeployStateRequest), polledStates[0]],
-            ])
+        it('should clear the stored deployment state, signal that the outcome is unknown and return undefined', () => {
+          return runFollowDeploy()
             .put(updateDeployState(null))
+            .put(deployOutcomeUnknown(DEPLOY_STATE_UNAVAILABLE_MESSAGE))
             .returns(undefined)
             .run()
         })

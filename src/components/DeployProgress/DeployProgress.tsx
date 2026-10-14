@@ -1,5 +1,5 @@
 import { Button, Loader, Progress } from 'decentraland-ui'
-import { isFinalDeployPhase } from '../../modules/server/types'
+import { isFinalDeployPhase } from '../../modules/server/utils'
 import { Props } from './DeployProgress.types'
 import { getDeployProgressView } from './utils'
 
@@ -7,12 +7,14 @@ import './styles.css'
 
 export default function DeployProgress({
   state,
+  canCancel,
   isCancelling,
   cancelError,
   onCancel,
 }: Props) {
   const { label, percent, bytes, batches } = getDeployProgressView(state)
   const isFinal = isFinalDeployPhase(state.phase)
+  const cancelRequested = isCancelling || !!state.cancelRequested
 
   return (
     <div className="DeployProgress">
@@ -40,15 +42,16 @@ export default function DeployProgress({
           </div>
         )}
       </div>
-      <Button
-        secondary
-        size="small"
-        disabled={isFinal || isCancelling}
-        loading={isCancelling}
-        onClick={onCancel}
-      >
-        Cancel
-      </Button>
+      {canCancel && (
+        <Button
+          secondary
+          size="small"
+          disabled={isFinal || cancelRequested}
+          onClick={onCancel}
+        >
+          {cancelRequested && !isFinal ? 'Cancelling...' : 'Cancel'}
+        </Button>
+      )}
       {cancelError && <p className="DeployProgress-error">{cancelError}</p>}
     </div>
   )

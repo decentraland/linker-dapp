@@ -9,6 +9,8 @@ export type Props = {
   deploySuccess?: boolean
   apiError?: string | null
   deployState?: DeployState | null
+  deployOutcomeMessage?: string | null
+  canCancel?: boolean
   isCancelling?: boolean
   cancelError?: string | null
   onCancel: () => void
@@ -22,6 +24,8 @@ export type MapStateProps = Pick<
   | 'deploySuccess'
   | 'apiError'
   | 'deployState'
+  | 'deployOutcomeMessage'
+  | 'canCancel'
   | 'isCancelling'
   | 'cancelError'
 >

@@ -229,6 +229,50 @@ describe('signature sagas', () => {
           })
         })
 
+        describe('and the signed content succeeds again while the first deployment is followed', () => {
+          let deployedState: DeployState
+          let putDeploySuccesses: number
+
+          beforeEach(async () => {
+            deployedState = {
+              ...startedState,
+              phase: 'deployed',
+              result: { entityId: 'bafy' },
+            }
+            const { effects } = await expectSaga(signatureSaga)
+              .provide([
+                [select(getIdentity), auth],
+                [select(getAddress), address],
+                [select(getChainId), chainId],
+                [select(getDeleteScenesFromWorldPayload), undefined],
+                [
+                  call(postDeploy, { authChain, address, chainId, deleteSignature: undefined }),
+                  startedState,
+                ],
+                {
+                  call(effect, next) {
+                    if (effect.fn === followDeploy) {
+                      return new Promise((resolve) =>
+                        setTimeout(() => resolve(deployedState), 10),
+                      )
+                    }
+                    return next()
+                  },
+                },
+              ])
+              .dispatch(signContentRequest('cid'))
+              .dispatch(signContentSuccess(authChain))
+              .run({ silenceTimeout: true })
+            putDeploySuccesses = (effects.put || []).filter(
+              (effect) => effect.payload.action.type === deploySuccess().type,
+            ).length
+          })
+
+          it('should only follow the latest deployment', () => {
+            expect(putDeploySuccesses).toBe(1)
+          })
+        })
+
         describe('and the deployment state is not available', () => {
           beforeEach(() => {
             finalState = undefined

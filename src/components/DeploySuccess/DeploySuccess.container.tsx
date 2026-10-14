@@ -8,8 +8,10 @@ import {
   cancelDeployRequest,
   fetchCatalystRequest,
 } from '../../modules/server/actions'
+import { getDeployToken } from '../../modules/server/deployToken'
 import {
   getCancelDeployError,
+  getDeployOutcomeMessage,
   getDeployState,
   getInfo,
   isCancellingDeploy,
@@ -23,6 +25,8 @@ const mapState = (state: RootState): MapStateProps => {
     deploySuccess: state.api.deploySuccess,
     apiError: state.api.error,
     deployState: getDeployState(state),
+    deployOutcomeMessage: getDeployOutcomeMessage(state),
+    canCancel: !!getDeployToken(),
     isCancelling: isCancellingDeploy(state),
     cancelError: getCancelDeployError(state),
   }

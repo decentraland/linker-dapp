@@ -48,14 +48,6 @@ export type DeployState = {
   upload: DeployUpload | null
   result: { entityId: string; message?: string } | null
   error: { code: string; message: string } | null
-}
-
-export const FINAL_DEPLOY_PHASES: DeployPhase[] = [
-  'deployed',
-  'failed',
-  'cancelled',
-]
-
-export function isFinalDeployPhase(phase: DeployPhase): boolean {
-  return FINAL_DEPLOY_PHASES.includes(phase)
+  // Only reported by CLIs that track a requested cancellation
+  cancelRequested?: boolean
 }

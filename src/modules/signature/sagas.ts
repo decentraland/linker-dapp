@@ -62,7 +62,7 @@ import { DeployState } from '../server/types'
 
 export function* signatureSaga() {
   yield takeLatest(SIGN_CONTENT_REQUEST, handleSignContentRequest)
-  yield takeEvery(SIGN_CONTENT_SUCCESS, handleSignContentSuccess)
+  yield takeLatest(SIGN_CONTENT_SUCCESS, handleSignContentSuccess)
 
   yield takeLatest(CREATE_IDENTITY_REQUEST, handleCreateIdentityRequest)
   yield takeLatest(CREATE_IDENTITY_SUCCESS, handleCreateIdentitySuccess)

@@ -25,6 +25,8 @@ import {
   cancelDeployRequest,
   cancelDeploySuccess,
   cancelDeployFailure,
+  DEPLOY_OUTCOME_UNKNOWN,
+  deployOutcomeUnknown,
 } from './actions'
 import { CatalystResponse, FileSize } from './reducer'
 import { DeployState, InfoResponse } from './types'
@@ -166,17 +168,27 @@ describe('server actions', () => {
   })
 
   describe('when creating the action to signal a success in the cancel deploy request', () => {
-    let state: DeployState
+    it('should return an object representing the action', () => {
+      expect(cancelDeploySuccess()).toEqual({
+        type: CANCEL_DEPLOY_SUCCESS,
+        meta: undefined,
+        payload: undefined,
+      })
+    })
+  })
+
+  describe('when creating the action to signal that the deployment outcome is unknown', () => {
+    let message: string
 
     beforeEach(() => {
-      state = { phase: 'cancelled', upload: null, result: null, error: null }
+      message = 'Check the terminal for the deployment result'
     })
 
     it('should return an object representing the action', () => {
-      expect(cancelDeploySuccess(state)).toEqual({
-        type: CANCEL_DEPLOY_SUCCESS,
+      expect(deployOutcomeUnknown(message)).toEqual({
+        type: DEPLOY_OUTCOME_UNKNOWN,
         meta: undefined,
-        payload: { state },
+        payload: { message },
       })
     })
   })

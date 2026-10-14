@@ -27,6 +27,8 @@ import {
   DeploySuccessAction,
   UPDATE_DEPLOY_STATE,
   UpdateDeployStateAction,
+  DEPLOY_OUTCOME_UNKNOWN,
+  DeployOutcomeUnknownAction,
   CANCEL_DEPLOY_REQUEST,
   CANCEL_DEPLOY_SUCCESS,
   CANCEL_DEPLOY_FAILURE,
@@ -35,12 +37,8 @@ import {
   CancelDeployFailureAction,
 } from './actions'
 
-import {
-  StorageType,
-  StorageAction,
-  DeployState,
-  isFinalDeployPhase,
-} from './types'
+import { StorageType, StorageAction, DeployState } from './types'
+import { isFinalDeployPhase } from './utils'
 
 export type Info = {
   rootCID: string
@@ -89,6 +87,8 @@ export type ApiState = {
   deploySuccess: boolean
   // null when the CLI does not report the deployment state (older CLIs)
   deployState: DeployState | null
+  // set when the deployment can't be followed until it ends
+  deployOutcomeMessage: string | null
   cancelDeployError: string | null
 }
 
@@ -100,6 +100,7 @@ export const INITIAL_STATE: ApiState = {
   catalyst: undefined,
   deploySuccess: false,
   deployState: null,
+  deployOutcomeMessage: null,
   cancelDeployError: null,
 }
 
@@ -115,6 +116,7 @@ export type ApiReducerAction =
   | FetchCatalystSuccess
   | DeploySuccessAction
   | UpdateDeployStateAction
+  | DeployOutcomeUnknownAction
   | CancelDeployRequestAction
   | CancelDeploySuccessAction
   | CancelDeployFailureAction
@@ -131,9 +133,26 @@ export const apiReducer = (
       }
     }
     case UPDATE_DEPLOY_STATE: {
+      const current = state.deployState
+      const next = action.payload.state
+      // A final state never changes; late updates must not revert it
+      if (
+        current &&
+        next &&
+        isFinalDeployPhase(current.phase) &&
+        !isFinalDeployPhase(next.phase)
+      ) {
+        return state
+      }
       return {
         ...state,
-        deployState: action.payload.state,
+        deployState: next,
+      }
+    }
+    case DEPLOY_OUTCOME_UNKNOWN: {
+      return {
+        ...state,
+        deployOutcomeMessage: action.payload.message,
       }
     }
     case CANCEL_DEPLOY_REQUEST: {
@@ -144,15 +163,9 @@ export const apiReducer = (
       }
     }
     case CANCEL_DEPLOY_SUCCESS: {
-      // The outcome of a cancellation is reported by the deployment state
-      // stream; only take the response when it is already final.
-      const deployState = isFinalDeployPhase(action.payload.state.phase)
-        ? action.payload.state
-        : state.deployState
       return {
         ...state,
         loading: loadingReducer(state.loading, action),
-        deployState,
       }
     }
     case CANCEL_DEPLOY_FAILURE: {

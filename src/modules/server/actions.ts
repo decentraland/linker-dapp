@@ -53,13 +53,18 @@ export const updateDeployState = (state: DeployState | null) =>
   action(UPDATE_DEPLOY_STATE, { state })
 export type UpdateDeployStateAction = ReturnType<typeof updateDeployState>
 
+// The deployment can no longer be followed; its result is only in the CLI
+export const DEPLOY_OUTCOME_UNKNOWN = '[Unknown] Deploy outcome'
+export const deployOutcomeUnknown = (message: string) =>
+  action(DEPLOY_OUTCOME_UNKNOWN, { message })
+export type DeployOutcomeUnknownAction = ReturnType<typeof deployOutcomeUnknown>
+
 export const CANCEL_DEPLOY_REQUEST = '[Request] Cancel deploy'
 export const CANCEL_DEPLOY_SUCCESS = '[Success] Cancel deploy'
 export const CANCEL_DEPLOY_FAILURE = '[Failure] Cancel deploy'
 
 export const cancelDeployRequest = () => action(CANCEL_DEPLOY_REQUEST)
-export const cancelDeploySuccess = (state: DeployState) =>
-  action(CANCEL_DEPLOY_SUCCESS, { state })
+export const cancelDeploySuccess = () => action(CANCEL_DEPLOY_SUCCESS)
 export const cancelDeployFailure = (error: string) =>
   action(CANCEL_DEPLOY_FAILURE, { error })
 

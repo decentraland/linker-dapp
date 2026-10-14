@@ -20,6 +20,8 @@ import {
   cancelDeployRequest,
   cancelDeploySuccess,
   cancelDeployFailure,
+  DEPLOY_OUTCOME_UNKNOWN,
+  deployOutcomeUnknown,
 } from './actions'
 import {
   INITIAL_STATE,
@@ -185,6 +187,63 @@ describe('server reducer', () => {
         apiReducer(initialState, updateDeployState(deployState)),
       ).toEqual({ ...INITIAL_STATE, deployState })
     })
+
+    describe('and the stored deployment state is final', () => {
+      let finalState: DeployState
+
+      beforeEach(() => {
+        finalState = {
+          ...deployState,
+          phase: 'deployed',
+          result: { entityId: 'bafy' },
+        }
+        initialState = { ...INITIAL_STATE, deployState: finalState }
+      })
+
+      describe('and the new state is not final', () => {
+        it('should keep the final deployment state', () => {
+          expect(
+            apiReducer(initialState, updateDeployState(deployState)),
+          ).toEqual(initialState)
+        })
+      })
+
+      describe('and the new state is final', () => {
+        let newFinalState: DeployState
+
+        beforeEach(() => {
+          newFinalState = { ...deployState, phase: 'cancelled' }
+        })
+
+        it('should store the new deployment state', () => {
+          expect(
+            apiReducer(initialState, updateDeployState(newFinalState)),
+          ).toEqual({ ...INITIAL_STATE, deployState: newFinalState })
+        })
+      })
+
+      describe('and the state is cleared', () => {
+        it('should clear the deployment state', () => {
+          expect(
+            apiReducer(initialState, updateDeployState(null)),
+          ).toEqual({ ...INITIAL_STATE, deployState: null })
+        })
+      })
+    })
+  })
+
+  describe(`when reducing the ${DEPLOY_OUTCOME_UNKNOWN} action`, () => {
+    let message: string
+
+    beforeEach(() => {
+      message = 'Check the terminal for the deployment result'
+    })
+
+    it('should store the message describing the unknown outcome', () => {
+      expect(apiReducer(INITIAL_STATE, deployOutcomeUnknown(message))).toEqual(
+        { ...INITIAL_STATE, deployOutcomeMessage: message },
+      )
+    })
   })
 
   describe(`when reducing the ${CANCEL_DEPLOY_REQUEST} action`, () => {
@@ -221,31 +280,10 @@ describe('server reducer', () => {
       }
     })
 
-    describe('and the returned state is not final', () => {
-      let returnedState: DeployState
-
-      beforeEach(() => {
-        returnedState = { ...currentState, phase: 'undeploying' }
-      })
-
-      it('should clear the loading state and keep the current deployment state', () => {
-        expect(
-          apiReducer(initialState, cancelDeploySuccess(returnedState)),
-        ).toEqual({ ...INITIAL_STATE, deployState: currentState })
-      })
-    })
-
-    describe('and the returned state is final', () => {
-      let returnedState: DeployState
-
-      beforeEach(() => {
-        returnedState = { ...currentState, phase: 'cancelled' }
-      })
-
-      it('should clear the loading state and store the returned deployment state', () => {
-        expect(
-          apiReducer(initialState, cancelDeploySuccess(returnedState)),
-        ).toEqual({ ...INITIAL_STATE, deployState: returnedState })
+    it('should clear the loading state and keep the current deployment state', () => {
+      expect(apiReducer(initialState, cancelDeploySuccess())).toEqual({
+        ...INITIAL_STATE,
+        deployState: currentState,
       })
     })
   })

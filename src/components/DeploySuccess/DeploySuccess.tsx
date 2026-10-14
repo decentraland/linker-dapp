@@ -16,6 +16,8 @@ export default function DeploySuccess({
   deploySuccess,
   apiError,
   deployState,
+  deployOutcomeMessage = null,
+  canCancel = false,
   isCancelling = false,
   cancelError = null,
   onCancel,
@@ -38,15 +40,21 @@ export default function DeploySuccess({
       <HeaderMenu>
         {isCancelled ? (
           <Badge color={Color.BLUISH_STEEL}>Deployment cancelled</Badge>
+        ) : deployOutcomeMessage && !deploySuccess ? (
+          <Badge color={Color.BLUISH_STEEL}>Deployment status unknown</Badge>
         ) : (
           <Badge color={deploySuccess ? '#20913e' : Color.SUNISH}>
             {deploySuccess ? 'Deployed successfully' : 'Deploying...'}
           </Badge>
         )}
       </HeaderMenu>
-      {deployState && (
+      {deployOutcomeMessage && !deploySuccess && (
+        <p className="DeploySuccess-message">{deployOutcomeMessage}</p>
+      )}
+      {deployState && !deployOutcomeMessage && (
         <DeployProgress
           state={deployState}
+          canCancel={canCancel}
           isCancelling={isCancelling}
           cancelError={cancelError}
           onCancel={onCancel}

@@ -1,4 +1,5 @@
-import { DeployState, isFinalDeployPhase } from '../../modules/server/types'
+import { DeployState } from '../../modules/server/types'
+import { isFinalDeployPhase } from '../../modules/server/utils'
 
 export type DeployProgressView = {
   label: string
