@@ -24,3 +24,38 @@ export type InfoResponse = {
   targetUrl?: string
   multiScene?: boolean
 }
+
+export type DeployPhase =
+  | 'awaiting-signature'
+  | 'undeploying'
+  | 'uploading'
+  | 'deployed'
+  | 'failed'
+  | 'cancelled'
+
+export type DeployUploadStage = 'checking' | 'uploading' | 'processing'
+
+export type DeployUpload = {
+  stage: DeployUploadStage
+  sentBytes: number
+  totalBytes: number
+  completedBatches: number | null
+  totalBatches: number | null
+}
+
+export type DeployState = {
+  phase: DeployPhase
+  upload: DeployUpload | null
+  result: { entityId: string; message?: string } | null
+  error: { code: string; message: string } | null
+}
+
+export const FINAL_DEPLOY_PHASES: DeployPhase[] = [
+  'deployed',
+  'failed',
+  'cancelled',
+]
+
+export function isFinalDeployPhase(phase: DeployPhase): boolean {
+  return FINAL_DEPLOY_PHASES.includes(phase)
+}

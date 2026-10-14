@@ -17,8 +17,10 @@ import { expectSaga } from 'redux-saga-test-plan'
 import { call, select } from 'redux-saga/effects'
 import { putWorldACLRequest, deleteWorldACLRequest } from '../acl/actions'
 import { closeServer, postDeploy } from '../server/utils'
-import { fetchCatalystRequest } from '../server/actions'
+import { deploySuccess, fetchCatalystRequest } from '../server/actions'
 import { getDeleteScenesFromWorldPayload } from '../server/selectors'
+import { followDeploy } from '../server/sagas'
+import { DeployState } from '../server/types'
 import {
   createIdentityFailure,
   createIdentityRequest,
@@ -125,6 +127,119 @@ describe('signature sagas', () => {
             .put(signContentSuccess(authChain))
             .dispatch(signContentRequest('cid'))
             .run({ silenceTimeout: true })
+        })
+      })
+
+      describe('and the CLI answers once the deployment has ended', () => {
+        it('should dispatch an action signaling the success of the deployment', () => {
+          return expectSaga(signatureSaga)
+            .provide([
+              [select(getIdentity), auth],
+              [select(getAddress), address],
+              [select(getChainId), chainId],
+              [select(getDeleteScenesFromWorldPayload), undefined],
+              [
+                call(postDeploy, { authChain, address, chainId, deleteSignature: undefined }),
+                undefined,
+              ],
+            ])
+            .put(deploySuccess())
+            .dispatch(signContentRequest('cid'))
+            .run({ silenceTimeout: true })
+        })
+      })
+
+      describe('and the CLI runs the deployment in the background', () => {
+        let startedState: DeployState
+        let finalState: DeployState | undefined
+
+        beforeEach(() => {
+          startedState = {
+            phase: 'uploading',
+            upload: null,
+            result: null,
+            error: null,
+          }
+        })
+
+        const runSaga = () =>
+          expectSaga(signatureSaga).provide([
+            [select(getIdentity), auth],
+            [select(getAddress), address],
+            [select(getChainId), chainId],
+            [select(getDeleteScenesFromWorldPayload), undefined],
+            [
+              call(postDeploy, { authChain, address, chainId, deleteSignature: undefined }),
+              startedState,
+            ],
+            [call(followDeploy, startedState), finalState],
+          ])
+
+        describe('and the deployment ends deployed', () => {
+          beforeEach(() => {
+            finalState = {
+              ...startedState,
+              phase: 'deployed',
+              result: { entityId: 'bafy' },
+            }
+          })
+
+          it('should dispatch an action signaling the success of the deployment', () => {
+            return runSaga()
+              .put(deploySuccess())
+              .dispatch(signContentRequest('cid'))
+              .run({ silenceTimeout: true })
+          })
+        })
+
+        describe('and the deployment fails', () => {
+          beforeEach(() => {
+            finalState = {
+              ...startedState,
+              phase: 'failed',
+              error: { code: 'DEPLOY_FAILED', message: error },
+            }
+          })
+
+          it('should dispatch an action signaling the failure with the deployment error message', () => {
+            return runSaga()
+              .put(signContentFailure(error))
+              .dispatch(signContentRequest('cid'))
+              .run({ silenceTimeout: true })
+          })
+        })
+
+        describe('and the deployment is cancelled', () => {
+          beforeEach(() => {
+            finalState = { ...startedState, phase: 'cancelled' }
+          })
+
+          it('should not dispatch an action signaling the success of the deployment', () => {
+            return runSaga()
+              .not.put(deploySuccess())
+              .dispatch(signContentRequest('cid'))
+              .run({ silenceTimeout: true })
+          })
+
+          it('should not dispatch an action signaling a failure', () => {
+            return runSaga()
+              .not.put.like({ action: { type: signContentFailure(error).type } })
+              .dispatch(signContentRequest('cid'))
+              .run({ silenceTimeout: true })
+          })
+        })
+
+        describe('and the deployment state is not available', () => {
+          beforeEach(() => {
+            finalState = undefined
+          })
+
+          it('should not dispatch an action signaling the success of the deployment', () => {
+            return runSaga()
+              .not.put(deploySuccess())
+              .dispatch(signContentRequest('cid'))
+              .run({ silenceTimeout: true })
+          })
         })
       })
     })

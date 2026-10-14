@@ -1,0 +1,39 @@
+.DeployProgress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  width: 700px;
+  max-width: 100%;
+  margin: 16px 0;
+}
+
+.DeployProgress-bar {
+  flex: 1;
+  min-width: 0;
+}
+
+.DeployProgress-bar .ui.progress,
+.DeployProgress-bar .ui.progress:first-child,
+.DeployProgress-bar .ui.progress:last-child {
+  margin: 0 0 2em;
+}
+
+.DeployProgress-indeterminate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 2em;
+}
+
+.DeployProgress-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.DeployProgress-error {
+  width: 100%;
+  color: var(--error, #ff2d55);
+}

@@ -1,6 +1,6 @@
 import { ChainId } from '@dcl/schemas'
 import { AuthChain, AuthIdentity } from '@dcl/crypto'
-import { InfoResponse } from './types'
+import { DeployState, InfoResponse } from './types'
 
 export type DeployScene =
   | {
@@ -27,19 +27,104 @@ export async function closeServer(
   await fetch(`/api/close?ok=${ok}&reason=${JSON.stringify(message)}`)
 }
 
-export async function postDeploy(payload: DeployScene): Promise<void> {
-  const response = await fetch(`/api/deploy`, {
+export const DEPLOY_URL = '/api/deploy'
+
+function isDeployState(value: unknown): value is DeployState {
+  return (
+    !!value &&
+    typeof value === 'object' &&
+    typeof (value as DeployState).phase === 'string'
+  )
+}
+
+async function readDeployState(response: Response): Promise<DeployState> {
+  const body: unknown = await response.json().catch(() => undefined)
+  if (!isDeployState(body)) {
+    throw new Error('Unexpected deployment state received from the CLI')
+  }
+  return body
+}
+
+/**
+ * Starts the deployment. Resolves with the deployment state when the CLI runs
+ * it in the background (202), or with undefined when an older CLI held the
+ * request until the deployment ended (200).
+ */
+export async function postDeploy(
+  payload: DeployScene,
+): Promise<DeployState | undefined> {
+  const response = await fetch(DEPLOY_URL, {
     method: 'post',
     headers: {
       'Content-Type': 'application/json',
+      Prefer: 'respond-async',
     },
     body: JSON.stringify(payload),
   })
+  if (response.status === 202 || response.status === 409) {
+    return readDeployState(response)
+  }
   if (response.ok) {
     return
   }
   const error = (await response.json()).message as string
   throw new Error(error)
+}
+
+/** Resolves with undefined when the CLI does not expose the deployment state. */
+export async function getDeployStateRequest(): Promise<DeployState | undefined> {
+  const response = await fetch(DEPLOY_URL, {
+    headers: { Accept: 'application/json' },
+  })
+  if (response.status === 404) {
+    return
+  }
+  if (!response.ok) {
+    throw new Error(`Could not get the deployment state (${response.status})`)
+  }
+  return readDeployState(response)
+}
+
+export async function deleteDeploy(): Promise<DeployState> {
+  const response = await fetch(DEPLOY_URL, { method: 'delete' })
+  if (response.status === 202 || response.status === 409) {
+    return readDeployState(response)
+  }
+  const body = await response.json().catch(() => ({}))
+  throw new Error(
+    (body as { message?: string }).message ||
+      `Could not cancel the deployment (${response.status})`,
+  )
+}
+
+/**
+ * Follows the deployment state through server-sent events. Returns a function
+ * that closes the stream.
+ */
+export function subscribeToDeployState(
+  onState: (state: DeployState) => void,
+  onError: () => void,
+): () => void {
+  if (typeof EventSource === 'undefined') {
+    onError()
+    return () => undefined
+  }
+  const source = new EventSource(DEPLOY_URL)
+  source.addEventListener('state', (event) => {
+    let state: unknown
+    try {
+      state = JSON.parse((event as MessageEvent<string>).data)
+    } catch {
+      state = undefined
+    }
+    if (isDeployState(state)) {
+      onState(state)
+    } else {
+      onError()
+    }
+  })
+  source.onerror = () => onError()
+  return () => source.close()
 }
 
 export type StoragePayload = {

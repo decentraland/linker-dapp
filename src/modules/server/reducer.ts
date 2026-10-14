@@ -25,9 +25,22 @@ import {
   FETCH_CATALYST_FAILURE,
   DEPLOY_SUCCESS,
   DeploySuccessAction,
+  UPDATE_DEPLOY_STATE,
+  UpdateDeployStateAction,
+  CANCEL_DEPLOY_REQUEST,
+  CANCEL_DEPLOY_SUCCESS,
+  CANCEL_DEPLOY_FAILURE,
+  CancelDeployRequestAction,
+  CancelDeploySuccessAction,
+  CancelDeployFailureAction,
 } from './actions'
 
-import { StorageType, StorageAction } from './types'
+import {
+  StorageType,
+  StorageAction,
+  DeployState,
+  isFinalDeployPhase,
+} from './types'
 
 export type Info = {
   rootCID: string
@@ -74,6 +87,9 @@ export type ApiState = {
   catalyst: CatalystResponse | undefined
   info: Info | undefined
   deploySuccess: boolean
+  // null when the CLI does not report the deployment state (older CLIs)
+  deployState: DeployState | null
+  cancelDeployError: string | null
 }
 
 export const INITIAL_STATE: ApiState = {
@@ -83,6 +99,8 @@ export const INITIAL_STATE: ApiState = {
   error: null,
   catalyst: undefined,
   deploySuccess: false,
+  deployState: null,
+  cancelDeployError: null,
 }
 
 export type ApiReducerAction =
@@ -96,6 +114,10 @@ export type ApiReducerAction =
   | FetchCatalystRequest
   | FetchCatalystSuccess
   | DeploySuccessAction
+  | UpdateDeployStateAction
+  | CancelDeployRequestAction
+  | CancelDeploySuccessAction
+  | CancelDeployFailureAction
 
 export const apiReducer = (
   state = INITIAL_STATE,
@@ -106,6 +128,38 @@ export const apiReducer = (
       return {
         ...state,
         deploySuccess: true,
+      }
+    }
+    case UPDATE_DEPLOY_STATE: {
+      return {
+        ...state,
+        deployState: action.payload.state,
+      }
+    }
+    case CANCEL_DEPLOY_REQUEST: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        cancelDeployError: null,
+      }
+    }
+    case CANCEL_DEPLOY_SUCCESS: {
+      // The outcome of a cancellation is reported by the deployment state
+      // stream; only take the response when it is already final.
+      const deployState = isFinalDeployPhase(action.payload.state.phase)
+        ? action.payload.state
+        : state.deployState
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        deployState,
+      }
+    }
+    case CANCEL_DEPLOY_FAILURE: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        cancelDeployError: action.payload.error,
       }
     }
     case FETCH_FILES_REQUEST:

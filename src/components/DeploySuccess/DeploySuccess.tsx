@@ -2,32 +2,59 @@ import { useEffect } from 'react'
 import { Badge, Color, Container, HeaderMenu, Table, Icon } from 'decentraland-ui'
 
 import { DeployWarning } from '../DeployWarning';
+import { DeployProgress } from '../DeployProgress'
 
 import { Props } from './types'
 
 import './style.css'
 
-export default function DeploySuccess({ onFetchCatalyst, catalysts = [], status, info, deploySuccess, apiError }: Props) {
+export default function DeploySuccess({
+  onFetchCatalyst,
+  catalysts = [],
+  status,
+  info,
+  deploySuccess,
+  apiError,
+  deployState,
+  isCancelling = false,
+  cancelError = null,
+  onCancel,
+}: Props) {
   const entityIds = new Set(catalysts.map(c => c.entityId))
   const deployedToAll = (entityIds.size === 1) || (deploySuccess && info?.isWorld)
+  const isCancelled = deployState?.phase === 'cancelled'
+  const resultMessage = deploySuccess ? deployState?.result?.message : undefined
 
   useEffect(() => {
-    if (deployedToAll || info?.isWorld || apiError) return
+    if (deployedToAll || info?.isWorld || apiError || isCancelled) return
     const interval = setInterval(() => {
       onFetchCatalyst()
     }, 5_000)
     return () => clearInterval(interval)
-  }, [onFetchCatalyst, deployedToAll, info, apiError])
+  }, [onFetchCatalyst, deployedToAll, info, apiError, isCancelled])
 
   return (
     <Container className="DeploySuccess">
       <HeaderMenu>
-        <Badge color={deploySuccess ? '#20913e' : Color.SUNISH}>
-          {deploySuccess ? 'Deployed successfully' : 'Deploying...'}
-        </Badge>
+        {isCancelled ? (
+          <Badge color={Color.BLUISH_STEEL}>Deployment cancelled</Badge>
+        ) : (
+          <Badge color={deploySuccess ? '#20913e' : Color.SUNISH}>
+            {deploySuccess ? 'Deployed successfully' : 'Deploying...'}
+          </Badge>
+        )}
       </HeaderMenu>
-      <DeployWarning variant="outlined" />
-      { !info?.isWorld && <Table basic="very">
+      {deployState && (
+        <DeployProgress
+          state={deployState}
+          isCancelling={isCancelling}
+          cancelError={cancelError}
+          onCancel={onCancel}
+        />
+      )}
+      {resultMessage && <p className="DeploySuccess-message">{resultMessage}</p>}
+      {!isCancelled && <DeployWarning variant="outlined" />}
+      { !info?.isWorld && !isCancelled && <Table basic="very">
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Catalyst Server</Table.HeaderCell>
