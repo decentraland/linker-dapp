@@ -17,9 +17,19 @@ import {
   fetchCatalystRequest,
   fetchCatalystSuccess,
   fetchCatalystFailure,
+  UPDATE_DEPLOY_STATE,
+  CANCEL_DEPLOY_REQUEST,
+  CANCEL_DEPLOY_SUCCESS,
+  CANCEL_DEPLOY_FAILURE,
+  updateDeployState,
+  cancelDeployRequest,
+  cancelDeploySuccess,
+  cancelDeployFailure,
+  DEPLOY_OUTCOME_UNKNOWN,
+  deployOutcomeUnknown,
 } from './actions'
 import { CatalystResponse, FileSize } from './reducer'
-import { InfoResponse } from './types'
+import { DeployState, InfoResponse } from './types'
 
 describe('server actions', () => {
   const error = 'error'
@@ -125,6 +135,68 @@ describe('server actions', () => {
     it('should return an object representing the action', () => {
       expect(fetchCatalystFailure(error)).toEqual({
         type: FETCH_CATALYST_FAILURE,
+        meta: undefined,
+        payload: { error },
+      })
+    })
+  })
+
+  describe('when creating the action to update the deployment state', () => {
+    let state: DeployState
+
+    beforeEach(() => {
+      state = { phase: 'uploading', upload: null, result: null, error: null }
+    })
+
+    it('should return an object representing the action', () => {
+      expect(updateDeployState(state)).toEqual({
+        type: UPDATE_DEPLOY_STATE,
+        meta: undefined,
+        payload: { state },
+      })
+    })
+  })
+
+  describe('when creating the action to signal the start of the cancel deploy request', () => {
+    it('should return an object representing the action', () => {
+      expect(cancelDeployRequest()).toEqual({
+        type: CANCEL_DEPLOY_REQUEST,
+        meta: undefined,
+        payload: undefined,
+      })
+    })
+  })
+
+  describe('when creating the action to signal a success in the cancel deploy request', () => {
+    it('should return an object representing the action', () => {
+      expect(cancelDeploySuccess()).toEqual({
+        type: CANCEL_DEPLOY_SUCCESS,
+        meta: undefined,
+        payload: undefined,
+      })
+    })
+  })
+
+  describe('when creating the action to signal that the deployment outcome is unknown', () => {
+    let message: string
+
+    beforeEach(() => {
+      message = 'Check the terminal for the deployment result'
+    })
+
+    it('should return an object representing the action', () => {
+      expect(deployOutcomeUnknown(message)).toEqual({
+        type: DEPLOY_OUTCOME_UNKNOWN,
+        meta: undefined,
+        payload: { message },
+      })
+    })
+  })
+
+  describe('when creating the action to signal a failure in the cancel deploy request', () => {
+    it('should return an object representing the action', () => {
+      expect(cancelDeployFailure(error)).toEqual({
+        type: CANCEL_DEPLOY_FAILURE,
         meta: undefined,
         payload: { error },
       })

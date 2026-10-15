@@ -12,14 +12,25 @@ import {
   fetchInfoFailure,
   fetchCatalystSuccess,
   fetchInfoSuccess,
+  UPDATE_DEPLOY_STATE,
+  CANCEL_DEPLOY_REQUEST,
+  CANCEL_DEPLOY_SUCCESS,
+  CANCEL_DEPLOY_FAILURE,
+  updateDeployState,
+  cancelDeployRequest,
+  cancelDeploySuccess,
+  cancelDeployFailure,
+  DEPLOY_OUTCOME_UNKNOWN,
+  deployOutcomeUnknown,
 } from './actions'
 import {
   INITIAL_STATE,
   apiReducer,
   CatalystResponse,
   FileSize,
+  ApiState,
 } from './reducer'
-import { InfoResponse } from './types'
+import { DeployState, InfoResponse } from './types'
 
 const error = 'error'
 
@@ -147,6 +158,147 @@ describe('server reducer', () => {
         ...INITIAL_STATE,
         loading: [],
         info: { ...info, baseParcel: { x: 1, y: 2 } },
+      })
+    })
+  })
+
+  describe(`when reducing the ${UPDATE_DEPLOY_STATE} action`, () => {
+    let initialState: ApiState
+    let deployState: DeployState
+
+    beforeEach(() => {
+      initialState = { ...INITIAL_STATE }
+      deployState = {
+        phase: 'uploading',
+        upload: {
+          stage: 'uploading',
+          sentBytes: 10,
+          totalBytes: 100,
+          completedBatches: null,
+          totalBatches: null,
+        },
+        result: null,
+        error: null,
+      }
+    })
+
+    it('should store the deployment state', () => {
+      expect(
+        apiReducer(initialState, updateDeployState(deployState)),
+      ).toEqual({ ...INITIAL_STATE, deployState })
+    })
+
+    describe('and the stored deployment state is final', () => {
+      let finalState: DeployState
+
+      beforeEach(() => {
+        finalState = {
+          ...deployState,
+          phase: 'deployed',
+          result: { entityId: 'bafy' },
+        }
+        initialState = { ...INITIAL_STATE, deployState: finalState }
+      })
+
+      describe('and the new state is not final', () => {
+        it('should keep the final deployment state', () => {
+          expect(
+            apiReducer(initialState, updateDeployState(deployState)),
+          ).toEqual(initialState)
+        })
+      })
+
+      describe('and the new state is final', () => {
+        let newFinalState: DeployState
+
+        beforeEach(() => {
+          newFinalState = { ...deployState, phase: 'cancelled' }
+        })
+
+        it('should store the new deployment state', () => {
+          expect(
+            apiReducer(initialState, updateDeployState(newFinalState)),
+          ).toEqual({ ...INITIAL_STATE, deployState: newFinalState })
+        })
+      })
+
+      describe('and the state is cleared', () => {
+        it('should clear the deployment state', () => {
+          expect(
+            apiReducer(initialState, updateDeployState(null)),
+          ).toEqual({ ...INITIAL_STATE, deployState: null })
+        })
+      })
+    })
+  })
+
+  describe(`when reducing the ${DEPLOY_OUTCOME_UNKNOWN} action`, () => {
+    let message: string
+
+    beforeEach(() => {
+      message = 'Check the terminal for the deployment result'
+    })
+
+    it('should store the message describing the unknown outcome', () => {
+      expect(apiReducer(INITIAL_STATE, deployOutcomeUnknown(message))).toEqual(
+        { ...INITIAL_STATE, deployOutcomeMessage: message },
+      )
+    })
+  })
+
+  describe(`when reducing the ${CANCEL_DEPLOY_REQUEST} action`, () => {
+    let initialState: ApiState
+
+    beforeEach(() => {
+      initialState = { ...INITIAL_STATE, cancelDeployError: error }
+    })
+
+    it('should set the loading state and clear the previous cancel error', () => {
+      expect(apiReducer(initialState, cancelDeployRequest())).toEqual({
+        ...INITIAL_STATE,
+        loading: [cancelDeployRequest()],
+        cancelDeployError: null,
+      })
+    })
+  })
+
+  describe(`when reducing the ${CANCEL_DEPLOY_SUCCESS} action`, () => {
+    let initialState: ApiState
+    let currentState: DeployState
+
+    beforeEach(() => {
+      currentState = {
+        phase: 'uploading',
+        upload: null,
+        result: null,
+        error: null,
+      }
+      initialState = {
+        ...INITIAL_STATE,
+        loading: [cancelDeployRequest()],
+        deployState: currentState,
+      }
+    })
+
+    it('should clear the loading state and keep the current deployment state', () => {
+      expect(apiReducer(initialState, cancelDeploySuccess())).toEqual({
+        ...INITIAL_STATE,
+        deployState: currentState,
+      })
+    })
+  })
+
+  describe(`when reducing the ${CANCEL_DEPLOY_FAILURE} action`, () => {
+    let initialState: ApiState
+
+    beforeEach(() => {
+      initialState = { ...INITIAL_STATE, loading: [cancelDeployRequest()] }
+    })
+
+    it('should clear the loading state and store the cancel error', () => {
+      expect(apiReducer(initialState, cancelDeployFailure(error))).toEqual({
+        ...INITIAL_STATE,
+        cancelDeployError: error,
       })
     })
   })

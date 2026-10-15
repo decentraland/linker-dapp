@@ -25,9 +25,20 @@ import {
   FETCH_CATALYST_FAILURE,
   DEPLOY_SUCCESS,
   DeploySuccessAction,
+  UPDATE_DEPLOY_STATE,
+  UpdateDeployStateAction,
+  DEPLOY_OUTCOME_UNKNOWN,
+  DeployOutcomeUnknownAction,
+  CANCEL_DEPLOY_REQUEST,
+  CANCEL_DEPLOY_SUCCESS,
+  CANCEL_DEPLOY_FAILURE,
+  CancelDeployRequestAction,
+  CancelDeploySuccessAction,
+  CancelDeployFailureAction,
 } from './actions'
 
-import { StorageType, StorageAction } from './types'
+import { StorageType, StorageAction, DeployState } from './types'
+import { isFinalDeployPhase } from './utils'
 
 export type Info = {
   rootCID: string
@@ -74,6 +85,11 @@ export type ApiState = {
   catalyst: CatalystResponse | undefined
   info: Info | undefined
   deploySuccess: boolean
+  // null when the CLI does not report the deployment state (older CLIs)
+  deployState: DeployState | null
+  // set when the deployment can't be followed until it ends
+  deployOutcomeMessage: string | null
+  cancelDeployError: string | null
 }
 
 export const INITIAL_STATE: ApiState = {
@@ -83,6 +99,9 @@ export const INITIAL_STATE: ApiState = {
   error: null,
   catalyst: undefined,
   deploySuccess: false,
+  deployState: null,
+  deployOutcomeMessage: null,
+  cancelDeployError: null,
 }
 
 export type ApiReducerAction =
@@ -96,6 +115,11 @@ export type ApiReducerAction =
   | FetchCatalystRequest
   | FetchCatalystSuccess
   | DeploySuccessAction
+  | UpdateDeployStateAction
+  | DeployOutcomeUnknownAction
+  | CancelDeployRequestAction
+  | CancelDeploySuccessAction
+  | CancelDeployFailureAction
 
 export const apiReducer = (
   state = INITIAL_STATE,
@@ -106,6 +130,49 @@ export const apiReducer = (
       return {
         ...state,
         deploySuccess: true,
+      }
+    }
+    case UPDATE_DEPLOY_STATE: {
+      const current = state.deployState
+      const next = action.payload.state
+      // A final state never changes; late updates must not revert it
+      if (
+        current &&
+        next &&
+        isFinalDeployPhase(current.phase) &&
+        !isFinalDeployPhase(next.phase)
+      ) {
+        return state
+      }
+      return {
+        ...state,
+        deployState: next,
+      }
+    }
+    case DEPLOY_OUTCOME_UNKNOWN: {
+      return {
+        ...state,
+        deployOutcomeMessage: action.payload.message,
+      }
+    }
+    case CANCEL_DEPLOY_REQUEST: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        cancelDeployError: null,
+      }
+    }
+    case CANCEL_DEPLOY_SUCCESS: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+      }
+    }
+    case CANCEL_DEPLOY_FAILURE: {
+      return {
+        ...state,
+        loading: loadingReducer(state.loading, action),
+        cancelDeployError: action.payload.error,
       }
     }
     case FETCH_FILES_REQUEST:
