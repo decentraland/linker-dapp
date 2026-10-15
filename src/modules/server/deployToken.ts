@@ -19,7 +19,7 @@ function storeToken(token: string): void {
 }
 
 /**
- * Token the CLI adds to the linker URL (`?token=`) to authorize cancelling the
+ * Token the CLI adds to the linker URL (`#token=`) to authorize cancelling the
  * deployment. Null when the CLI doesn't provide one (older CLIs).
  *
  * It's moved to session storage and removed from the URL, so it never reaches
@@ -29,11 +29,15 @@ function storeToken(token: string): void {
 export function getDeployToken(): string | null {
   if (deployToken === undefined) {
     const url = new URL(window.location.href)
-    const fromUrl = url.searchParams.get('token')
+    // The CLI passes it in the fragment, which browsers never send to any server; `?token=` is still read
+    const hashParams = new URLSearchParams(url.hash.slice(1))
+    const fromUrl = hashParams.get('token') || url.searchParams.get('token')
     if (fromUrl) {
       storeToken(fromUrl)
+      hashParams.delete('token')
       url.searchParams.delete('token')
-      window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`)
+      const hash = hashParams.toString()
+      window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${hash ? `#${hash}` : ''}`)
     }
     deployToken = fromUrl || readStoredToken()
   }

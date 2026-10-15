@@ -47,6 +47,29 @@ describe('when getting the deploy token', () => {
     })
   })
 
+  describe('and the page URL has the token in the fragment', () => {
+    beforeEach(() => {
+      window.history.replaceState(null, '', '/?other=value#token=a-fragment-token')
+    })
+
+    it('should return the token', () => {
+      expect(getDeployToken()).toBe('a-fragment-token')
+    })
+
+    describe('and the token was read', () => {
+      beforeEach(() => {
+        getDeployToken()
+      })
+
+      it('should remove the fragment and keep the query', () => {
+        expect({ search: window.location.search, hash: window.location.hash }).toEqual({
+          search: '?other=value',
+          hash: ''
+        })
+      })
+    })
+  })
+
   describe('and the page URL has no token', () => {
     beforeEach(() => {
       window.history.replaceState(null, '', '/?other=value')
