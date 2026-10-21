@@ -52,6 +52,9 @@ export default function DeployProgress({
           {cancelRequested && !isFinal ? 'Cancelling...' : 'Cancel'}
         </Button>
       )}
+      {state.phase === 'cancelled' && state.error && (
+        <p className="DeployProgress-error">{state.error.message}</p>
+      )}
       {cancelError && <p className="DeployProgress-error">{cancelError}</p>}
     </div>
   )

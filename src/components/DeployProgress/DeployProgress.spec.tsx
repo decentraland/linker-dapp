@@ -96,6 +96,26 @@ describe('when rendering the deployment progress', () => {
     })
   })
 
+  describe('and the deployment was cancelled after the world scenes were removed', () => {
+    let caveat: string
+
+    beforeEach(() => {
+      caveat =
+        "The deployment was cancelled after the world's previous scenes were removed. Deploy again to restore the world."
+      state = {
+        ...state,
+        phase: 'cancelled',
+        cancelRequested: true,
+        error: { code: 'DEPLOY_CANCELLED_AFTER_UNDEPLOY', message: caveat },
+      }
+      renderedComponent = renderProgress()
+    })
+
+    it('should render the caveat so the user knows the world is empty', () => {
+      expect(renderedComponent.getByText(caveat)).toBeInTheDocument()
+    })
+  })
+
   describe('and cancelling failed', () => {
     beforeEach(() => {
       cancelError =

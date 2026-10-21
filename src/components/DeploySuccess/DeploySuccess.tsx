@@ -27,13 +27,17 @@ export default function DeploySuccess({
   const isCancelled = deployState?.phase === 'cancelled'
   const resultMessage = deploySuccess ? deployState?.result?.message : undefined
 
+  // While a followed deployment is in progress the catalysts can't have it yet. Once its outcome
+  // is unknown (lost connection to the CLI) they are the only way left to see whether it landed.
+  const isFollowingDeployment = !!deployState && !deploySuccess && !deployOutcomeMessage
+
   useEffect(() => {
-    if (deployedToAll || info?.isWorld || apiError || isCancelled) return
+    if (deployedToAll || info?.isWorld || apiError || isCancelled || isFollowingDeployment) return
     const interval = setInterval(() => {
       onFetchCatalyst()
     }, 5_000)
     return () => clearInterval(interval)
-  }, [onFetchCatalyst, deployedToAll, info, apiError, isCancelled])
+  }, [onFetchCatalyst, deployedToAll, info, apiError, isCancelled, isFollowingDeployment])
 
   return (
     <Container className="DeploySuccess">

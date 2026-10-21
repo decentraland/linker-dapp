@@ -29,13 +29,12 @@ function storeToken(token: string): void {
 export function getDeployToken(): string | null {
   if (deployToken === undefined) {
     const url = new URL(window.location.href)
-    // The CLI passes it in the fragment, which browsers never send to any server; `?token=` is still read
+    // Only the fragment: browsers never send it to any server, the CLI's included
     const hashParams = new URLSearchParams(url.hash.slice(1))
-    const fromUrl = hashParams.get('token') || url.searchParams.get('token')
+    const fromUrl = hashParams.get('token')
     if (fromUrl) {
       storeToken(fromUrl)
       hashParams.delete('token')
-      url.searchParams.delete('token')
       const hash = hashParams.toString()
       window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${hash ? `#${hash}` : ''}`)
     }

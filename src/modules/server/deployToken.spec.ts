@@ -6,9 +6,9 @@ describe('when getting the deploy token', () => {
     resetDeployToken()
   })
 
-  describe('and the page URL has a token', () => {
+  describe('and the page URL has the token in the fragment', () => {
     beforeEach(() => {
-      window.history.replaceState(null, '', '/?token=a-deploy-token&other=value')
+      window.history.replaceState(null, '', '/?other=value#token=a-deploy-token&view=progress')
     })
 
     it('should return the token', () => {
@@ -20,8 +20,11 @@ describe('when getting the deploy token', () => {
         getDeployToken()
       })
 
-      it('should remove it from the URL so it is not sent anywhere else', () => {
-        expect(window.location.search).toBe('?other=value')
+      it('should remove it from the URL so it is not sent anywhere else, keeping the rest', () => {
+        expect({ search: window.location.search, hash: window.location.hash }).toEqual({
+          search: '?other=value',
+          hash: '#view=progress'
+        })
       })
 
       describe('and the page reloads without it, as after the sign-in redirect', () => {
@@ -47,26 +50,13 @@ describe('when getting the deploy token', () => {
     })
   })
 
-  describe('and the page URL has the token in the fragment', () => {
+  describe('and the page URL has a token only in the query string', () => {
     beforeEach(() => {
-      window.history.replaceState(null, '', '/?other=value#token=a-fragment-token')
+      window.history.replaceState(null, '', '/?token=a-deploy-token&other=value')
     })
 
-    it('should return the token', () => {
-      expect(getDeployToken()).toBe('a-fragment-token')
-    })
-
-    describe('and the token was read', () => {
-      beforeEach(() => {
-        getDeployToken()
-      })
-
-      it('should remove the fragment and keep the query', () => {
-        expect({ search: window.location.search, hash: window.location.hash }).toEqual({
-          search: '?other=value',
-          hash: ''
-        })
-      })
+    it('should ignore it, as the CLI only passes it in the fragment', () => {
+      expect(getDeployToken()).toBeNull()
     })
   })
 
