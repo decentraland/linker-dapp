@@ -1,6 +1,6 @@
 import { action } from 'typesafe-actions'
 import { CatalystResponse, FileSize } from './reducer'
-import { InfoResponse } from './types'
+import { DeployState, InfoResponse } from './types'
 
 export const FETCH_FILES_REQUEST = '[Request] Fetch Files'
 export const FETCH_FILES_SUCCESS = '[Success] Fetch Files'
@@ -47,3 +47,27 @@ export type FetchCatalystFailure = ReturnType<typeof fetchCatalystFailure>
 export const DEPLOY_SUCCESS = '[Success] Deploy content'
 export const deploySuccess = () => action(DEPLOY_SUCCESS)
 export type DeploySuccessAction = ReturnType<typeof deploySuccess>
+
+export const UPDATE_DEPLOY_STATE = '[Update] Deploy state'
+export const updateDeployState = (state: DeployState | null) =>
+  action(UPDATE_DEPLOY_STATE, { state })
+export type UpdateDeployStateAction = ReturnType<typeof updateDeployState>
+
+// The deployment can no longer be followed; its result is only in the CLI
+export const DEPLOY_OUTCOME_UNKNOWN = '[Unknown] Deploy outcome'
+export const deployOutcomeUnknown = (message: string) =>
+  action(DEPLOY_OUTCOME_UNKNOWN, { message })
+export type DeployOutcomeUnknownAction = ReturnType<typeof deployOutcomeUnknown>
+
+export const CANCEL_DEPLOY_REQUEST = '[Request] Cancel deploy'
+export const CANCEL_DEPLOY_SUCCESS = '[Success] Cancel deploy'
+export const CANCEL_DEPLOY_FAILURE = '[Failure] Cancel deploy'
+
+export const cancelDeployRequest = () => action(CANCEL_DEPLOY_REQUEST)
+export const cancelDeploySuccess = () => action(CANCEL_DEPLOY_SUCCESS)
+export const cancelDeployFailure = (error: string) =>
+  action(CANCEL_DEPLOY_FAILURE, { error })
+
+export type CancelDeployRequestAction = ReturnType<typeof cancelDeployRequest>
+export type CancelDeploySuccessAction = ReturnType<typeof cancelDeploySuccess>
+export type CancelDeployFailureAction = ReturnType<typeof cancelDeployFailure>

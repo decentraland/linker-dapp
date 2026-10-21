@@ -57,10 +57,12 @@ import { putWorldACLRequest, deleteWorldACLRequest } from '../acl/actions'
 import { signQuestsFetchRequest } from '../quests/action'
 import { getIdentity } from '../wallet/selectors'
 import { getDeleteScenesFromWorldPayload } from '../server/selectors'
+import { followDeploy } from '../server/sagas'
+import { DeployState } from '../server/types'
 
 export function* signatureSaga() {
   yield takeLatest(SIGN_CONTENT_REQUEST, handleSignContentRequest)
-  yield takeEvery(SIGN_CONTENT_SUCCESS, handleSignContentSuccess)
+  yield takeLatest(SIGN_CONTENT_SUCCESS, handleSignContentSuccess)
 
   yield takeLatest(CREATE_IDENTITY_REQUEST, handleCreateIdentityRequest)
   yield takeLatest(CREATE_IDENTITY_SUCCESS, handleCreateIdentitySuccess)
@@ -125,8 +127,27 @@ function* handleSignContentSuccess(action: SignContentSuccessAction) {
       }
     }
 
-    yield call(postDeploy, { authChain, address, chainId, deleteSignature })
-    yield put(deploySuccess())
+    const deployState: DeployState | undefined = yield call(postDeploy, {
+      authChain,
+      address,
+      chainId,
+      deleteSignature,
+    })
+    if (!deployState) {
+      // Older CLIs answer once the deployment has ended
+      yield put(deploySuccess())
+      return
+    }
+
+    const finalState: DeployState | undefined = yield call(
+      followDeploy,
+      deployState,
+    )
+    if (finalState?.phase === 'deployed') {
+      yield put(deploySuccess())
+    } else if (finalState?.phase === 'failed') {
+      throw new Error(finalState.error?.message || 'Deployment failed')
+    }
   } catch (error) {
     yield put(signContentFailure((error as Error).message))
   }
