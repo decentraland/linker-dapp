@@ -38,6 +38,7 @@ const StoragePage = ({
         baseParcel={baseParcel}
         storageType={info?.storageType}
         targetUrl={info?.targetUrl}
+        target={info?.target}
         rootCID={info?.rootCID}
         onSignContent={onSignContent}
       />
